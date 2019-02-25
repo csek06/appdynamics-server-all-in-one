@@ -27,7 +27,6 @@ if [ ! -f /config/FILENAME ]; then
   ./install-ec.sh
 else
   echo "Using existing version '$VERSION'"
-  ./install-ec.sh
 fi
 echo "Setting correct permissions"
 chown -R nobody:users /config
