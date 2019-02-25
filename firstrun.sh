@@ -24,7 +24,7 @@ if [ ! -f /config/FILENAME ]; then
   TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
   curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
   echo "file downloaded"
-  ./install-ec.sh
+  ./$FILENAME -q -varfile ~/response.varfile
 else
   echo "Using existing version '$VERSION'"
 fi
