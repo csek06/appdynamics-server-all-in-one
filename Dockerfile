@@ -17,3 +17,4 @@ mkdir -p /etc/my_init.d
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
+RUN chmod +x /etc/my_init.d/install-ec.sh
