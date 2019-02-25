@@ -15,6 +15,7 @@ else
   DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
   VERSION=${VERSION:1}
   echo "Latest version on appdynamics is" $VERSION
+  rm -f tmpout.json
 fi
 
 if [ ! -f /config/appdynamics-"$VERSION"/ ]; then
