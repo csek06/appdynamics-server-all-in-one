@@ -19,9 +19,8 @@ fi
 
 if [ ! -f /config/appdynamics-"$VERSION"/ ]; then
   echo "Installing version '$VERSION'"
-  TOKEN=$(curl -X POST -d '{"username": "$appd-user","password": "appd-pass","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
-  curl -L -O -H "Authorization: Bearer ${TOKEN}" https://download.appdynamics.com/download/prox/download-file/enterprise-console/4.5.6.17299/platform-setup-x64-linux-4.5.6.17299.sh
-  wget ${DOWNLOAD_PATH}
+  TOKEN=$(curl -X POST -d '{"username": "'$appd-user'","password": "'$appd-pass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+  curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
   echo "file downloaded"
 else
   echo "Using existing version '$VERSION'"
