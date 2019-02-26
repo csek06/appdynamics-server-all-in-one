@@ -62,6 +62,9 @@ if [ ! -f /config/$FILENAME ]; then
   curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
   echo "file downloaded"
   chmod +x ./$EUMFILENAME
+  
+  echo "Installing EUM server"
+  ./$EUMFILENAME -q -varfile ~/response-eum.varfile
 else
   echo "File found! Using existing version '$VERSION'"
 fi
