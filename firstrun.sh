@@ -31,7 +31,4 @@ fi
 echo "Setting correct permissions"
 chown -R nobody:users /config
 
-ADDPARAM="-Dupnp.config.address=$SERVERIP -Dserver.port=$SERVERPORT"
-echo -e "Parameters used:\nServer IP : $SERVERIP\nServer Port : $SERVERPORT"
-
 echo "System Started"
