@@ -26,13 +26,12 @@ else
   VERSION=$(grep -oP '(\"version\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
   DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
   FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-  #VERSION=${VERSION:1}
   echo "Latest version on appdynamics is" $VERSION
   rm -f tmpout.json
 fi
 
 if [ ! -f /config/$FILENAME ]; then
-  echo "Installing version '$VERSION'"
+  echo "Downloading AppDynamics Enterprise Console version '$VERSION'"
   TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
   curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
   echo "file downloaded"
@@ -49,6 +48,20 @@ if [ ! -f /config/$FILENAME ]; then
 
   echo "installing events service"
   platform-admin.sh install-events-service  --profile dev --hosts localhost
+  
+  echo "Checking EUM server version"
+  #Check the latest version on appdynamics
+  curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
+  EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
+  EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
+  rm -f tmpout.json
+  
+  echo "Downloading EUM server"
+  echo "Downloading AppDynamics Enterprise Console version '$VERSION'"
+  NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+  curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
+  echo "file downloaded"
+  chmod +x ./$EUMFILENAME
 else
   echo "File found! Using existing version '$VERSION'"
 fi
