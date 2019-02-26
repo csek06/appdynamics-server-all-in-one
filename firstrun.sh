@@ -49,6 +49,7 @@ if [ ! -f /config/$FILENAME ]; then
   echo "installing events service"
   ./platform-admin.sh install-events-service  --profile dev --hosts localhost
   
+  cd /config
   echo "Checking EUM server version"
   #Check the latest version on appdynamics
   curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
