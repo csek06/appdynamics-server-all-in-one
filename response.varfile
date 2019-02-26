@@ -1,4 +1,3 @@
-serverHostName=$SERVERIP
 sys.languageId=en
 disableEULA=true
 
