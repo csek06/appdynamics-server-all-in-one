@@ -47,7 +47,7 @@ if [ ! -f /config/$FILENAME ]; then
   ./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=localhost controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
 
   echo "installing events service"
-  platform-admin.sh install-events-service  --profile dev --hosts localhost
+  ./platform-admin.sh install-events-service  --profile dev --hosts localhost
   
   echo "Checking EUM server version"
   #Check the latest version on appdynamics
