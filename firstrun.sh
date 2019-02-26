@@ -37,7 +37,18 @@ if [ ! -f /config/$FILENAME ]; then
   curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
   echo "file downloaded"
   chmod +x ./$FILENAME
+  
+  echo "installing enterprise console"
   ./$FILENAME -q -varfile ~/response.varfile
+  
+  echo "installing controller and local database"
+  cd /config/appdynamics/platform/platform-admin/bin
+  ./platform-admin.sh create-platform --name my-platform --installation-dir /config/appdynamics/controller
+  ./platform-admin.sh add-hosts --hosts localhost
+  ./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=localhost controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
+
+  echo "installing events service"
+  platform-admin.sh install-events-service  --profile dev --hosts localhost
 else
   echo "File found! Using existing version '$VERSION'"
 fi
