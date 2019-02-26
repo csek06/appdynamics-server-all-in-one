@@ -12,7 +12,7 @@ if [ -f "$destfile" ]
 then 
     appdserver="serverHostName='$SERVERIP'"
     echo "adding '$appdserver' to '$destfile'"
-    echo "$appdserver" > "$destfile"
+    echo "$appdserver" >> "$destfile"
 fi
 
 cd /config
