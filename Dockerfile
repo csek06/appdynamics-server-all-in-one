@@ -15,5 +15,6 @@ usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
+COPY response.varfile ~/response.varfile
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
