@@ -16,5 +16,6 @@ mkdir -p /etc/my_init.d
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
 COPY response.varfile /root/response.varfile
+COPY response-eum.varfile /root/response-eum.varfile
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
