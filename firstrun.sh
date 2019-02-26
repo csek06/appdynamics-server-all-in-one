@@ -10,7 +10,7 @@ dpkg-reconfigure tzdata
 destfile=/root/response.varfile
 if [ -f "$destfile" ]
 then 
-    appdserver="serverHostName='$SERVERIP'"
+    appdserver="serverHostName=${SERVERIP}"
     echo "adding '$appdserver' to '$destfile'"
     echo "$appdserver" >> "$destfile"
 fi
