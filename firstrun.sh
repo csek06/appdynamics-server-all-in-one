@@ -5,6 +5,16 @@ echo "setting the correct local time"
 echo $TZ > /etc/timezone
 export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure tzdata
+
+#Configure Appd for IP address given as environment variable
+destfile=/root/response.varfile
+if [ -f "$destfile" ]
+then 
+    appdserver="serverHostName='$SERVERIP'"
+    echo "adding '$appdserver' to '$destfile'
+    echo "$appdserver" > "$destfile"
+fi
+
 cd /config
 if [ ! -z $VERSION ]; then
   echo "Manual version override:" $VERSION
