@@ -1,4 +1,4 @@
-# Appdynamics Server (Controller) All-in-One
+# AppDynamics Server (Controller) All-in-One
 
 This is a docker container for an On-Premise Deployment of AppDynamics - https://www.appdynamics.com/
 
@@ -41,7 +41,11 @@ Once installed, open the WebUI at http://SERVERIP:9191/ and validate that your c
   cd /config/appdynamics/EUM/eum-processor/
   ./bin/eum.sh start
   To stop you can run ./bin/eum.sh stop
+7. Navigate to http://SERVERIP:7001/eumaggregator/ping to validate the EUM server started.
+8. Download and place your license in /config/appdynamics/controller/controller/
+    Your license should update (within 5 minutes) and can be found at http://SERVERIP:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60
 
 # Changelog:
 2019-02-26 - Initial release - successfully downloads and installs Enterprise Console / Controller / Events Service / EUM Server (it will not upgrade and expects a clean slate in the config directory - known bugs around deleting downloaded files)
+
 2019-02-25 - Initial release - still not completely functional - only downloads binary for installation at this point.
