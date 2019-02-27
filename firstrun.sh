@@ -30,25 +30,50 @@ else
   rm -f tmpout.json
 fi
 
-if [ ! -f /config/$FILENAME ]; then
-  echo "Downloading AppDynamics Enterprise Console version '$VERSION'"
-  TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
-  curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
-  echo "file downloaded"
+# check if enterprise console is installed
+if [ -f /config/appdynamics/platform/platform-admin/bin/platform-admin.sh ]; then
+  echo "Enterprise Console is installed"
+else
+  # check if user didn't downloaded latest Enterprise Console binary
+  if [ ! -f /config/$FILENAME ]; then
+    echo "Downloading AppDynamics Enterprise Console version '$VERSION'"
+    TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+    curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
+    echo "file downloaded"
+  else
+    echo "Found latest Enterprise Console '$FILENAME' in /config/ "
+  fi
+  # installing ent console
+  echo "Installing Enterprise Console"
   chmod +x ./$FILENAME
-  
-  echo "installing enterprise console"
   ./$FILENAME -q -varfile ~/response.varfile
-  
-  echo "installing controller and local database"
+fi
+
+# check if Controller is installed
+if [ -f /config/appdynamics/controller/controller/bin/controller.sh ]; then
+  echo "Controller is installed"
+else
+  echo "Installing Controller and local database"
   cd /config/appdynamics/platform/platform-admin/bin
   ./platform-admin.sh create-platform --name my-platform --installation-dir /config/appdynamics/controller
   ./platform-admin.sh add-hosts --hosts localhost
   ./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=localhost controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
+fi
 
-  echo "installing events service"
+# check if Events Service is installed
+if [ -f /config/appdynamics/controller/events-service/processor/bin/events-service.sh ]; then
+  echo "Events Service is installed"
+else
+  echo "Installing Events Service"
+  cd /config/appdynamics/platform/platform-admin/bin
   ./platform-admin.sh install-events-service  --profile dev --hosts localhost
-  
+fi
+
+# check if EUM Server is installed
+if [ -f /config/appdynamics/EUM/eum-processor/bin/eum.sh ]; then
+  echo "EUM Server is installed"
+else
+  # Check latest EUM server version
   cd /config
   echo "Checking EUM server version"
   #Check the latest version on appdynamics
@@ -56,29 +81,34 @@ if [ ! -f /config/$FILENAME ]; then
   EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
   EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
   rm -f tmpout.json
-  
-  echo "Downloading EUM server"
-  echo "Downloading AppDynamics Enterprise Console version '$VERSION'"
-  NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
-  curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
-  echo "file downloaded"
+  # check if user downloaded latest EUM server binary
+  if [ -f /config/$EUMFILENAME ]; then
+    echo "Found latest EUM Server '$FILENAME' in /config/ "
+  else
+    echo "Didn't find '$FILENAME' in /config/ - downloading"
+	NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+    curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
+    echo "file downloaded"
+  fi
   chmod +x ./$EUMFILENAME
-  
   echo "Installing EUM server"
   ./$EUMFILENAME -q -varfile ~/response-eum.varfile
-else
-  echo "File found! Using existing version '$VERSION'"
-  echo "Starting AppDynamics Services"
-  cd /config/appdynamics/platform/platform-admin/bin
-  ./platform-admin.sh start-platform-admin
-  #./platform-admin.sh start-controller-db
-  ./platform-admin.sh start-controller-appserver --with-db
-  ./platform-admin.sh start-events-service
-  
-  cd /config/appdynamics/EUM/eum-processor/
-  ./bin/eum.sh start
 fi
+
 echo "Setting correct permissions"
 chown -R nobody:users /config
+
+# Start the AppDynamics Services
+echo "Starting AppDynamics Services"
+cd /config/appdynamics/platform/platform-admin/bin
+echo "Starting Enterprise Console"
+./platform-admin.sh start-platform-admin
+echo "Starting Controller with DB"
+./platform-admin.sh start-controller-appserver --with-db
+echo "Starting Events Service"
+./platform-admin.sh start-events-service
+echo "Starting EUM Server"
+cd /config/appdynamics/EUM/eum-processor/
+./bin/eum.sh start
 
 echo "System Started"
