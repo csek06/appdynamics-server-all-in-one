@@ -71,8 +71,8 @@ else
   echo "Starting AppDynamics Services"
   cd /config/appdynamics/platform/platform-admin/bin
   ./platform-admin.sh start-platform-admin
-  ./platform-admin.sh start-controller-db
-  ./platform-admin.sh start-controller-appserver
+  #./platform-admin.sh start-controller-db
+  ./platform-admin.sh start-controller-appserver --with-db
   ./platform-admin.sh start-events-service
   
   cd /config/appdynamics/platform/EUM/eum-processor/
