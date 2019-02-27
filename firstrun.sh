@@ -75,7 +75,7 @@ else
   ./platform-admin.sh start-controller-appserver --with-db
   ./platform-admin.sh start-events-service
   
-  cd /config/appdynamics/platform/EUM/eum-processor/
+  cd /config/appdynamics/EUM/eum-processor/
   ./bin/eum.sh start
 fi
 echo "Setting correct permissions"
