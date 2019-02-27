@@ -63,7 +63,6 @@ Once installed, open the WebUI at http://SERVERIP:9191/ and validate that your c
     ```
 
 # Changelog:
-2019-02-27 - Changed startup script to validate if software is installed.
-2019-02-26 - Initial release - successfully downloads and installs Enterprise Console / Controller / Events Service / EUM Server (it will not upgrade and expects a clean slate in the config directory - known bugs around deleting downloaded files)
-
-2019-02-25 - Initial release - still not completely functional - only downloads binary for installation at this point.
+* 2019-02-27 - Changed startup script to validate if software is installed.
+* 2019-02-26 - Initial release - successfully downloads and installs Enterprise Console / Controller / Events Service / EUM Server (it will not upgrade and expects a clean slate in the config directory - known bugs around deleting downloaded files)
+* 2019-02-25 - Initial release - still not completely functional - only downloads binary for installation at this point.
