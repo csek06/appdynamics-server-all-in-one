@@ -27,7 +27,7 @@ docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -
 * Replace the "/path/to/config" with your choice of location
 * If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
 
-Optional Variables for the run command
+## Optional Variables for the run command
 By default, this will install the latest version on downloads.appdynamics.com, and (IN A FUTURE RELEASE) will auto update itself to the latest version on each container start, but if you want to run a different version (to go back to the previous version perhaps), include the following environment variable in your docker run command -e VERSION="X.X.X.X".
 
 # Post Install Validation Steps
