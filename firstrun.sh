@@ -105,7 +105,7 @@ else
   #curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | xmllint --xpath "//configuration-items/configuration-item/value/text()" -  > es_eum_key.out
   #ES_EUM_KEY=$(cat es_eum_key.out)
   # Chris's command that doesn't require additional package
-  ES_EUM_KEY=$(curl --user admin@customer1:appd http://192.168.2.115:8090/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
+  ES_EUM_KEY=$(curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
   sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
   
   # Change other EUM properties
