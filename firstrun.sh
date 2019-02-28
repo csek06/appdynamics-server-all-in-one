@@ -123,16 +123,6 @@ else
   curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.beacon.https.host&value=https://$1:7002"
 fi
 
-# Checking for license file and activating eum (outside of install so if user placed a new license file)
-LICENSE_OG="/config/license.lic"
-LICENSE_LOC="/config/appdynamics/controller/controller/license.lic"
-if [ -f $LICENSE_OG ]; then
-  mv -f $LICENSE_OG $LICENSE_LOC
-fi
-if [ -f $LICENSE_LOC ]; then
-  /config/appdynamics/EUM/eum-processor/bin/provision-license $LICENSE_LOC
-fi
-
 echo "Setting correct permissions"
 chown -R nobody:users /config
 
@@ -148,5 +138,15 @@ echo "Starting Events Service"
 echo "Starting EUM Server"
 cd /config/appdynamics/EUM/eum-processor/
 ./bin/eum.sh start
+
+# Checking for license file and activating eum (outside of install so if user placed a new license file)
+LICENSE_OG="/config/license.lic"
+LICENSE_LOC="/config/appdynamics/controller/controller/license.lic"
+if [ -f $LICENSE_OG ]; then
+  mv -f $LICENSE_OG $LICENSE_LOC
+fi
+if [ -f $LICENSE_LOC ]; then
+  /config/appdynamics/EUM/eum-processor/bin/provision-license $LICENSE_LOC
+fi
 
 echo "System Started"
