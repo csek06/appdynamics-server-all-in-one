@@ -93,6 +93,31 @@ else
   chmod +x ./$EUMFILENAME
   echo "Installing EUM server"
   ./$EUMFILENAME -q -varfile ~/response-eum.varfile
+  # Making post install configurations
+  # Sync Account Key between Controller and EUM Server - this should be in install
+  cd /config/appdynamics/EUM/eum-processor/
+  curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | xmllint --xpath "//configuration-items/configuration-item/value/text()" -  > es_eum_key.out
+  ES_EUM_KEY=$(cat es_eum_key.out)
+  sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
+
+  # Connect EUM Server with Controller
+  curl -s -c cookie.appd --user root@system:appd -X GET http://$SERVERIP:8090/controller/auth?action=login
+  X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd|rev|cut -d$'\t' -f1|rev)"
+  X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$SERVERIP:8090/controller/rest/configuration?name=eum.es.host&value=http://$1:7001"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.cloud.host&value=http://$1:7001"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.beacon.host&value=http://$1:7001"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.beacon.https.host&value=https://$1:7002"
+fi
+
+# Checking for license file and activating eum (outside of install so if user placed a new license file)
+LICENSE_OG="/config/license.lic"
+LICENSE_LOC="/config/appdynamics/controller/controller/license.lic"
+if [ -f $LICENSE_OG ]; then
+  mv -f $LICENSE_OG $LICENSE_LOC
+fi
+if [ -f $LICENSE_LOC ]; then
+  ./config/appdynamics/EUM/eum-processor/bin/provision-license $LICENSE_LOC
 fi
 
 echo "Setting correct permissions"
