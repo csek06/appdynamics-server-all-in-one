@@ -11,9 +11,9 @@ NOTE - This should only be used for Demo / Small environments and is not intende
    ```
    docker exec -i -t appdynamics-server-all-in-one /bin/bash
    ```
-   unRAID users - simply click the container and select ">_ console"
+   * Unraid users - simply click the container in your web ui and select ">_ console"
 
-## Install On unRaid:
+## Install On Unraid:
 On unRaid, install from the Community Applications and enter the app folder location, your Appdynamics Community Email and Password. Note: I am not storing your password or doing anything malicious it is required to download the AppDynamics binary from the website, also note is not required if you choose to download the latest version and place it in your app directory. All source code for the installation is found here on Github. 
 
 ## Install On Other Platforms (like Ubuntu or Synology 5.2 DSM, etc.):
