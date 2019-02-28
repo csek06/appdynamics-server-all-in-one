@@ -9,6 +9,17 @@ NOTE - This should only be used for Demo / Small environments and is not intende
 * Events Server
 * EUM Server
 
+## System Requirements
+This is intended to be a light-weight installation, however the following minimum specs should be sufficient
+
+|Device | Minimum | Recommended|
+|--- | --- | ---|
+|CPU Cores | 8 | 16|
+|RAM | 16GB | 32GB|
+|Disk Space | 500GB | 1 TB|
+
+* For disk space, note actual install is less than 1GB however once AppD starts monitoring transactions your data pool will fill up.
+
 ## Pre-install Notes
 1. You can download the latest software at downloads.appdynamics.com and place the binaries of the enterprise console and eum server in the /path/to/config directory. Otherwise, the script will download it for you if you have given environment variables for your AppDynamics Community credentials.
 2. You can place your 'license.lic' file in /path/to/config pre-install and it will activate on initial build or upon startup of container. This is handy for updating your license file periodically.
