@@ -13,7 +13,7 @@ then
     appdserver="serverHostName=${SERVERIP}"
     echo "setting '$appdserver' in '$destfile'"
     #echo "$appdserver" >> "$destfile"
-    sed -i s/serverHostName=.*/$appdserver $destfile
+    sed -i s/serverHostName=.*/$appdserver/ $destfile
 fi
 
 cd /config
