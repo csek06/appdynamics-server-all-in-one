@@ -3,6 +3,11 @@
 This is a docker container for an On-Premise Deployment of AppDynamics - https://www.appdynamics.com/
 
 NOTE - This should only be used for Demo / Small environments and is not intended for a Production installation.
+### Installed Services
+* Enterprise Console
+* Controller with Database
+* Events Server
+* EUM Server
 
 ## Pre-install Notes
 1. You can download the latest software at downloads.appdynamics.com and place the binaries of the enterprise console and eum server in the /path/to/config directory. Otherwise, the script will download it for you if you have given environment variables for your AppDynamics Community credentials.
@@ -12,6 +17,8 @@ NOTE - This should only be used for Demo / Small environments and is not intende
    docker exec -i -t appdynamics-server-all-in-one /bin/bash
    ```
    * Unraid users - simply click the container in your web ui and select ">_ console"
+4. AppDynamics Software will be installed in </path/to/config>/appdynamics directory. This allows you to view/modify contents easily from your host. You can also delete and recreate the container.
+5. If your installation goes sour, backup your license file, delete the folder </path/to/config>/appdynamics and restart the container.
 
 ## Install On Unraid:
 On Unraid, install from the Community Applications and enter the app folder location, your Appdynamics Community Email and Password. Note: I am not storing your password or doing anything malicious it is required to download the AppDynamics binary from the website, also note is not required if you choose to download the latest version and place it in your app directory. All source code for the installation is found here on Github. 
