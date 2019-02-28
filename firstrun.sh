@@ -11,8 +11,9 @@ destfile=/root/response.varfile
 if [ -f "$destfile" ]
 then 
     appdserver="serverHostName=${SERVERIP}"
-    echo "adding '$appdserver' to '$destfile'"
-    echo "$appdserver" >> "$destfile"
+    echo "setting '$appdserver' in '$destfile'"
+    #echo "$appdserver" >> "$destfile"
+    sed -i s/serverHostName=.*/$appdserver/ $destfile
 fi
 
 cd /config
@@ -47,6 +48,8 @@ else
   echo "Installing Enterprise Console"
   chmod +x ./$FILENAME
   ./$FILENAME -q -varfile ~/response.varfile
+  # assuming install went fine
+  rm -f ./$FILENAME
 fi
 
 # check if Controller is installed
@@ -83,16 +86,51 @@ else
   rm -f tmpout.json
   # check if user downloaded latest EUM server binary
   if [ -f /config/$EUMFILENAME ]; then
-    echo "Found latest EUM Server '$FILENAME' in /config/ "
+    echo "Found latest EUM Server '$EUMFILENAME' in /config/ "
   else
-    echo "Didn't find '$FILENAME' in /config/ - downloading"
-	NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+    echo "Didn't find '$EUMFILENAME' in /config/ - downloading"
+    NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
     curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
     echo "file downloaded"
   fi
   chmod +x ./$EUMFILENAME
   echo "Installing EUM server"
   ./$EUMFILENAME -q -varfile ~/response-eum.varfile
+  # assuming install went fine
+  rm -f ./$EUMFILENAME
+  # Making post install configurations
+  # Sync Account Key between Controller and EUM Server - this should be in install
+  cd /config/appdynamics/EUM/eum-processor/
+  # daves command
+  #curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | xmllint --xpath "//configuration-items/configuration-item/value/text()" -  > es_eum_key.out
+  #ES_EUM_KEY=$(cat es_eum_key.out)
+  # Chris's command that doesn't require additional package
+  ES_EUM_KEY=$(curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
+  sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
+  
+  # Change other EUM properties
+  sed -i s/onprem.dbUser=.*/onprem.dbUser=root/ bin/eum.properties
+  sed -i s/onprem.dbPassword=.*/onprem.dbPassword=appd/ bin/eum.properties
+  sed -i s/onprem.useEncryptedCredentials=.*/onprem.useEncryptedCredentials=false/ bin/eum.properties
+
+  # Connect EUM Server with Controller
+  curl -s -c cookie.appd --user root@system:appd -X GET http://$SERVERIP:8090/controller/auth?action=login
+  X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd|rev|cut -d$'\t' -f1|rev)"
+  X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$SERVERIP:8090/controller/rest/configuration?name=eum.es.host&value=http://$1:7001"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.cloud.host&value=http://$1:7001"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.beacon.host&value=http://$1:7001"
+  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.beacon.https.host&value=https://$1:7002"
+fi
+
+# Checking for license file and activating eum (outside of install so if user placed a new license file)
+LICENSE_OG="/config/license.lic"
+LICENSE_LOC="/config/appdynamics/controller/controller/license.lic"
+if [ -f $LICENSE_OG ]; then
+  mv -f $LICENSE_OG $LICENSE_LOC
+fi
+if [ -f $LICENSE_LOC ]; then
+  /config/appdynamics/EUM/eum-processor/bin/provision-license $LICENSE_LOC
 fi
 
 echo "Setting correct permissions"
