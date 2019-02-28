@@ -47,6 +47,8 @@ else
   echo "Installing Enterprise Console"
   chmod +x ./$FILENAME
   ./$FILENAME -q -varfile ~/response.varfile
+  # assuming install went fine
+  rm -f ./$FILENAME
 fi
 
 # check if Controller is installed
@@ -83,16 +85,18 @@ else
   rm -f tmpout.json
   # check if user downloaded latest EUM server binary
   if [ -f /config/$EUMFILENAME ]; then
-    echo "Found latest EUM Server '$FILENAME' in /config/ "
+    echo "Found latest EUM Server '$EUMFILENAME' in /config/ "
   else
-    echo "Didn't find '$FILENAME' in /config/ - downloading"
-	NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+    echo "Didn't find '$EUMFILENAME' in /config/ - downloading"
+    NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
     curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
     echo "file downloaded"
   fi
   chmod +x ./$EUMFILENAME
   echo "Installing EUM server"
   ./$EUMFILENAME -q -varfile ~/response-eum.varfile
+  # assuming install went fine
+  rm -f ./$EUMFILENAME
   # Making post install configurations
   # Sync Account Key between Controller and EUM Server - this should be in install
   cd /config/appdynamics/EUM/eum-processor/
