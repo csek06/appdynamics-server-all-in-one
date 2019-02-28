@@ -10,12 +10,13 @@ On unRaid, install from the Community Applications and enter the app folder loca
 ## Install On Other Platforms (like Ubuntu or Synology 5.2 DSM, etc.):
 On other platforms, you can run this docker with the following command:
 ```
-docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SERVERIP=192.168.2.X -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
-Replace the AppdUser variable (john@doe.com) with your AppDynamics community  login email.
-Replace the AppdPass variable (XXXX) with your AppDynamics community  login password.
-Replace the "/path/to/config" with your choice of location
-If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
+* Replace the AppdUser variable (john@doe.com) with your AppDynamics community login email.
+* Replace the AppdPass variable (XXXX) with your AppDynamics community login password.
+* Replace the SERVERIP variable (192.168.2.X) with your host IP
+* Replace the "/path/to/config" with your choice of location
+* If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
 
 Optional Variables for the run command
 By default, this will install the latest version on downloads.appdynamics.com, and will auto update itself to the latest version on each container start, but if you want to run a different version (to go back to the previous version perhaps), include the following environment variable in your docker run command -e VERSION="X.X.X.X"
