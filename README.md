@@ -21,9 +21,9 @@ This is intended to be a light-weight installation, however the following minimu
 * For disk space, note actual install is less than 1GB however once AppD starts monitoring transactions your data pool will fill up.
 
 ## Pre-install Notes
-1. You can download the latest software at downloads.appdynamics.com and place the binaries of the enterprise console and eum server in the /path/to/config directory. Otherwise, the script will download it for you if you have given environment variables for your AppDynamics Community credentials.
+1. You can download the latest software at download.appdynamics.com and place the binaries of the enterprise console and eum server in the /path/to/config directory. Otherwise, the script will download it for you if you have given environment variables for your AppDynamics Community credentials.
 2. You can place your 'license.lic' file in /path/to/config pre-install and it will activate on initial build or upon startup of container. This is handy for updating your license file periodically.
-3. If you are running on anything other than unRAID you can open a console to your container via 
+3. If you are running on anything other than Unraid you can open a console to your container via 
    ```
    docker exec -i -t appdynamics-server-all-in-one /bin/bash
    ```
@@ -46,7 +46,7 @@ docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -
 * If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
 
 ## Optional Variables for the run command
-By default, this will install the latest version on downloads.appdynamics.com, and (IN A FUTURE RELEASE) will auto update itself to the latest version on each container start, but if you want to run a different version (to go back to the previous version perhaps), include the following environment variable in your docker run command -e VERSION="X.X.X.X".
+By default, this will install the latest version on download.appdynamics.com, and (IN A FUTURE RELEASE) will auto update itself to the latest version on each container start, but if you want to run a different version (to go back to the previous version perhaps), include the following environment variable in your docker run command -e VERSION="X.X.X.X".
 
 # Post Install Validation Steps
 The install process takes about 15 minutes on recent desktops. You can monitor the install process via the logs.

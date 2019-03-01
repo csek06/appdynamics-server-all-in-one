@@ -12,15 +12,18 @@ if [ -f "$destfile" ]
 then 
     appdserver="serverHostName=${SERVERIP}"
     echo "setting '$appdserver' in '$destfile'"
-    #echo "$appdserver" >> "$destfile"
     sed -i s/serverHostName=.*/$appdserver/ $destfile
 fi
 
+# Use manual version or latest available from AppDynamics
 cd /config
 if [ ! -z $VERSION ]; then
   echo "Manual version override:" $VERSION
-  FILENAME="platform-setup-x64-linux-'$VERSION'.sh"
-  echo "Filename: $FILENAME"
+  #Check for valid version on appdynamics
+  curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
+  DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
+  FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
+  echo "Filename expected: $FILENAME"
 else
   #Check the latest version on appdynamics
   curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
@@ -28,12 +31,22 @@ else
   DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
   FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
   echo "Latest version on appdynamics is" $VERSION
-  rm -f tmpout.json
 fi
+rm -f tmpout.json
+
 
 # check if enterprise console is installed
 if [ -f /config/appdynamics/platform/platform-admin/bin/platform-admin.sh ]; then
-  echo "Enterprise Console is installed"
+  # check if enterprise console is out of date compared to $VERSION
+  INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oP '(^platformVersion\:\s\")\K(.*?)(?=\"$)' {} \;)
+  echo "Enterprise Console: $INSTALLED_VERSION is installed"
+  if [ "$VERSION" != "$INSTALLED_VERSION" ]; then
+    echo "Version mismatch between found and requested/latest"
+    echo "Found Installed EC Version: $INSTALLED_VERSION , but requesting version $VERSION"
+	echo "Upgraded needed, however this feature is not yet implemented!!!"
+  else
+    echo "You have the most up to date version: $VERSION"
+  fi
 else
   # check if user didn't downloaded latest Enterprise Console binary
   if [ ! -f /config/$FILENAME ]; then
@@ -54,7 +67,9 @@ fi
 
 # check if Controller is installed
 if [ -f /config/appdynamics/controller/controller/bin/controller.sh ]; then
-  echo "Controller is installed"
+  INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oPz '(controller\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' {} \;)
+  echo "Controller: $INSTALLED_VERSION is installed"
+  # check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
 else
   echo "Installing Controller and local database"
   cd /config/appdynamics/platform/platform-admin/bin
@@ -65,7 +80,9 @@ fi
 
 # check if Events Service is installed
 if [ -f /config/appdynamics/controller/events-service/processor/bin/events-service.sh ]; then
-  echo "Events Service is installed"
+  INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oPz '(events-service\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' {} \;)
+  echo "Events Service: $INSTALLED_VERSION is installed"
+  # check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
 else
   echo "Installing Events Service"
   cd /config/appdynamics/platform/platform-admin/bin
@@ -74,12 +91,13 @@ fi
 
 # check if EUM Server is installed
 if [ -f /config/appdynamics/EUM/eum-processor/bin/eum.sh ]; then
-  echo "EUM Server is installed"
+  INSTALLED_VERSION=$(grep -oP '(Monitoring\s)\K(.*?)(?=$)' /config/appdynamics/EUM/.install4j/response.varfile)
+  echo "EUM Server: $INSTALLED_VERSION is installed"
+  # check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
 else
-  # Check latest EUM server version
+  # Check latest EUM server version on AppDynamics
   cd /config
   echo "Checking EUM server version"
-  #Check the latest version on appdynamics
   curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
   EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
   EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
@@ -98,13 +116,11 @@ else
   ./$EUMFILENAME -q -varfile ~/response-eum.varfile
   # assuming install went fine
   rm -f ./$EUMFILENAME
+  
+  
   # Making post install configurations
   # Sync Account Key between Controller and EUM Server - this should be in install
   cd /config/appdynamics/EUM/eum-processor/
-  # daves command
-  #curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | xmllint --xpath "//configuration-items/configuration-item/value/text()" -  > es_eum_key.out
-  #ES_EUM_KEY=$(cat es_eum_key.out)
-  # Chris's command that doesn't require additional package
   ES_EUM_KEY=$(curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
   sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
   
@@ -140,6 +156,7 @@ cd /config/appdynamics/EUM/eum-processor/
 ./bin/eum.sh start
 
 # Checking for license file and activating eum (outside of install so if user placed a new license file)
+# This needs to run while EUM DB is running // need to put a check in place to validate it is running
 LICENSE_OG="/config/license.lic"
 LICENSE_LOC="/config/appdynamics/controller/controller/license.lic"
 if [ -f $LICENSE_OG ]; then
