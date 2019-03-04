@@ -1,3 +1,5 @@
+#!/bin/bash
+
 PA_FILE=/config/appdynamics/platform/platform-admin/bin/platform-admin.sh
 if [ -f "$PA_FILE" ]; then
 	echo "Starting Enterprise Console"

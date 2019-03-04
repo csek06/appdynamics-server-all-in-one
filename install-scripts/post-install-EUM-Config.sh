@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Making post install configurations
 # Sync Account Key between Controller and EUM Server - this should be in install
 cd /config/appdynamics/EUM/eum-processor/
