@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Configure Appd for IP address given as environment variable
-VARFILE=/config/your-platform-install/install-scripts/response.varfile
+VARFILE=/your-platform-install/install-scripts/response.varfile
 if [ -f "$VARFILE" ];then 
     appdserver="serverHostName=${SERVERIP}"
     echo "setting '$appdserver' in '$VARFILE'"

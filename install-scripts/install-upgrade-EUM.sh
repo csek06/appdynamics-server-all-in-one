@@ -23,7 +23,7 @@ else
   chmod +x ./$EUMFILENAME
   
   echo "Installing EUM server"
-  VARFILE=/config/your-platform-install/install-scripts/response-eum.varfile
+  VARFILE=/your-platform-install/install-scripts/response-eum.varfile
   if [ -f "$VARFILE" ];then 
     ./$EUMFILENAME -q -varfile $VARFILE
     # assuming install went fine
@@ -32,7 +32,7 @@ else
     echo "Couldn't find $VARFILE"
   fi
   
-  EUM_POST_CONF_FILE=/config/your-platform-install/post-install-EUM-Config.sh
+  EUM_POST_CONF_FILE=/your-platform-install/post-install-EUM-Config.sh
   if [ -f "$EUM_POST_CONF_FILE" ]; then
 	chmod +x $EUM_POST_CONF_FILE
 	sh $EUM_POST_CONF_FILE
