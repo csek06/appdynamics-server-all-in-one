@@ -11,11 +11,11 @@ libaio1 numactl tzdata && \
 usermod -u 99 nobody && \
 usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
-mkdir -p /config/your-platform-install
+mkdir -p /your-platform-install
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
-COPY install-scripts/ /tmp/your-platform-install/install-scripts/
-COPY startup-scripts/ /tmp/your-platform-install/startup-scripts/
+COPY install-scripts/ /your-platform-install/install-scripts/
+COPY startup-scripts/ /your-platform-install/startup-scripts/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
 
