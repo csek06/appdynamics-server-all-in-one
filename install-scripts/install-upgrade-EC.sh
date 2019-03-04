@@ -44,6 +44,7 @@ if [ -f /config/appdynamics/platform/platform-admin/bin/platform-admin.sh ]; the
 else
   # check if user didn't downloaded latest Enterprise Console binary
   if [ ! -f /config/$FILENAME ]; then
+    echo "Didn't find '$FILENAME' in /config/ - downloading instead"
     echo "Downloading AppDynamics Enterprise Console version '$VERSION'"
     TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
     curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
