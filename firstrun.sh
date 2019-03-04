@@ -9,7 +9,8 @@ dpkg-reconfigure tzdata
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file and restart container.
 if [ -d "/config/your-platform-install" ];then
-	cp -rf /config/your-platform-install/ /your-platform-install/
+	cp -rf /config/your-platform-install/install-scripts /your-platform-install/install-scripts
+	cp -rf /config/your-platform-install/startup-scripts /your-platform-install/startup-scripts
 fi
 
 # Copy install scripts to volume for later update/reconfigure
