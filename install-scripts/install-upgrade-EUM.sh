@@ -32,7 +32,7 @@ else
     echo "Couldn't find $VARFILE"
   fi
   
-  EUM_POST_CONF_FILE=/your-platform-install/post-install-EUM-Config.sh
+  EUM_POST_CONF_FILE=/your-platform-install/install-scripts/post-install-EUM-Config.sh
   if [ -f "$EUM_POST_CONF_FILE" ]; then
 	chmod +x $EUM_POST_CONF_FILE
 	sh $EUM_POST_CONF_FILE
