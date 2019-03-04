@@ -6,10 +6,14 @@ echo $TZ > /etc/timezone
 export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure tzdata
 
-if [ -d "/tmp/your-platform-install" ];then
-	# this will overwrite similar named files in mapped voluem
-	mv -f /tmp/your-platform-install/ /config/
+# this will overwrite similar named files in container 
+# if there is an issue with a script than delete the file and restart container.
+if [ -d "/config/your-platform-install" ];then
+	cp -rf /config/your-platform-install/ /your-platform-install/
 fi
+
+# Copy install scripts to volume for later update/reconfigure
+cp -rf /your-platform-install/ /config/
 
 EC_INSTALL_UPGRADE_FILE=/config/your-platform-install/install-scripts/install-upgrade-EC.sh
 if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
