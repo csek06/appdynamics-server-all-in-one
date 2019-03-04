@@ -4,8 +4,6 @@ MAINTAINER csek06
 
 VOLUME ["/config"]
 
-EXPOSE 9191 8090 8181 9080 9081 7001 7002
-
 RUN export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive && \
 apt-get update && \
 apt-get install -y \
@@ -16,7 +14,9 @@ mkdir -p /etc/my_init.d && \
 mkdir -p /config/your-platform-install
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
-COPY install-scripts/* /config/your-platform-install/install-scripts/
-COPY startup-scripts/. /config/your-platform-install/startup-scripts/
+COPY install-scripts/ /tmp/your-platform-install/
+COPY startup-scripts/ /tmp/your-platform-install/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
+
+EXPOSE 9191 8090 8181 9080 9081 7001 7002

@@ -6,6 +6,11 @@ echo $TZ > /etc/timezone
 export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure tzdata
 
+if [ -d "/tmp/your-platform-install" ];then
+	# this will overwrite similar named files in mapped voluem
+	mv -f /tmp/your-platform-install/ /config/your-platform-install/
+fi
+
 EC_INSTALL_UPGRADE_FILE=/config/your-platform-install/install-scripts/install-upgrade-EC.sh
 if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
 	chmod +x $EC_INSTALL_UPGRADE_FILE
