@@ -1,12 +1,13 @@
 #!/bin/bash
 
 #Configure Appd for IP address given as environment variable
-destfile=/root/response.varfile
-if [ -f "$destfile" ]
-then 
+VARFILE=/config/your-platform-install/install-scripts/response.varfile
+if [ -f "$VARFILE" ];then 
     appdserver="serverHostName=${SERVERIP}"
-    echo "setting '$appdserver' in '$destfile'"
-    sed -i s/serverHostName=.*/$appdserver/ $destfile
+    echo "setting '$appdserver' in '$VARFILE'"
+    sed -i s/serverHostName=.*/$appdserver/ $VARFILE
+else
+    echo "Couldn't find $VARFILE"
 fi
 
 # Use manual version or latest available from AppDynamics
@@ -52,8 +53,12 @@ else
   fi
   # installing ent console
   echo "Installing Enterprise Console"
-  chmod +x ./$FILENAME
-  ./$FILENAME -q -varfile ~/response.varfile
-  # assuming install went fine
-  rm -f ./$FILENAME
+  if [ -f "$VARFILE" ];then 
+    chmod +x ./$FILENAME
+    ./$FILENAME -q -varfile $VARFILE
+    # assuming install went fine
+    rm -f ./$FILENAME
+  else
+    echo "Couldn't find $VARFILE"
+  fi
 fi

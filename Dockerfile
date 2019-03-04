@@ -12,10 +12,11 @@ apt-get install -y \
 libaio1 numactl tzdata && \
 usermod -u 99 nobody && \
 usermod -g 100 nobody && \
-mkdir -p /etc/my_init.d
+mkdir -p /etc/my_init.d && \
+mkdir -p /config/your-platform-install
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
-COPY response.varfile /root/response.varfile
-COPY response-eum.varfile /root/response-eum.varfile
+COPY /install-scripts/ /config/your-platform-install/
+COPY /startup-scripts/ /config/your-platform-install/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh

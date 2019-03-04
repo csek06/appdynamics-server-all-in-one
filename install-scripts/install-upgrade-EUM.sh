@@ -21,10 +21,16 @@ else
     echo "file downloaded"
   fi
   chmod +x ./$EUMFILENAME
+  
   echo "Installing EUM server"
-  ./$EUMFILENAME -q -varfile ~/response-eum.varfile
-  # assuming install went fine
-  rm -f ./$EUMFILENAME
+  VARFILE=/config/your-platform-install/install-scripts/response-eum.varfile
+  if [ -f "$VARFILE" ];then 
+    ./$EUMFILENAME -q -varfile $VARFILE
+    # assuming install went fine
+    rm -f ./$EUMFILENAME
+  else
+    echo "Couldn't find $VARFILE"
+  fi
   
   EUM_POST_CONF_FILE=/config/your-platform-install/post-install-EUM-Config.sh
   if [ -f "$EUM_POST_CONF_FILE" ]; then
