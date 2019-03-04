@@ -14,8 +14,8 @@ mkdir -p /etc/my_init.d && \
 mkdir -p /config/your-platform-install
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
-COPY install-scripts/ /tmp/your-platform-install/
-COPY startup-scripts/ /tmp/your-platform-install/
+COPY install-scripts/ /tmp/your-platform-install/install-scripts/
+COPY startup-scripts/ /tmp/your-platform-install/startup-scripts/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
 
