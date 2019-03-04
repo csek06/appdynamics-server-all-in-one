@@ -8,7 +8,7 @@ dpkg-reconfigure tzdata
 
 if [ -d "/tmp/your-platform-install" ];then
 	# this will overwrite similar named files in mapped voluem
-	mv -f /tmp/your-platform-install/ /config/your-platform-install/
+	mv -f /tmp/your-platform-install/ /config/
 fi
 
 EC_INSTALL_UPGRADE_FILE=/config/your-platform-install/install-scripts/install-upgrade-EC.sh
