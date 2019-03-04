@@ -1,3 +1,5 @@
+#!/bin/bash
+
 EUM_FILE=/config/appdynamics/EUM/eum-processor/bin/eum.sh
 if [ -f "$EUM_FILE" ]; then
 	echo "Starting EUM Server"
