@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # check if EUM Server is installed
 if [ -f /config/appdynamics/EUM/eum-processor/bin/eum.sh ]; then
   INSTALLED_VERSION=$(grep -oP '(Monitoring\s)\K(.*?)(?=$)' /config/appdynamics/EUM/.install4j/response.varfile)

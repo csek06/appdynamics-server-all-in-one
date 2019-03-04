@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # check if Controller is installed
 if [ -f /config/appdynamics/controller/controller/bin/controller.sh ]; then
   INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oPz '(controller\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' {} \;)

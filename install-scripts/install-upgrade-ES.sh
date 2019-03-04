@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # check if Events Service is installed
 if [ -f /config/appdynamics/controller/events-service/processor/bin/events-service.sh ]; then
   INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oPz '(events-service\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' {} \;)
