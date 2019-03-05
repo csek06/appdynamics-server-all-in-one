@@ -30,7 +30,7 @@ fi
 
 
 # this will overwrite similar named files in container 
-# if there is an issue with a script than delete the file and restart container.
+# if there is an issue with a script than delete the file in your volume and restart container.
 if [ -d "/config/your-platform-install/install-scripts" ];then
 	# Checking for custom install scripts
 	DIR=/your-platform-install/defaults/install-scripts/
@@ -50,7 +50,7 @@ else
 fi
 
 # this will overwrite similar named files in container 
-# if there is an issue with a script than delete the file and restart container.
+# if there is an issue with a script than delete the file in your volume and restart container.
 if [ -d "/config/your-platform-install/startup-scripts" ];then
 	# Checking for custom startup scripts
 	DIR=/your-platform-install/defaults/startup-scripts/
