@@ -1,9 +1,9 @@
-# AppDynamics Server (Controller) All-in-One
+# AppDynamics Server All-in-One
 
 This is a docker container for an On-Premise Deployment of AppDynamics - https://www.appdynamics.com/
 
 NOTE - This should only be used for Demo / Small environments and is not intended for a Production installation.
-### Installed Services
+### Installed Services by Default
 * Enterprise Console
 * Controller with Database
 * Events Server
