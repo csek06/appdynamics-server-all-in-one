@@ -39,6 +39,9 @@ if [ -d "/config/your-platform-install" ];then
 			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
 		fi
 	done
+else
+	cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
+	cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
 fi
 
 # Copy install scripts to volume for later update/reconfigure
