@@ -9,8 +9,36 @@ dpkg-reconfigure tzdata
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file and restart container.
 if [ -d "/config/your-platform-install" ];then
-	cp -rf /config/your-platform-install/install-scripts /your-platform-install/
-	cp -rf /config/your-platform-install/startup-scripts /your-platform-install/
+	#cp -rf /config/your-platform-install/install-scripts /your-platform-install/
+	#cp -rf /config/your-platform-install/startup-scripts /your-platform-install/
+	
+	# Checking for custom install scripts
+	DIR=/your-platform-install/defaults/install-scripts/
+	cd $DIR
+	for filename in $(ls); do
+		FILE_CHECK=/config$DIR$filename
+		if [ -f $FILE_CHECK ]; then
+			echo "Manual install file found $filename - overwriting default"
+			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
+		else
+			echo "Custom install file not found $filename - using default"
+			cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
+		fi
+	done
+	
+	# Checking for custom startup scripts
+	DIR=/your-platform-install/defaults/startup-scripts/
+	cd $DIR
+	for filename in $(ls); do
+		FILE_CHECK=/config$DIR$filename
+		if [ -f $FILE_CHECK ]; then
+			echo "Manual startup file found $filename - overwriting default"
+			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
+		else
+			echo "Custom startup file not found $filename - using default"
+			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/install-scripts/
+		fi
+	done
 fi
 
 # Copy install scripts to volume for later update/reconfigure
