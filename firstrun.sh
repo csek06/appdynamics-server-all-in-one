@@ -13,7 +13,7 @@ if [ -d "/config/your-platform-install/install-scripts" ];then
 	DIR=/your-platform-install/defaults/install-scripts/
 	cd $DIR
 	for filename in $(ls); do
-		FILE_CHECK=/config$DIR$filename
+		FILE_CHECK=/config/your-platform-install/install-scripts/$filename
 		if [ -f $FILE_CHECK ]; then
 			echo "Manual install file found $filename - overwriting default"
 			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
@@ -33,7 +33,7 @@ if [ -d "/config/your-platform-install/startup-scripts" ];then
 	DIR=/your-platform-install/defaults/startup-scripts/
 	cd $DIR
 	for filename in $(ls); do
-		FILE_CHECK=/config$DIR$filename
+		FILE_CHECK=/config/your-platform-install/startup-scripts/$filename
 		if [ -f $FILE_CHECK ]; then
 			echo "Manual startup file found $filename - overwriting default"
 			cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
