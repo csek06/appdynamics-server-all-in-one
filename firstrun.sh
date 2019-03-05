@@ -6,164 +6,171 @@ echo $TZ > /etc/timezone
 export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure tzdata
 
-#Configure Appd for IP address given as environment variable
-destfile=/root/response.varfile
-if [ -f "$destfile" ]
-then 
-    appdserver="serverHostName=${SERVERIP}"
-    echo "setting '$appdserver' in '$destfile'"
-    sed -i s/serverHostName=.*/$appdserver/ $destfile
+# Check for Install Scenario Variable
+if [ -z $SCENARIO ]; then
+	SCENARIO=ECESCONTEUM
 fi
 
-# Use manual version or latest available from AppDynamics
-cd /config
-if [ ! -z $VERSION ]; then
-  echo "Manual version override:" $VERSION
-  #Check for valid version on appdynamics
-  curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
-  DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-  FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-  echo "Filename expected: $FILENAME"
+if [[ $SCENARIO = *EC* ]]; then
+	echo "Platform will use EC";
+	EC=true
+fi
+if [[ $SCENARIO = *ES* ]]; then
+	echo "Platform will use ES";
+	ES=true
+fi
+if [[ $SCENARIO = *CONT* ]]; then
+	echo "Platform will use Controller";
+	CONT=true
+fi
+if [[ $SCENARIO = *EUM* ]]; then
+	echo "Platform will use EUM";
+	EUM=true
+fi
+
+
+# this will overwrite similar named files in container 
+# if there is an issue with a script than delete the file in your volume and restart container.
+if [ -d "/config/your-platform-install/install-scripts" ];then
+	# Checking for custom install scripts
+	DIR=/your-platform-install/defaults/install-scripts/
+	cd $DIR
+	for filename in $(ls); do
+		FILE_CHECK=/config/your-platform-install/install-scripts/$filename
+		if [ -f $FILE_CHECK ]; then
+			echo "Manual install file found $filename - overwriting default"
+			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
+		else
+			echo "Custom install file not found $filename - using default"
+			cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
+		fi
+	done
 else
-  #Check the latest version on appdynamics
-  curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
-  VERSION=$(grep -oP '(\"version\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-  DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-  FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-  echo "Latest version on appdynamics is" $VERSION
+	cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
 fi
-rm -f tmpout.json
 
-
-# check if enterprise console is installed
-if [ -f /config/appdynamics/platform/platform-admin/bin/platform-admin.sh ]; then
-  # check if enterprise console is out of date compared to $VERSION
-  INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oP '(^platformVersion\:\s\")\K(.*?)(?=\"$)' {} \;)
-  echo "Enterprise Console: $INSTALLED_VERSION is installed"
-  if [ "$VERSION" != "$INSTALLED_VERSION" ]; then
-    echo "Version mismatch between found and requested/latest"
-    echo "Found Installed EC Version: $INSTALLED_VERSION , but requesting version $VERSION"
-	echo "Upgraded needed, however this feature is not yet implemented!!!"
-  else
-    echo "You have the most up to date version: $VERSION"
-  fi
+# this will overwrite similar named files in container 
+# if there is an issue with a script than delete the file in your volume and restart container.
+if [ -d "/config/your-platform-install/startup-scripts" ];then
+	# Checking for custom startup scripts
+	DIR=/your-platform-install/defaults/startup-scripts/
+	cd $DIR
+	for filename in $(ls); do
+		FILE_CHECK=/config/your-platform-install/startup-scripts/$filename
+		if [ -f $FILE_CHECK ]; then
+			echo "Manual startup file found $filename - overwriting default"
+			cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
+		else
+			echo "Custom startup file not found $filename - using default"
+			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
+		fi
+	done
 else
-  # check if user didn't downloaded latest Enterprise Console binary
-  if [ ! -f /config/$FILENAME ]; then
-    echo "Downloading AppDynamics Enterprise Console version '$VERSION'"
-    TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
-    curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
-    echo "file downloaded"
-  else
-    echo "Found latest Enterprise Console '$FILENAME' in /config/ "
-  fi
-  # installing ent console
-  echo "Installing Enterprise Console"
-  chmod +x ./$FILENAME
-  ./$FILENAME -q -varfile ~/response.varfile
-  # assuming install went fine
-  rm -f ./$FILENAME
+	cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
 fi
 
-# check if Controller is installed
-if [ -f /config/appdynamics/controller/controller/bin/controller.sh ]; then
-  INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oPz '(controller\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' {} \;)
-  echo "Controller: $INSTALLED_VERSION is installed"
-  # check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
-else
-  echo "Installing Controller and local database"
-  cd /config/appdynamics/platform/platform-admin/bin
-  ./platform-admin.sh create-platform --name my-platform --installation-dir /config/appdynamics/controller
-  ./platform-admin.sh add-hosts --hosts localhost
-  ./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=localhost controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
+# Copy install/startup scripts to volume for later update/reconfigure
+cp -rf /your-platform-install/ /config/
+
+if [ "$EC" = "true" ]; then
+	EC_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EC.sh
+	if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $EC_INSTALL_UPGRADE_FILE
+		sh $EC_INSTALL_UPGRADE_FILE
+	else
+		echo "EC install file not found here - $EC_INSTALL_UPGRADE_FILE"
+	fi
 fi
 
-# check if Events Service is installed
-if [ -f /config/appdynamics/controller/events-service/processor/bin/events-service.sh ]; then
-  INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oPz '(events-service\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' {} \;)
-  echo "Events Service: $INSTALLED_VERSION is installed"
-  # check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
-else
-  echo "Installing Events Service"
-  cd /config/appdynamics/platform/platform-admin/bin
-  ./platform-admin.sh install-events-service  --profile dev --hosts localhost
+if [ "$CONT" = "true" ]; then
+	CONT_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-Controller.sh
+	if [ -f "$CONT_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $CONT_INSTALL_UPGRADE_FILE
+		sh $CONT_INSTALL_UPGRADE_FILE
+	else
+		echo "Controller install file not found here - $CONT_INSTALL_UPGRADE_FILE"
+	fi
 fi
 
-# check if EUM Server is installed
-if [ -f /config/appdynamics/EUM/eum-processor/bin/eum.sh ]; then
-  INSTALLED_VERSION=$(grep -oP '(Monitoring\s)\K(.*?)(?=$)' /config/appdynamics/EUM/.install4j/response.varfile)
-  echo "EUM Server: $INSTALLED_VERSION is installed"
-  # check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
-else
-  # Check latest EUM server version on AppDynamics
-  cd /config
-  echo "Checking EUM server version"
-  curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
-  EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
-  EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
-  rm -f tmpout.json
-  # check if user downloaded latest EUM server binary
-  if [ -f /config/$EUMFILENAME ]; then
-    echo "Found latest EUM Server '$EUMFILENAME' in /config/ "
-  else
-    echo "Didn't find '$EUMFILENAME' in /config/ - downloading"
-    NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
-    curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
-    echo "file downloaded"
-  fi
-  chmod +x ./$EUMFILENAME
-  echo "Installing EUM server"
-  ./$EUMFILENAME -q -varfile ~/response-eum.varfile
-  # assuming install went fine
-  rm -f ./$EUMFILENAME
-  
-  
-  # Making post install configurations
-  # Sync Account Key between Controller and EUM Server - this should be in install
-  cd /config/appdynamics/EUM/eum-processor/
-  ES_EUM_KEY=$(curl --user admin@customer1:appd http://$SERVERIP:8090/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
-  sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
-  
-  # Change other EUM properties
-  sed -i s/onprem.dbUser=.*/onprem.dbUser=root/ bin/eum.properties
-  sed -i s/onprem.dbPassword=.*/onprem.dbPassword=appd/ bin/eum.properties
-  sed -i s/onprem.useEncryptedCredentials=.*/onprem.useEncryptedCredentials=false/ bin/eum.properties
-
-  # Connect EUM Server with Controller
-  curl -s -c cookie.appd --user root@system:appd -X GET http://$SERVERIP:8090/controller/auth?action=login
-  X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd|rev|cut -d$'\t' -f1|rev)"
-  X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
-  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$SERVERIP:8090/controller/rest/configuration?name=eum.es.host&value=http://$1:7001"
-  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.cloud.host&value=http://$1:7001"
-  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.beacon.host&value=http://$1:7001"
-  curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$SERVERIP:8090/controller/rest/configuration?name=eum.beacon.https.host&value=https://$1:7002"
+if [ "$ES" = "true" ]; then
+	ES_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-ES.sh
+	if [ -f "$ES_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $ES_INSTALL_UPGRADE_FILE
+		sh $ES_INSTALL_UPGRADE_FILE
+	else
+		echo "Events Services install file not found here - $ES_INSTALL_UPGRADE_FILE"
+	fi
 fi
+
+if [ "$EUM" = "true" ]; then
+	EUM_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EUM.sh
+	if [ -f "$EUM_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $EUM_INSTALL_UPGRADE_FILE
+		sh $EUM_INSTALL_UPGRADE_FILE
+	else
+		echo "EUM Server install file not found here - $EUM_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
 
 echo "Setting correct permissions"
 chown -R nobody:users /config
 
 # Start the AppDynamics Services
 echo "Starting AppDynamics Services"
-cd /config/appdynamics/platform/platform-admin/bin
-echo "Starting Enterprise Console"
-./platform-admin.sh start-platform-admin
-echo "Starting Controller with DB"
-./platform-admin.sh start-controller-appserver --with-db
-echo "Starting Events Service"
-./platform-admin.sh start-events-service
-echo "Starting EUM Server"
-cd /config/appdynamics/EUM/eum-processor/
-./bin/eum.sh start
 
-# Checking for license file and activating eum (outside of install so if user placed a new license file)
-# This needs to run while EUM DB is running // need to put a check in place to validate it is running
-LICENSE_OG="/config/license.lic"
-LICENSE_LOC="/config/appdynamics/controller/controller/license.lic"
-if [ -f $LICENSE_OG ]; then
-  mv -f $LICENSE_OG $LICENSE_LOC
+if [ "$EC" = "true" ]; then
+	EC_START_FILE=/your-platform-install/startup-scripts/start-EC.sh
+	if [ -f "$EC_START_FILE" ]; then
+		chmod +x $EC_START_FILE
+		sh $EC_START_FILE
+	else
+		echo "EC Server startup file not found here - $EC_START_FILE"
+	fi
 fi
-if [ -f $LICENSE_LOC ]; then
-  /config/appdynamics/EUM/eum-processor/bin/provision-license $LICENSE_LOC
+
+if [ "$CONT" = "true" ]; then
+	CONT_START_FILE=/your-platform-install/startup-scripts/start-Controller.sh
+	if [ -f "$CONT_START_FILE" ]; then
+		chmod +x $CONT_START_FILE
+		sh $CONT_START_FILE
+	else
+		echo "EC Server startup file not found here - $CONT_START_FILE"
+	fi
+fi
+
+if [ "$ES" = "true" ]; then
+	ES_START_FILE=/your-platform-install/startup-scripts/start-ES.sh
+	if [ -f "$ES_START_FILE" ]; then
+		chmod +x $ES_START_FILE
+		sh $ES_START_FILE
+	else
+		echo "ES Server startup file not found here - $ES_START_FILE"
+	fi
+fi
+
+if [ "$EUM" = "true" ]; then
+	EUM_START_FILE=/your-platform-install/startup-scripts/start-EUM.sh
+	if [ -f "$EUM_START_FILE" ]; then
+		chmod +x $EUM_START_FILE
+		sh $EUM_START_FILE
+		# Activate new EUM license file
+		EUM_ACTIVATE_LICENSE_FILE=/your-platform-install/startup-scripts/activate-eum-license.sh
+		if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
+			chmod +x $EUM_ACTIVATE_LICENSE_FILE
+			sh $EUM_ACTIVATE_LICENSE_FILE
+		else
+			echo "EUM activate license file not found here - $EUM_ACTIVATE_LICENSE_FILE"
+		fi
+	else
+		echo "EUM Server startup file not found here - $EUM_START_FILE"
+	fi
+fi
+
+if [ "$CONT" = "true" ]; then
+	if [ -f /config/license.lic ]; then
+		mv -f /config/license.lic /config/appdynamics/controller/controller/
+	fi
 fi
 
 echo "System Started"

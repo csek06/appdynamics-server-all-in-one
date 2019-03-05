@@ -1,9 +1,9 @@
-# AppDynamics Server (Controller) All-in-One
+# AppDynamics Server All-in-One
 
 This is a docker container for an On-Premise Deployment of AppDynamics - https://www.appdynamics.com/
 
 NOTE - This should only be used for Demo / Small environments and is not intended for a Production installation.
-### Installed Services
+### Installed Services by Default
 * Enterprise Console
 * Controller with Database
 * Events Server
@@ -32,7 +32,8 @@ This is intended to be a light-weight installation, however the following minimu
 5. If your installation goes sour, backup your license file, delete the folder </path/to/config>/appdynamics and restart the container.
 
 ## Install On Unraid:
-On Unraid, install from the Community Applications and enter the app folder location, your Appdynamics Community Email and Password. Note: I am not storing your password or doing anything malicious it is required to download the AppDynamics binary from the website, also note is not required if you choose to download the latest version and place it in your app directory. All source code for the installation is found here on Github. 
+On Unraid, install from the Community Applications and enter the app folder location, your Appdynamics Community Email and Password. Note: I am not storing your password or doing anything malicious it is required to download the AppDynamics binary from the website, also note is not required if you choose to download the latest version and place it in your app directory. All source code for the installation is found here on Github.
+* By default this will install all components in a single container. If this is not your intended install, please see the section 'Install Scenarios' below.
 
 ## Install On Other Platforms (like Ubuntu or Synology 5.2 DSM, etc.):
 On other platforms, you can run this docker with the following command:
@@ -44,9 +45,29 @@ docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -
 * Replace the SERVERIP variable (192.168.2.X) with your host IP
 * Replace the "/path/to/config" with your choice of location
 * If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
+* By default this will install all components in a single container. If this is not your intended install, please see the section 'Install Scenarios' below.
 
-## Optional Variables for the run command
-By default, this will install the latest version on download.appdynamics.com, and (IN A FUTURE RELEASE) will auto update itself to the latest version on each container start, but if you want to run a different version (to go back to the previous version perhaps), include the following environment variable in your docker run command -e VERSION="X.X.X.X".
+## Install Scenarios -- Optional Variables for the run command
+By default, this will install the latest version on download.appdynamics.com, and (IN A FUTURE RELEASE) will auto update itself to the latest version on each container start, but if you want to run a different version (to go back to the previous version perhaps), include the following environment variable in your docker run command -e VERSION="X.X.X.X" (currently only the enterprise console can be changed). If you want to change the component installation include the following environment variable in your docker run command -e SCENARIO="ECCONTESEUM" (more on this below). NOTE - you may also need to include additional variables, ensure you investigate the below sections/code.
+
+SCENARIO variable is treated as a string, adding any text containing the substrings below will add the component(s).
+* EC = Enterprise Console
+* CONT = Controller
+* ES = Events Service
+* EUM = End User Monitoring Server
+
+### All in One
+See installation instructions above.
+
+### Install Enterprise Console, Controller, Events Service
+```
+docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SERVERIP=192.168.2.X -e SCENARIO=ECCONTES -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
+### Install End User Monitoring Server
+```
+docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SERVERIP=192.168.2.X -e SCENARIO=EUM -e EVENT_SERVICE_HOST=192.168.2.1:8090 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
+* Make note of the added 'EVENT_SERVICE_HOST' variable. This references the host:port in which ES is installed and running and should be modified.
 
 # Post Install Validation Steps
 The install process takes about 15 minutes on recent desktops. You can monitor the install process via the logs.
@@ -58,7 +79,8 @@ Once installed, open the WebUI at http://SERVERIP:9191/ and validate that your c
 2. Navigate to http://SERVERIP:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
-* 2019-02-28 - Removed manual post-installation steps. Everything is now automatic!
+* 2019-03-05 - Separated install/startup scripts - Instrumented Install Scenarios
+* 2019-02-28 - Release 1.0.0 - Removed manual post-installation steps. Everything is now automatic!
 * 2019-02-27 - Changed startup script to validate if software is installed.
 * 2019-02-26 - Initial release - successfully downloads and installs Enterprise Console / Controller / Events Service / EUM Server (it will not upgrade and expects a clean slate in the config directory - known bugs around deleting downloaded files)
 * 2019-02-25 - Initial release - still not completely functional - only downloads binary for installation at this point.
