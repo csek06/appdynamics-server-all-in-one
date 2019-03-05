@@ -33,7 +33,7 @@ if [ -d "/config/your-platform-install" ];then
 		FILE_CHECK=/config$DIR$filename
 		if [ -f $FILE_CHECK ]; then
 			echo "Manual startup file found $filename - overwriting default"
-			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
+			cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
 		else
 			echo "Custom startup file not found $filename - using default"
 			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
