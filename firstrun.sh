@@ -72,7 +72,7 @@ fi
 # Copy install/startup scripts to volume for later update/reconfigure
 cp -rf /your-platform-install/ /config/
 
-if [ $EC = "true" ]; then
+if [ "$EC" = "true" ]; then
 	EC_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EC.sh
 	if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $EC_INSTALL_UPGRADE_FILE
@@ -82,7 +82,7 @@ if [ $EC = "true" ]; then
 	fi
 fi
 
-if [ $CONT = "true" ]; then
+if [ "$CONT" = "true" ]; then
 	CONT_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-Controller.sh
 	if [ -f "$CONT_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $CONT_INSTALL_UPGRADE_FILE
@@ -92,7 +92,7 @@ if [ $CONT = "true" ]; then
 	fi
 fi
 
-if [ $ES = "true" ]; then
+if [ "$ES" = "true" ]; then
 	ES_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-ES.sh
 	if [ -f "$ES_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $ES_INSTALL_UPGRADE_FILE
@@ -102,7 +102,7 @@ if [ $ES = "true" ]; then
 	fi
 fi
 
-if [ $EUM = "true" ]; then
+if [ "$EUM" = "true" ]; then
 	EUM_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EUM.sh
 	if [ -f "$EUM_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $EUM_INSTALL_UPGRADE_FILE
@@ -119,7 +119,7 @@ chown -R nobody:users /config
 # Start the AppDynamics Services
 echo "Starting AppDynamics Services"
 
-if [ $EC = "true" ]; then
+if [ "$EC" = "true" ]; then
 	EC_START_FILE=/your-platform-install/startup-scripts/start-EC.sh
 	if [ -f "$EC_START_FILE" ]; then
 		chmod +x $EC_START_FILE
@@ -129,7 +129,7 @@ if [ $EC = "true" ]; then
 	fi
 fi
 
-if [ $CONT = "true" ]; then
+if [ "$CONT" = "true" ]; then
 	CONT_START_FILE=/your-platform-install/startup-scripts/start-Controller.sh
 	if [ -f "$CONT_START_FILE" ]; then
 		chmod +x $CONT_START_FILE
@@ -139,7 +139,7 @@ if [ $CONT = "true" ]; then
 	fi
 fi
 
-if [ $ES = "true" ]; then
+if [ "$ES" = "true" ]; then
 	ES_START_FILE=/your-platform-install/startup-scripts/start-ES.sh
 	if [ -f "$ES_START_FILE" ]; then
 		chmod +x $ES_START_FILE
@@ -149,7 +149,7 @@ if [ $ES = "true" ]; then
 	fi
 fi
 
-if [ $EUM = "true" ]; then
+if [ "$EUM" = "true" ]; then
 	EUM_START_FILE=/your-platform-install/startup-scripts/start-EUM.sh
 	if [ -f "$EUM_START_FILE" ]; then
 		chmod +x $EUM_START_FILE
@@ -167,7 +167,7 @@ if [ $EUM = "true" ]; then
 	fi
 fi
 
-if [ $CONT = "true" ]; then
+if [ "$CONT" = "true" ]; then
 	if [ -f /config/license.lic ]; then
 		mv -f /config/license.lic /config/appdynamics/controller/controller/
 	fi
