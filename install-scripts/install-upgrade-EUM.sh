@@ -27,8 +27,10 @@ else
 	echo "Installing EUM server"
 	VARFILE=/your-platform-install/install-scripts/response-eum.varfile
 	if [ -f "$VARFILE" ];then 
-		if [ -z $EVENT-SERVICE-HOST ]; then EVENT-SERVICE-HOST=localhost; fi;
-		appdserver="eventsService.host=${EVENT-SERVICE-HOST}"
+		if [ -z $EVENT_SERVICE_HOST ]; then 
+			EVENT_SERVICE_HOST=localhost
+		fi
+		appdserver="eventsService.host=${EVENT_SERVICE_HOST}"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
 		./$EUMFILENAME -q -varfile $VARFILE
