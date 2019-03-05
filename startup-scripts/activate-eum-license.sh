@@ -4,10 +4,10 @@
 # This needs to run while EUM DB is running // need to put a check in place to validate it is running
 LICENSE_OG="/config/license.lic"
 LICENSE_LOC="/config/appdynamics/controller/controller/license.lic"
+cd /config/appdynamics/EUM/eum-processor/
 if [ -f $LICENSE_OG ]; then
-  mv -f $LICENSE_OG $LICENSE_LOC
+  ./bin/provision-license $LICENSE_OG
 fi
 if [ -f $LICENSE_LOC ]; then
-  cd /config/appdynamics/EUM/eum-processor/
   ./bin/provision-license $LICENSE_LOC
 fi
