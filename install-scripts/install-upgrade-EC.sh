@@ -48,13 +48,8 @@ else
 		appdserver="serverHostName=${SERVERIP}"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/serverHostName=.*/$appdserver/ $VARFILE
-	else
-		echo "Couldn't find $VARFILE"
-	fi
-	# installing ent console
-	echo "Installing Enterprise Console"
-	if [ -f "$VARFILE" ];then 
 		chmod +x ./$FILENAME
+		echo "Installing Enterprise Console"
 		./$FILENAME -q -varfile $VARFILE
 		# assuming install went fine
 		rm -f ./$FILENAME
