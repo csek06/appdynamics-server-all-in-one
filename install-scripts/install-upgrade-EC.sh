@@ -1,15 +1,5 @@
 #!/bin/bash
 
-#Configure Appd for IP address given as environment variable
-VARFILE=/your-platform-install/install-scripts/response.varfile
-if [ -f "$VARFILE" ];then 
-    appdserver="serverHostName=${SERVERIP}"
-    echo "setting '$appdserver' in '$VARFILE'"
-    sed -i s/serverHostName=.*/$appdserver/ $VARFILE
-else
-    echo "Couldn't find $VARFILE"
-fi
-
 # Use manual version or latest available from AppDynamics
 cd /config
 if [ ! -z $VERSION ]; then
@@ -51,6 +41,15 @@ else
 		echo "file downloaded"
 	else
 		echo "Found latest Enterprise Console '$FILENAME' in /config/ "
+	fi
+	#Configure Appd for IP address given as environment variable
+	VARFILE=/your-platform-install/install-scripts/response.varfile
+	if [ -f "$VARFILE" ];then 
+		appdserver="serverHostName=${SERVERIP}"
+		echo "setting '$appdserver' in '$VARFILE'"
+		sed -i s/serverHostName=.*/$appdserver/ $VARFILE
+	else
+		echo "Couldn't find $VARFILE"
 	fi
 	# installing ent console
 	echo "Installing Enterprise Console"
