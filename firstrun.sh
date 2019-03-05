@@ -36,7 +36,7 @@ if [ -d "/config/your-platform-install" ];then
 			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
 		else
 			echo "Custom startup file not found $filename - using default"
-			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/install-scripts/
+			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
 		fi
 	done
 fi
