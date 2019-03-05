@@ -6,6 +6,38 @@ echo $TZ > /etc/timezone
 export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure tzdata
 
+# Check for Install Scenario Variable
+if [ -z $SCENARIO ]; then
+	SCENARIO=ECESCONTEUM
+fi
+
+if [[ $SCENARIO = *EC* ]]; then
+	echo "Platform will use EC";
+fi
+if [[ $SCENARIO = *ES* ]]; then
+	echo "Platform will use ES";
+fi
+if [[ $SCENARIO = *CONT* ]]; then
+	echo "Platform will use Controller";
+fi
+if [[ $SCENARIO = *EUM* ]]; then
+	echo "Platform will use EUM";
+fi
+
+
+case $SCENARIO in 
+	ALL)
+		echo "Platform will use everything";;
+	EC)
+		echo "Platform will use EC Only";;
+	ES)
+		echo "Platform will use ES Only";;
+	CONT)
+		echo "Platform will use CONT Only";;
+	EUM)
+		echo "Platform will use EUM Only";;
+esac
+
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file and restart container.
 if [ -d "/config/your-platform-install/install-scripts" ];then
