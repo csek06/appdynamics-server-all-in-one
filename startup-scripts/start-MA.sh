@@ -14,12 +14,21 @@ if [ -z $CONT_KEY ]; then
 	JSESSIONID_H=$(grep -oP '(JSESSIONID\s)\K(.*)?(?=$)' cookie.appd)
 	CONT_KEY=$(curl http://$SERVERIP:8090/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 fi
+if [ -z $ENABLE_SIM ]; then
+	$ENABLE_SIM="false"
+fi
+if [ -z $ENABLE_SIM_DOCKER ]; then
+	$ENABLE_SIM_DOCKER="true"
+fi
+if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
+	$ENABLE_CONTAINERIDASHOSTID="true"
+fi
 
 MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
 if [ -f "$MA_FILE" ]; then
 	echo "Starting Machine Agent"
 	cd /config/appdynamics/machine-agent/
-	./bin/machine-agent -Dappdynamics.controller.hostName=$CONT_HOST -Dappdynamics.controller.port=$CONT_PORT -Dappdynamics.agent.accountAccessKey=$CONT_KEY &
+	./bin/machine-agent -Dappdynamics.controller.hostName=$CONT_HOST -Dappdynamics.controller.port=$CONT_PORT -Dappdynamics.agent.accountAccessKey=$CONT_KEY -Dappdynamics.sim.enabled=${ENABLE_SIM} -Dappdynamics.docker.enabled=${ENABLE_SIM_DOCKER} -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID} &
 else
 	echo "Machine Agent File not found here - $MA_FILE"
 fi
