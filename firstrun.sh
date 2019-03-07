@@ -27,6 +27,10 @@ if [[ $SCENARIO = *EUM* ]]; then
 	echo "Platform will use EUM";
 	EUM=true
 fi
+if [[ $SCENARIO = *MA* ]]; then
+	echo "Platform will use Machine Agent";
+	MA=true
+fi
 
 
 # this will overwrite similar named files in container 
@@ -113,6 +117,16 @@ if [ "$EUM" = "true" ]; then
 	if [ -f "$EUM_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $EUM_INSTALL_UPGRADE_FILE
 		sh $EUM_INSTALL_UPGRADE_FILE
+	else
+		echo "EUM Server install file not found here - $EUM_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
+if [ "$MA" = "true" ]; then
+	MA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-MA.sh
+	if [ -f "$MA_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $MA_INSTALL_UPGRADE_FILE
+		sh $MA_INSTALL_UPGRADE_FILE
 	else
 		echo "EUM Server install file not found here - $EUM_INSTALL_UPGRADE_FILE"
 	fi
