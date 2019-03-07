@@ -51,7 +51,7 @@ if [ -d "/config/your-platform-install/install-scripts" ];then
 			cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
 		fi
 	done
-	mv -rf /config$DIR $BACKUP_CUSTOM
+	mv -f /config$DIR $BACKUP_CUSTOM
 else
 	cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
 fi
@@ -74,7 +74,7 @@ if [ -d "/config/your-platform-install/startup-scripts" ];then
 			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
 		fi
 	done
-	mv -rf /config$DIR $BACKUP_CUSTOM
+	mv -f /config$DIR $BACKUP_CUSTOM
 else
 	cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
 fi

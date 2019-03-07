@@ -7,7 +7,7 @@ VOLUME ["/config"]
 RUN export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive && \
 apt-get update && \
 apt-get install -y \
-libaio1 numactl tzdata && \
+libaio1 numactl tzdata unzip && \
 usermod -u 99 nobody && \
 usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
