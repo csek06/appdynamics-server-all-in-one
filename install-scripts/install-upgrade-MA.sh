@@ -21,9 +21,10 @@ if [ ! -f /config/appdynamics/machine-agent/bin/machine-agent ]; then
 		curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${DOWNLOAD_PATH}
 		echo "file downloaded"
 	fi
-	
-	unzip -d /config/appdynamics/machine-agent/ $FILENAME
-	rm $FILENAME
+	echo "Unzipping: $FILENAME"
+	unzip -q -d /config/appdynamics/machine-agent/ /config/$FILENAME
+	echo "Unzip complete"
+	rm /config/$FILENAME
 else
 	echo "Found existing machine agent"
 fi
