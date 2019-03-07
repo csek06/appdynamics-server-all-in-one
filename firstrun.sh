@@ -187,6 +187,16 @@ if [ "$EUM" = "true" ]; then
 	fi
 fi
 
+if [ "$MA" = "true" ]; then
+	MA_START_FILE=/your-platform-install/startup-scripts/start-MA.sh
+	if [ -f "$MA_START_FILE" ]; then
+		chmod +x $MA_START_FILE
+		sh $MA_START_FILE
+	else
+		echo "Machine Agent startup file not found here - $MA_START_FILE"
+	fi
+fi
+
 if [ "$CONT" = "true" ]; then
 	if [ -f /config/license.lic ]; then
 		mv -f /config/license.lic /config/appdynamics/controller/controller/
