@@ -32,11 +32,13 @@ fi
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
 if [ -d "/config/your-platform-install/install-scripts" ];then
+	BACKUP_CUSTOM=/config/your-platform-install/backup-custom-install-scripts/
+	mkdir -p $BACKUP_CUSTOM
 	# Checking for custom install scripts
 	DIR=/your-platform-install/defaults/install-scripts/
 	cd $DIR
 	for filename in $(ls); do
-		FILE_CHECK=/config/your-platform-install/install-scripts/$filename
+		FILE_CHECK=/config$DIR$filename
 		if [ -f $FILE_CHECK ]; then
 			echo "Manual install file found $filename - overwriting default"
 			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
@@ -45,6 +47,7 @@ if [ -d "/config/your-platform-install/install-scripts" ];then
 			cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
 		fi
 	done
+	mv -rf /config$DIR $BACKUP_CUSTOM
 else
 	cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
 fi
@@ -52,11 +55,13 @@ fi
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
 if [ -d "/config/your-platform-install/startup-scripts" ];then
+	BACKUP_CUSTOM=/config/your-platform-install/backup-custom-startup-scripts/
+	mkdir -p $BACKUP_CUSTOM
 	# Checking for custom startup scripts
 	DIR=/your-platform-install/defaults/startup-scripts/
 	cd $DIR
 	for filename in $(ls); do
-		FILE_CHECK=/config/your-platform-install/startup-scripts/$filename
+		FILE_CHECK=/config$DIR$filename
 		if [ -f $FILE_CHECK ]; then
 			echo "Manual startup file found $filename - overwriting default"
 			cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
@@ -65,12 +70,13 @@ if [ -d "/config/your-platform-install/startup-scripts" ];then
 			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
 		fi
 	done
+	mv -rf /config$DIR $BACKUP_CUSTOM
 else
 	cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
 fi
 
 # Copy install/startup scripts to volume for later update/reconfigure
-cp -rf /your-platform-install/ /config/
+# cp -rf /your-platform-install/ /config/
 
 if [ "$EC" = "true" ]; then
 	EC_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EC.sh
