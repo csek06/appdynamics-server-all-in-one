@@ -9,16 +9,21 @@ if [ -z $CONT_PORT ]; then
 fi
 if [ -z $CONT_KEY ]; then
 	# Connect to Controller and obtain the AccessKey
-	curl -s -c cookie.appd --user admin@customer1:appd -X GET http://$SERVERIP:8090/controller/auth?action=login
+	curl -s -c cookie.appd --user admin@customer1:appd -X GET http://$CONT_HOST:$CONT_PORT/controller/auth?action=login
 	X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
 	JSESSIONID_H=$(grep -oP '(JSESSIONID\s)\K(.*)?(?=$)' cookie.appd)
-	CONT_KEY=$(curl http://$SERVERIP:8090/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
+	CONT_KEY=$(curl http://$CONT_HOST:$CONT_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 fi
 if [ -z $ENABLE_SIM ]; then
 	ENABLE_SIM="false"
 fi
 if [ -z $ENABLE_SIM_DOCKER ]; then
 	ENABLE_SIM_DOCKER="false"
+else
+	# SIM and SIM Docker both need to be set to true
+	if [[ $ENABLE_SIM_DOCKER = true ]]; then
+		ENABLE_SIM=true
+	fi
 fi
 if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
 	ENABLE_CONTAINERIDASHOSTID="false"
