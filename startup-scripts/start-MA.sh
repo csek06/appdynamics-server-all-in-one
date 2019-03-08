@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # initialize variables
+MACHINE_AGENT_HOME=/config/appdynamics/machine-agent/
 if [ -z $CONT_HOST ]; then
 	CONT_HOST="localhost"
 fi
@@ -28,12 +29,21 @@ fi
 if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
 	ENABLE_CONTAINERIDASHOSTID="false"
 fi
+MA_PROPERTIES="-Dappdynamics.controller.hostName=${CONT_HOST}"
+MA_PROPERTIES+=" -Dappdynamics.controller.port=${CONT_PORT}"
+#MA_PROPERTIES+=" -Dappdynamics.agent.accountName=${ACCOUNT_NAME}"
+MA_PROPERTIES+=" -Dappdynamics.agent.accountAccessKey=${CONT_KEY}"
+#MA_PROPERTIES+=" -Dappdynamics.controller.ssl.enabled=${CONTROLLER_SSL_ENABLED}"
+MA_PROPERTIES+=" -Dappdynamics.sim.enabled=${ENABLE_SIM}"
+MA_PROPERTIES+=" -Dappdynamics.docker.enabled=${ENABLE_SIM_DOCKER}"
+MA_PROPERTIES+=" -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
 
 MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
 if [ -f "$MA_FILE" ]; then
 	echo "Starting Machine Agent"
-	cd /config/appdynamics/machine-agent/
-	./bin/machine-agent -Dappdynamics.controller.hostName=$CONT_HOST -Dappdynamics.controller.port=$CONT_PORT -Dappdynamics.agent.accountAccessKey=$CONT_KEY -Dappdynamics.sim.enabled=${ENABLE_SIM} -Dappdynamics.docker.enabled=${ENABLE_SIM_DOCKER} -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID} &
+	# Start Machine Agent
+	echo java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
+	java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
 else
 	echo "Machine Agent File not found here - $MA_FILE"
 fi
