@@ -18,10 +18,10 @@ if [ -z $ENABLE_SIM ]; then
 	ENABLE_SIM="false"
 fi
 if [ -z $ENABLE_SIM_DOCKER ]; then
-	ENABLE_SIM_DOCKER="true"
+	ENABLE_SIM_DOCKER="false"
 fi
 if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
-	ENABLE_CONTAINERIDASHOSTID="true"
+	ENABLE_CONTAINERIDASHOSTID="false"
 fi
 
 MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
