@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # initialize variables
-MACHINE_AGENT_HOME=/config/appdynamics/machine-agent/
+MACHINE_AGENT_HOME=/config/appdynamics/machine-agent
 if [ -z $CONT_HOST ]; then
 	CONT_HOST="localhost"
 fi
@@ -22,8 +22,8 @@ if [ -z $ENABLE_SIM_DOCKER ]; then
 	ENABLE_SIM_DOCKER="false"
 else
 	# SIM and SIM Docker both need to be set to true
-	if [[ $ENABLE_SIM_DOCKER = true ]]; then
-		ENABLE_SIM=true
+	if [ "$ENABLE_SIM_DOCKER" = "true" ]; then
+		ENABLE_SIM="true"
 	fi
 fi
 if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
