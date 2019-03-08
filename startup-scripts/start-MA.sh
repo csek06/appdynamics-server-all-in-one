@@ -30,13 +30,13 @@ if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
 	ENABLE_CONTAINERIDASHOSTID="false"
 fi
 MA_PROPERTIES="-Dappdynamics.controller.hostName=${CONT_HOST}"
-MA_PROPERTIES+=" -Dappdynamics.controller.port=${CONT_PORT}"
-#MA_PROPERTIES+=" -Dappdynamics.agent.accountName=${ACCOUNT_NAME}"
-MA_PROPERTIES+=" -Dappdynamics.agent.accountAccessKey=${CONT_KEY}"
-#MA_PROPERTIES+=" -Dappdynamics.controller.ssl.enabled=${CONTROLLER_SSL_ENABLED}"
-MA_PROPERTIES+=" -Dappdynamics.sim.enabled=${ENABLE_SIM}"
-MA_PROPERTIES+=" -Dappdynamics.docker.enabled=${ENABLE_SIM_DOCKER}"
-MA_PROPERTIES+=" -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.controller.port=${CONT_PORT}"
+#MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.agent.accountName=${ACCOUNT_NAME}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.agent.accountAccessKey=${CONT_KEY}"
+#MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.controller.ssl.enabled=${CONTROLLER_SSL_ENABLED}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.sim.enabled=${ENABLE_SIM}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${ENABLE_SIM_DOCKER}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
 
 MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
 if [ -f "$MA_FILE" ]; then
