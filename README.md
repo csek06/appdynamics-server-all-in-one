@@ -55,6 +55,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * CONT = Controller
 * ES = Events Service
 * EUM = End User Monitoring Server
+* MA = Machine Agent
 
 ### All in One
 See installation instructions above.
@@ -65,9 +66,25 @@ docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -
 ```
 ### Install End User Monitoring Server
 ```
-docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SERVERIP=192.168.2.X -e SCENARIO=EUM -e EVENT_SERVICE_HOST=192.168.2.1:8090 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENT_SERVICE_HOST=192.168.2.1:8090 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 * Make note of the added 'EVENT_SERVICE_HOST' variable. This references the host:port in which ES is installed and running and should be modified.
+
+### Install Machine Agent
+```
+docker run -d --name="appdynamics-server-MA" --net="host" -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONT_PORT=8090 -e CONT_HOST=192.168.2.X -e SCENARIO=MA -e -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
+* CONT_HOST - optional if host is also running controller
+* CONT_PORT - optional if host is also running controller
+
+Additional Optional Variables
+* ENABLE_SIM - (true | false) Enable server visibility for container
+* ENABLE_SIM_DOCKER - (true | false) Enable host server visibility https://docs.appdynamics.com/display/CLOUD/Monitoring+Docker+Containers
+   * REQUIRED paths if true
+   ```
+   -v /var/run/docker.sock:/var/run/docker.sock:ro -v /:/:ro
+   ```
+
 
 # Post Install Validation Steps
 The install process takes about 15 minutes on recent desktops. You can monitor the install process via the logs.
@@ -79,6 +96,7 @@ Once installed, open the WebUI at http://SERVERIP:9191/ and validate that your c
 2. Navigate to http://SERVERIP:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
+* 2019-03-11 - Implemented Machine Agent
 * 2019-03-05 - Separated install/startup scripts - Instrumented Install Scenarios
 * 2019-02-28 - Release 1.0.0 - Removed manual post-installation steps. Everything is now automatic!
 * 2019-02-27 - Changed startup script to validate if software is installed.
