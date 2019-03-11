@@ -27,6 +27,10 @@ if [[ $SCENARIO = *EUM* ]]; then
 	echo "Platform will use EUM";
 	EUM=true
 fi
+if [[ $SCENARIO = *MA* ]]; then
+	echo "Platform will use Machine Agent";
+	MA=true
+fi
 
 
 # this will overwrite similar named files in container 
@@ -47,7 +51,7 @@ if [ -d "/config/your-platform-install/install-scripts" ];then
 			cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
 		fi
 	done
-	mv -rf /config$DIR $BACKUP_CUSTOM
+	mv -f /config$DIR $BACKUP_CUSTOM
 else
 	cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
 fi
@@ -70,7 +74,7 @@ if [ -d "/config/your-platform-install/startup-scripts" ];then
 			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
 		fi
 	done
-	mv -rf /config$DIR $BACKUP_CUSTOM
+	mv -f /config$DIR $BACKUP_CUSTOM
 else
 	cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
 fi
@@ -82,7 +86,7 @@ if [ "$EC" = "true" ]; then
 	EC_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EC.sh
 	if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $EC_INSTALL_UPGRADE_FILE
-		sh $EC_INSTALL_UPGRADE_FILE
+		bash $EC_INSTALL_UPGRADE_FILE
 	else
 		echo "EC install file not found here - $EC_INSTALL_UPGRADE_FILE"
 	fi
@@ -92,7 +96,7 @@ if [ "$CONT" = "true" ]; then
 	CONT_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-Controller.sh
 	if [ -f "$CONT_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $CONT_INSTALL_UPGRADE_FILE
-		sh $CONT_INSTALL_UPGRADE_FILE
+		bash $CONT_INSTALL_UPGRADE_FILE
 	else
 		echo "Controller install file not found here - $CONT_INSTALL_UPGRADE_FILE"
 	fi
@@ -102,7 +106,7 @@ if [ "$ES" = "true" ]; then
 	ES_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-ES.sh
 	if [ -f "$ES_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $ES_INSTALL_UPGRADE_FILE
-		sh $ES_INSTALL_UPGRADE_FILE
+		bash $ES_INSTALL_UPGRADE_FILE
 	else
 		echo "Events Services install file not found here - $ES_INSTALL_UPGRADE_FILE"
 	fi
@@ -112,7 +116,17 @@ if [ "$EUM" = "true" ]; then
 	EUM_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EUM.sh
 	if [ -f "$EUM_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $EUM_INSTALL_UPGRADE_FILE
-		sh $EUM_INSTALL_UPGRADE_FILE
+		bash $EUM_INSTALL_UPGRADE_FILE
+	else
+		echo "EUM Server install file not found here - $EUM_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
+if [ "$MA" = "true" ]; then
+	MA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-MA.sh
+	if [ -f "$MA_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $MA_INSTALL_UPGRADE_FILE
+		bash $MA_INSTALL_UPGRADE_FILE
 	else
 		echo "EUM Server install file not found here - $EUM_INSTALL_UPGRADE_FILE"
 	fi
@@ -129,7 +143,7 @@ if [ "$EC" = "true" ]; then
 	EC_START_FILE=/your-platform-install/startup-scripts/start-EC.sh
 	if [ -f "$EC_START_FILE" ]; then
 		chmod +x $EC_START_FILE
-		sh $EC_START_FILE
+		bash $EC_START_FILE
 	else
 		echo "EC Server startup file not found here - $EC_START_FILE"
 	fi
@@ -139,7 +153,7 @@ if [ "$CONT" = "true" ]; then
 	CONT_START_FILE=/your-platform-install/startup-scripts/start-Controller.sh
 	if [ -f "$CONT_START_FILE" ]; then
 		chmod +x $CONT_START_FILE
-		sh $CONT_START_FILE
+		bash $CONT_START_FILE
 	else
 		echo "EC Server startup file not found here - $CONT_START_FILE"
 	fi
@@ -149,7 +163,7 @@ if [ "$ES" = "true" ]; then
 	ES_START_FILE=/your-platform-install/startup-scripts/start-ES.sh
 	if [ -f "$ES_START_FILE" ]; then
 		chmod +x $ES_START_FILE
-		sh $ES_START_FILE
+		bash $ES_START_FILE
 	else
 		echo "ES Server startup file not found here - $ES_START_FILE"
 	fi
@@ -159,17 +173,27 @@ if [ "$EUM" = "true" ]; then
 	EUM_START_FILE=/your-platform-install/startup-scripts/start-EUM.sh
 	if [ -f "$EUM_START_FILE" ]; then
 		chmod +x $EUM_START_FILE
-		sh $EUM_START_FILE
+		bash $EUM_START_FILE
 		# Activate new EUM license file
 		EUM_ACTIVATE_LICENSE_FILE=/your-platform-install/startup-scripts/activate-eum-license.sh
 		if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
 			chmod +x $EUM_ACTIVATE_LICENSE_FILE
-			sh $EUM_ACTIVATE_LICENSE_FILE
+			bash $EUM_ACTIVATE_LICENSE_FILE
 		else
 			echo "EUM activate license file not found here - $EUM_ACTIVATE_LICENSE_FILE"
 		fi
 	else
 		echo "EUM Server startup file not found here - $EUM_START_FILE"
+	fi
+fi
+
+if [ "$MA" = "true" ]; then
+	MA_START_FILE=/your-platform-install/startup-scripts/start-MA.sh
+	if [ -f "$MA_START_FILE" ]; then
+		chmod +x $MA_START_FILE
+		bash $MA_START_FILE
+	else
+		echo "Machine Agent startup file not found here - $MA_START_FILE"
 	fi
 fi
 
