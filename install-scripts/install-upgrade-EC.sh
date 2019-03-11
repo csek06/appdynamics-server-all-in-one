@@ -22,7 +22,8 @@ rm -f tmpout.json
 # check if enterprise console is installed
 if [ -f /config/appdynamics/platform/platform-admin/bin/platform-admin.sh ]; then
 	# check if enterprise console is out of date compared to $VERSION
-	INSTALLED_VERSION=$(find /config/appdynamics/platform/platform-admin/archives/platform-configuration/ -name "*.yml" -type f -exec grep -oP '(^platformVersion\:\s\")\K(.*?)(?=\"$)' {} \;)
+	cd /config/appdynamics/platform/platform-admin/archives/platform-configuration/
+	INSTALLED_VERSION=$(grep -oPz '(^platformVersion\:\s\")\K(.*?)(?=\"$)' * | tr -d '\0')
 	echo "Enterprise Console: $INSTALLED_VERSION is installed"
 	if [ "$VERSION" != "$INSTALLED_VERSION" ]; then
 		echo "Version mismatch between found and requested/latest"
