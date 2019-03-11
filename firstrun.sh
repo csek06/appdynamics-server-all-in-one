@@ -191,10 +191,13 @@ if [ "$MA" = "true" ]; then
 	MA_START_FILE=/your-platform-install/startup-scripts/start-MA.sh
 	if [ -f "$MA_START_FILE" ]; then
 		chmod +x $MA_START_FILE
-		sh $MA_START_FILE
+		cp -rf /your-platform-install/defaults/install-scripts/systemd/appd-MA.service /etc/systemd/system/
+		systemctl enable appd-MA
 	else
 		echo "Machine Agent startup file not found here - $MA_START_FILE"
 	fi
+else
+	systemctl disable appd-MA
 fi
 
 if [ "$CONT" = "true" ]; then
