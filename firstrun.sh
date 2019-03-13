@@ -199,7 +199,7 @@ fi
 
 if [ "$CONT" = "true" ]; then
 	if [ -f /config/license.lic ]; then
-		mv -f /config/license.lic /config/appdynamics/controller/controller/
+		mv -f /config/license.lic /config/appdynamics/controller/
 	fi
 fi
 
