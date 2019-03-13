@@ -38,11 +38,11 @@ On Unraid, install from the Community Applications and enter the app folder loca
 ## Install On Other Platforms (like Ubuntu or Synology 5.2 DSM, etc.):
 On other platforms, you can run this docker with the following command:
 ```
-docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SERVERIP=192.168.2.X -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 * Replace the AppdUser variable (john@doe.com) with your AppDynamics community login email.
 * Replace the AppdPass variable (XXXX) with your AppDynamics community login password.
-* Replace the SERVERIP variable (192.168.2.X) with your host IP
+* Replace the CONTROLLER_HOST variable (192.168.2.X) with your host IP of the EC/Controller
 * Replace the "/path/to/config" with your choice of location
 * If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
 * By default this will install all components in a single container. If this is not your intended install, please see the section 'Install Scenarios' below.
@@ -62,7 +62,7 @@ See installation instructions above.
 
 ### Install Enterprise Console, Controller, Events Service
 ```
-docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SERVERIP=192.168.2.X -e SCENARIO=ECCONTES -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -e SCENARIO=ECCONTES -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 ### Install End User Monitoring Server
 ```
@@ -91,9 +91,9 @@ The install process takes about 15 minutes on recent desktops. You can monitor t
 * Login - admin
 * Password - appd
 
-Once installed, open the WebUI at http://SERVERIP:9191/ and validate that your controller, MySQL DB, and Events Service are running.
-1. Navigate to http://SERVERIP:7001/eumaggregator/ping to validate the EUM server started.
-2. Navigate to http://SERVERIP:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
+Once installed, open the WebUI at http://CONTROLLERHOST:9191/ and validate that your controller, MySQL DB, and Events Service are running.
+1. Navigate to http://CONTROLLERHOST:7001/eumaggregator/ping to validate the EUM server started.
+2. Navigate to http://CONTROLLERHOST:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
 * 2019-03-11 - Implemented Machine Agent
