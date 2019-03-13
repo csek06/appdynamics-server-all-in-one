@@ -20,9 +20,9 @@ fi
 rm -f tmpout.json
 
 # check if enterprise console is installed
-if [ -f /config/appdynamics/platform/platform-admin/bin/platform-admin.sh ]; then
+if [ -f /config/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
 	# check if enterprise console is out of date compared to $VERSION
-	cd /config/appdynamics/platform/platform-admin/archives/platform-configuration/
+	cd /config/appdynamics/enterprise-console/platform-admin/archives/platform-configuration/
 	INSTALLED_VERSION=$(grep -oPz '(^platformVersion\:\s\")\K(.*?)(?=\"$)' * | tr -d '\0')
 	echo "Enterprise Console: $INSTALLED_VERSION is installed"
 	if [ "$VERSION" != "$INSTALLED_VERSION" ]; then
