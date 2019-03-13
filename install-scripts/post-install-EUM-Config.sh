@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Check for host variables
+if [ -z $CONTROLLER_HOST ]; then
+	$CONTROLLER_HOST=localhost
+fi
+if [ -z $EUM_HOST ];then
+	$EUM_HOST=localhost
+fi
 # Making post install configurations
 # Sync Account Key between Controller and EUM Server - this should be in install
 cd /config/appdynamics/EUM/eum-processor/
