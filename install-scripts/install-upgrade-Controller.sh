@@ -14,7 +14,7 @@ else
 		echo "Installing Controller and local database"
 		cd /config/appdynamics/enterprise-console/platform-admin/bin
 		./platform-admin.sh create-platform --name my-platform --installation-dir /config/appdynamics/
-		./platform-admin.sh add-hosts --hosts $CONTROLLER_HOST
-		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$CONTROLLER_HOST controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
+		./platform-admin.sh add-hosts --hosts localhost
+		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=localhost controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
 	fi
 fi
