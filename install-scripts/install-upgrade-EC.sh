@@ -46,7 +46,7 @@ else
 	#Configure Appd for IP address given as environment variable
 	VARFILE=/your-platform-install/install-scripts/response.varfile
 	if [ -f "$VARFILE" ];then 
-		appdserver="serverHostName=${SERVERIP}"
+		appdserver="serverHostName=${CONTROLLER_HOST}"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/serverHostName=.*/$appdserver/ $VARFILE
 		chmod +x ./$FILENAME
