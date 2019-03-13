@@ -2,8 +2,8 @@
 
 # check if Events Service is installed
 if [ -f /config/appdynamics/controller/events-service/processor/bin/events-service.sh ]; then
-	cd /config/appdynamics/platform/platform-admin/archives/platform-configuration/
-	INSTALLED_VERSION=$(grep -oPz '(events-service\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' * | tr -d '\0')
+	cd /config/appdynamics/controller/events-service/processor
+	INSTALLED_VERSION=$(grep -oPz '(version=)\K(.*?$)' version.txt)
 	echo "Events Service: $INSTALLED_VERSION is installed"
 	# check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
 else
