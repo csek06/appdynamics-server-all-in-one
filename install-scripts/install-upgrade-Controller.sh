@@ -9,17 +9,13 @@ if [ -f /config/appdynamics/controller/bin/controller.sh ]; then
 else
 	# check if enterprise console is installed
 	if [ ! -f /config/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
-		EC_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EC.sh
-		if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
-			chmod +x $EC_INSTALL_UPGRADE_FILE
-			bash $EC_INSTALL_UPGRADE_FILE
-		else
-			echo "EC install file not found here - $EC_INSTALL_UPGRADE_FILE"
-		fi
+		echo "Please install Enterprise Console on Host and map appdata to /config"
+	else
+		echo "Installing Controller and local database"
+		cd /config/appdynamics/enterprise-console/platform-admin/bin
+		./platform-admin.sh create-platform --name my-platform --installation-dir /config/appdynamics/
+		./platform-admin.sh add-hosts --hosts $SERVERIP
+		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$SERVERIP controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
 	fi
-	echo "Installing Controller and local database"
-	cd /config/appdynamics/enterprise-console/platform-admin/bin
-	./platform-admin.sh create-platform --name my-platform --installation-dir /config/appdynamics/
-	./platform-admin.sh add-hosts --hosts $SERVERIP
-	./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$SERVERIP controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
+	
 fi
