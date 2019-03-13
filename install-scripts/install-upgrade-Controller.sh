@@ -17,5 +17,4 @@ else
 		./platform-admin.sh add-hosts --hosts $SERVERIP
 		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$SERVERIP controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
 	fi
-	
 fi
