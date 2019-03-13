@@ -13,7 +13,7 @@ else
 	else
 		echo "Installing Events Service"
 		cd /config/appdynamics/enterprise-console/platform-admin/bin
-		./platform-admin.sh install-events-service  --profile dev --hosts $SERVERIP
+		./platform-admin.sh install-events-service  --profile dev --hosts $CONTROLLER_HOST
 	fi
 fi
 
