@@ -66,16 +66,16 @@ docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -
 ```
 ### Install End User Monitoring Server
 ```
-docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENT_SERVICE_HOST=192.168.2.1:8090 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENT_SERVICE_HOST=192.168.2.1:9080 -e EUM_HOST=192.168.2.1 -e CONTROLLER_HOST=192.168.2.1 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
-* Make note of the added 'EVENT_SERVICE_HOST' variable. This references the host:port in which ES is installed and running and should be modified.
+* Make note of the added 'EVENT_SERVICE_HOST', 'EUM_HOST', and 'CONTROLLER_HOST' variables. These reference the host(:port) in which ES/CONT/EUM is installed and running and should be modified.
 
 ### Install Machine Agent
 ```
-docker run -d --name="appdynamics-server-MA" --net="host" -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONT_PORT=8090 -e CONT_HOST=192.168.2.X -e SCENARIO=MA -e -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-MA" --net="host" -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_PORT=8090 -e CONTROLLER_HOST=192.168.2.X -e SCENARIO=MA -e -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
-* CONT_HOST - optional if host is also running controller
-* CONT_PORT - optional if host is also running controller
+* CONTROLLER_HOST - optional if host is also running controller
+* CONTROLLER_PORT - optional if host is also running controller
 
 Additional Optional Variables
 * ENABLE_SIM - (true | false) Enable server visibility for container
