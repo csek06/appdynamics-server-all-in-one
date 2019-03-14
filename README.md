@@ -8,8 +8,6 @@ NOTE - This should only be used for Demo / Small environments and is not intende
 ### Installed Services by Default
 * Enterprise Console
 * Controller with Database
-* Events Server
-* EUM Server
 
 ### Optional Component Installations
 * Events Server
