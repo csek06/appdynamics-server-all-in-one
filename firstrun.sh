@@ -31,7 +31,10 @@ if [[ $SCENARIO = *MA* ]]; then
 	echo "Platform will use Machine Agent";
 	MA=true
 fi
-
+if [[ $SCENARIO = *DA* ]]; then
+	echo "Platform will use Database Agent";
+	DA=true
+fi
 
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
