@@ -30,9 +30,14 @@ else
 		if [ -z $EVENT_SERVICE_HOST ]; then 
 			EVENT_SERVICE_HOST=localhost
 		fi
+		if [ -z $EUM_SIZE ]; then
+			EUM_SIZE=demo
+		fi
 		appdserver="eventsService.host=${EVENT_SERVICE_HOST}"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
+		echo "setting eum size '$EUM_SIZE' in '$VARFILE'"
+		sed -i s/euem.InstallationMode=.*/euem.InstallationMode=$EUM_SIZE/ $VARFILE
 		./$EUMFILENAME -q -varfile $VARFILE
 		# assuming install went fine
 		rm -f ./$EUMFILENAME
