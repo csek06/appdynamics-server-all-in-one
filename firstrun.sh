@@ -8,7 +8,7 @@ dpkg-reconfigure tzdata
 
 # Check for Install Scenario Variable
 if [ -z $SCENARIO ]; then
-	SCENARIO=ECESCONTEUM
+	SCENARIO=ECCONT
 fi
 
 if [[ $SCENARIO = *EC* ]]; then
