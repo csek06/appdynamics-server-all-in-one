@@ -131,7 +131,17 @@ if [ "$MA" = "true" ]; then
 		chmod +x $MA_INSTALL_UPGRADE_FILE
 		bash $MA_INSTALL_UPGRADE_FILE
 	else
-		echo "EUM Server install file not found here - $EUM_INSTALL_UPGRADE_FILE"
+		echo "Machine Agent install file not found here - $MA_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
+if [ "$DA" = "true" ]; then
+	DA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-DA.sh
+	if [ -f "$DA_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $DA_INSTALL_UPGRADE_FILE
+		bash $DA_INSTALL_UPGRADE_FILE
+	else
+		echo "Database Agent install file not found here - $DA_INSTALL_UPGRADE_FILE"
 	fi
 fi
 
@@ -197,6 +207,16 @@ if [ "$MA" = "true" ]; then
 		bash $MA_START_FILE
 	else
 		echo "Machine Agent startup file not found here - $MA_START_FILE"
+	fi
+fi
+
+if [ "$DA" = "true" ]; then
+	DA_START_FILE=/your-platform-install/startup-scripts/start-DA.sh
+	if [ -f "$DA_START_FILE" ]; then
+		chmod +x $DA_START_FILE
+		bash $DA_START_FILE
+	else
+		echo "Database Agent startup file not found here - $DA_START_FILE"
 	fi
 fi
 
