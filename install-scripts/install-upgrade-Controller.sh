@@ -12,9 +12,12 @@ else
 		echo "Please install Enterprise Console on Host and map appdata to /config"
 	else
 		echo "Installing Controller and local database"
+		if [ -z $CONTROLLER_SIZE ]; then
+			CONTROLLER_SIZE=demo
+		fi
 		cd /config/appdynamics/enterprise-console/platform-admin/bin
 		./platform-admin.sh create-platform --name my-platform --installation-dir /config/appdynamics/
 		./platform-admin.sh add-hosts --hosts $CONTROLLER_HOST
-		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$CONTROLLER_HOST controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd
+		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$CONTROLLER_HOST controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd controllerProfile=$CONTROLLER_SIZE
 	fi
 fi
