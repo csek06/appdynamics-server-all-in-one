@@ -95,6 +95,17 @@ if [ "$EC" = "true" ]; then
 	fi
 fi
 
+# Ensure the EC is started to allow the install of other services
+if [ "$EC" = "true" ]; then
+	EC_START_FILE=/your-platform-install/startup-scripts/start-EC.sh
+	if [ -f "$EC_START_FILE" ]; then
+		chmod +x $EC_START_FILE
+		bash $EC_START_FILE
+	else
+		echo "EC Server startup file not found here - $EC_START_FILE"
+	fi
+fi
+
 if [ "$CONT" = "true" ]; then
 	CONT_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-Controller.sh
 	if [ -f "$CONT_INSTALL_UPGRADE_FILE" ]; then
@@ -151,16 +162,6 @@ chown -R nobody:users /config
 
 # Start the AppDynamics Services
 echo "Starting AppDynamics Services"
-
-if [ "$EC" = "true" ]; then
-	EC_START_FILE=/your-platform-install/startup-scripts/start-EC.sh
-	if [ -f "$EC_START_FILE" ]; then
-		chmod +x $EC_START_FILE
-		bash $EC_START_FILE
-	else
-		echo "EC Server startup file not found here - $EC_START_FILE"
-	fi
-fi
 
 if [ "$CONT" = "true" ]; then
 	CONT_START_FILE=/your-platform-install/startup-scripts/start-Controller.sh
