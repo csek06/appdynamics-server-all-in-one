@@ -1,14 +1,19 @@
 #!/bin/bash
 
 # check if Events Service is installed
-if [ -f /config/appdynamics/controller/events-service/processor/bin/events-service.sh ]; then
-	cd /config/appdynamics/platform/platform-admin/archives/platform-configuration/
-	INSTALLED_VERSION=$(grep -oPz '(events-service\"\s.*version\:\s\")\K(.*?)(?=\"\s.*build)' * | tr -d '\0')
+if [ -f /config/appdynamics/events-service/processor/bin/events-service.sh ]; then
+	cd /config/appdynamics/events-service/processor
+	INSTALLED_VERSION=$(grep -oP '(version=)\K(.*?$)' version.txt)
 	echo "Events Service: $INSTALLED_VERSION is installed"
 	# check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
 else
-	echo "Installing Events Service"
-	cd /config/appdynamics/platform/platform-admin/bin
-	./platform-admin.sh install-events-service  --profile dev --hosts localhost
+	# check if enterprise console is installed
+	if [ ! -f /config/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
+		echo "Please install Enterprise Console on Host and map appdata to /config"
+	else
+		echo "Installing Events Service"
+		cd /config/appdynamics/enterprise-console/platform-admin/bin
+		./platform-admin.sh install-events-service  --profile dev --hosts $CONTROLLER_HOST
+	fi
 fi
 

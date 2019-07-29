@@ -8,7 +8,7 @@ dpkg-reconfigure tzdata
 
 # Check for Install Scenario Variable
 if [ -z $SCENARIO ]; then
-	SCENARIO=ECESCONTEUM
+	SCENARIO=ECCONT
 fi
 
 if [[ $SCENARIO = *EC* ]]; then
@@ -31,7 +31,10 @@ if [[ $SCENARIO = *MA* ]]; then
 	echo "Platform will use Machine Agent";
 	MA=true
 fi
-
+if [[ $SCENARIO = *DA* ]]; then
+	echo "Platform will use Database Agent";
+	DA=true
+fi
 
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
@@ -128,7 +131,17 @@ if [ "$MA" = "true" ]; then
 		chmod +x $MA_INSTALL_UPGRADE_FILE
 		bash $MA_INSTALL_UPGRADE_FILE
 	else
-		echo "EUM Server install file not found here - $EUM_INSTALL_UPGRADE_FILE"
+		echo "Machine Agent install file not found here - $MA_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
+if [ "$DA" = "true" ]; then
+	DA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-DA.sh
+	if [ -f "$DA_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $DA_INSTALL_UPGRADE_FILE
+		bash $DA_INSTALL_UPGRADE_FILE
+	else
+		echo "Database Agent install file not found here - $DA_INSTALL_UPGRADE_FILE"
 	fi
 fi
 
@@ -197,9 +210,19 @@ if [ "$MA" = "true" ]; then
 	fi
 fi
 
+if [ "$DA" = "true" ]; then
+	DA_START_FILE=/your-platform-install/startup-scripts/start-DA.sh
+	if [ -f "$DA_START_FILE" ]; then
+		chmod +x $DA_START_FILE
+		bash $DA_START_FILE
+	else
+		echo "Database Agent startup file not found here - $DA_START_FILE"
+	fi
+fi
+
 if [ "$CONT" = "true" ]; then
 	if [ -f /config/license.lic ]; then
-		mv -f /config/license.lic /config/appdynamics/controller/controller/
+		mv -f /config/license.lic /config/appdynamics/controller/
 	fi
 fi
 
