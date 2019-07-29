@@ -64,6 +64,14 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * MA = Machine Agent
 * DA = Database Agent 
 
+### Port Requirements for Components (Expose these at the container via -p command)
+* Enterprise Console: 9191
+* Controller: 8090, 8181
+* Events Service: 9080, 9081
+* End User Monitoring: 7001, 7002
+* Machine Agent: No inbound communication (no need to expose)
+* Database Agent: No inbound communication (no need to expose)
+
 ### (DEFAULT Installation) Enterprise Console and Controller
 ```
 docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
@@ -73,7 +81,7 @@ Additional Optional Variables
 
 ### Install Enterprise Console, Controller, Events Service
 ```
-docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -e SCENARIO=ECCONTES -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -p 9080:9080 -p 9081:9081 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -e SCENARIO=ECCONTES -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 ### Install End User Monitoring Server
 ```
