@@ -2,6 +2,8 @@
 
 # initialize variables
 MACHINE_AGENT_HOME=/config/appdynamics/machine-agent
+cd $MACHINE_AGENT_HOME
+
 if [ -z $CONTROLLER_HOST ]; then
 	CONTROLLER_HOST="localhost"
 fi
