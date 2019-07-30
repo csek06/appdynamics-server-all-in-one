@@ -1,7 +1,8 @@
 #!/bin/bash
-
+cd /config
 # Check for install - install if not found.
-if [ ! -f /config/appdynamics/machine-agent/bin/machine-agent ]; then
+MA_DIR=/config/appdynamics/machine-agent
+if [ ! -f $MA_DIR/bin/machine-agent ]; then
 	#Check the latest version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=machine&os=linux&platform_admin_os=&events=&eum="
 	MA_VERSION=$(grep -oP '(?:64-bit linux \(zip\)[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
@@ -22,7 +23,9 @@ if [ ! -f /config/appdynamics/machine-agent/bin/machine-agent ]; then
 		echo "file downloaded"
 	fi
 	echo "Unzipping: $FILENAME"
-	unzip -q -d /config/appdynamics/machine-agent/ /config/$FILENAME
+	
+	mkdir -p $MA_DIR
+	unzip -q /config/$FILENAME -d $MA_DIR
 	echo "Unzip complete"
 	rm /config/$FILENAME
 else
