@@ -12,23 +12,23 @@ if [ -z $SCENARIO ]; then
 fi
 
 if [[ $SCENARIO = *EC* ]]; then
-	echo "Platform will use EC";
+	echo "Container will use EC";
 	EC=true
 fi
 if [[ $SCENARIO = *ES* ]]; then
-	echo "Platform will use ES";
+	echo "Container will use ES";
 	ES=true
 fi
 if [[ $SCENARIO = *CONT* ]]; then
-	echo "Platform will use Controller";
+	echo "Container will use Controller";
 	CONT=true
 fi
 if [[ $SCENARIO = *EUM* ]]; then
-	echo "Platform will use EUM";
+	echo "Container will use EUM";
 	EUM=true
 fi
 if [[ $SCENARIO = *AA* ]]; then
-	echo "Platform will use Analytics Agent";
+	echo "Container will use Analytics Agent";
 	AA=true
 	# must also have MA
 	if [[ ! $SCENARIO = *MA* ]]; then
@@ -37,11 +37,11 @@ if [[ $SCENARIO = *AA* ]]; then
 	fi
 fi
 if [[ $SCENARIO = *MA* ]]; then
-	echo "Platform will use Machine Agent";
+	echo "Container will use Machine Agent";
 	MA=true
 fi
 if [[ $SCENARIO = *DA* ]]; then
-	echo "Platform will use Database Agent";
+	echo "Container will use Database Agent";
 	DA=true
 fi
 
