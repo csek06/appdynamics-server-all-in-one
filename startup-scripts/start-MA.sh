@@ -40,11 +40,17 @@ MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${ENABLE_SIM_DOCKER}"
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
 
 MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
+MA_PID_FILE=$MACHINE_AGENT_HOME/machine-agent.id
 if [ -f "$MA_FILE" ]; then
+	if [ -f "$MA_PID_FILE" ]; then
+		rm $MA_PID_FILE
+	fi
 	echo "Starting Machine Agent"
 	# Start Machine Agent
-	echo java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
-	java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
+	#echo java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
+	#java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
+	echo $MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}
+	$MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}
 else
 	echo "Machine Agent File not found here - $MA_FILE"
 fi
