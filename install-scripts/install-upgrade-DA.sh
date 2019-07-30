@@ -4,10 +4,10 @@
 if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 	#Check the latest version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=db&os=linux&platform_admin_os=&events=&eum="
-	DB_VERSION=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+	DA_VERSION=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
 	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
 	FILENAME=$(grep -oP '(?:filename\"\:\")\K(db-agent-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-	echo "Latest version on appdynamics is" $DB_VERSION
+	echo "Latest version on appdynamics is" $DA_VERSION
 	echo "DOWNLOAD_PATH: $DOWNLOAD_PATH"
 	echo "FILENAME: $FILENAME"
 	rm -f tmpout.json
@@ -23,7 +23,9 @@ if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 		echo "file downloaded"
 	fi
 	echo "Unzipping: $FILENAME"
-	unzip -q /config/$FILENAME -d /config/appdynamics/database-agent/ 
+	DA_DIR=/config/appdynamics/database-agent
+	mkdir -p $DA_DIR
+	unzip -q /config/$FILENAME -d $DA_DIR
 	echo "Unzip complete"
 	rm /config/$FILENAME
 else
