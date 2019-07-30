@@ -72,7 +72,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * Controller: 8090, 8181
 * Events Service: 9080, 9081
 * End User Monitoring: 7001, 7002
-* Custom Geo Server: 80 (Configurable, internal container port needs to be 80 however)
+* Custom Geo Server: 8080 (Configurable, internal container port needs to be 8080 however)
 * Machine Agent: No inbound communication (no need to expose)
 * Database Agent: No inbound communication (no need to expose)
 * Analytics Agent: 9090, 9091
