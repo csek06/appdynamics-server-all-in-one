@@ -2,7 +2,7 @@
 cd /config
 # Check for install - install if not found.
 DA_DIR=/config/appdynamics/database-agent
-if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
+if [ ! -f $DA_DIR/db-agent.jar ]; then
 	#Check the latest version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=db&os=linux&platform_admin_os=&events=&eum="
 	DA_VERSION=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
@@ -13,7 +13,7 @@ if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 	echo "FILENAME: $FILENAME"
 	rm -f tmpout.json
 
-	# check if user downloaded latest EUM server binary
+	# check if user downloaded latest DA  binary
 	if [ -f /config/$FILENAME ]; then
 		echo "Found latest Database Agent '$FILENAME' in /config/ "
 	else
