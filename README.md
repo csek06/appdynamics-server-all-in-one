@@ -71,6 +71,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * End User Monitoring: 7001, 7002
 * Machine Agent: No inbound communication (no need to expose)
 * Database Agent: No inbound communication (no need to expose)
+* Analytics Agent: 9090, 9091
 
 ### (DEFAULT Installation) Enterprise Console and Controller
 ```
