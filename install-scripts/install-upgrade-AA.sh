@@ -22,7 +22,7 @@ if [ -z $CONTROLLER_KEY ]; then
 	X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
 	JSESSIONID_H=$(grep -oP '(JSESSIONID\s)\K(.*)?(?=$)' cookie.appd)
 	CONTROLLER_KEY=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
-	#rm cookie.appd
+	rm cookie.appd
 fi
 if [ -z $GLOBAL_ACCOUNT_NAME ]; then
 	# Connect to Controller and obtain the AccessKey
@@ -30,11 +30,11 @@ if [ -z $GLOBAL_ACCOUNT_NAME ]; then
 	X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
 	JSESSIONID_H=$(grep -oP '(JSESSIONID\s)\K(.*)?(?=$)' cookie.appd)
 	GLOBAL_ACCOUNT_NAME=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:globalAccountName\"\s\:\s\")\K(.*?)(?=\"\,)')
-	#rm cookie.appd
+	rm cookie.appd
 fi
 
 
-AA_FILE=/config/appdynamics/machine-agent/monitors/analytics-agent/conf/analytics-agent.properties
+AA_FILE=$MACHINE_AGENT_HOME/monitors/analytics-agent/conf/analytics-agent.properties
 if [ -f "$AA_FILE" ]; then
 	echo "Setting analytics-agent.properties"
 	sed -i 's,http.event.endpoint=.*,http.event.endpoint=http://$EVENTS_SERVICE_HOST:$EVENTS_SERVICE_PORT,' $AA_FILE
@@ -43,4 +43,10 @@ if [ -f "$AA_FILE" ]; then
 	sed -i 's,http.event.accessKey=.*,http.event.accessKey=$CONTROLLER_KEY,' $AA_FILE
 else
 	echo "Analytics Agent File not found here - $AA_FILE"
+fi 
+MONITOR_FILE=$MACHINE_AGENT_HOME/monitors/analytics-agent/monitor.xml
+if [ -f "$MONITOR_FILE" ]; then
+	sed -i 's,<enabled>false</enabled>.*,<enabled>true</enabled>,' $MONITOR_FILE
+else
+	echo "Analytics Monitor File not found here - $MONITOR_FILE"
 fi 
