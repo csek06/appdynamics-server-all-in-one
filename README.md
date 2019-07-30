@@ -140,8 +140,7 @@ Once installed, open the WebUI at http://CONTROLLERHOST:9191/ and validate that 
 2. Navigate to http://CONTROLLERHOST:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
-* 2019-07-30 - Implemented Analytics Agent, minor code fixes
-* 2019-07-30 - Implemented Deployment Sizing Variable, minor code fixes
+* 2019-07-30 - Implemented Analytics Agent, Implemented Deployment Sizing Variable, minor code fixes
 * 2019-03-14 - Implemented Database Agent
 * 2019-03-11 - Implemented Machine Agent
 * 2019-03-05 - Separated install/startup scripts - Instrumented Install Scenarios
