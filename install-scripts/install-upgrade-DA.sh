@@ -23,7 +23,7 @@ if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 		echo "file downloaded"
 	fi
 	echo "Unzipping: $FILENAME"
-	unzip -q -d /config/appdynamics/database-agent/ /config/$FILENAME
+	unzip -q /config/$FILENAME -d /config/appdynamics/database-agent/ 
 	echo "Unzip complete"
 	rm /config/$FILENAME
 else

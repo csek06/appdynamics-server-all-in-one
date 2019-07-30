@@ -23,7 +23,7 @@ if [ ! -f /config/appdynamics/machine-agent/bin/machine-agent ]; then
 		echo "file downloaded"
 	fi
 	echo "Unzipping: $FILENAME"
-	unzip -q -d /config/appdynamics/machine-agent/ /config/$FILENAME
+	unzip -q /config/$FILENAME -d /config/appdynamics/machine-agent/ 
 	echo "Unzip complete"
 	rm /config/$FILENAME
 else
