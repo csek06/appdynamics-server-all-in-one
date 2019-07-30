@@ -62,6 +62,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * CONT = Controller
 * ES = Events Service
 * EUM = End User Monitoring Server
+* GEO = Custom Geo Server for Browser RUM
 * MA = Machine Agent
 * AA = Analytics Agent
 * DA = Database Agent 
@@ -71,6 +72,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * Controller: 8090, 8181
 * Events Service: 9080, 9081
 * End User Monitoring: 7001, 7002
+* Custom Geo Server: 80 (Configurable, internal container port needs to be 80 however)
 * Machine Agent: No inbound communication (no need to expose)
 * Database Agent: No inbound communication (no need to expose)
 * Analytics Agent: 9090, 9091
@@ -97,6 +99,11 @@ docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:
 
 Additional Optional Variables
 * EUM_SIZE - (demo, split) Split is a production level install. Ensure you have [proper Hardware requirements](https://docs.appdynamics.com/display/latest/EUM+Server+Requirements)
+
+### Install Custom Geo Server for Browser RUM
+```
+docker run -d --name="appdynamics-server-GEO" --net="host" -p 80:80 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=GEO -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
 
 ### Install Machine Agent
 ```
@@ -140,6 +147,7 @@ Once installed, open the WebUI at http://CONTROLLERHOST:9191/ and validate that 
 2. Navigate to http://CONTROLLERHOST:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
+* 2019-07-31 - Implemented Custom Geo Server for Browser RUM
 * 2019-07-30 - Implemented Analytics Agent, Implemented Deployment Sizing Variable, minor code fixes
 * 2019-03-14 - Implemented Database Agent
 * 2019-03-11 - Implemented Machine Agent
