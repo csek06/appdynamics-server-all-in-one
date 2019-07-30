@@ -17,7 +17,7 @@ if [ -z $CONTROLLER_KEY ]; then
 	rm cookie.appd
 fi
 if [ -z $DB_AGENT_NAME ]; then
-	DB_AGENT_NAME="MY_DB_Agent"
+	DB_AGENT_NAME=$(hostname)
 fi 
 if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
 	ENABLE_CONTAINERIDASHOSTID="false"
