@@ -50,3 +50,10 @@ if [ -f "$MONITOR_FILE" ]; then
 else
 	echo "Analytics Monitor File not found here - $MONITOR_FILE"
 fi 
+
+PID_FILE=$MACHINE_AGENT_HOME/monitors/analytics-agent/analytics-agent.id
+# remove pid file if exists
+if [ -f "$PID_FILE" ]; then
+	echo "removing PID File ${PID_FILE}"
+	rm $PID_FILE
+fi 
