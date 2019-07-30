@@ -13,6 +13,7 @@ NOTE - This should only be used for Demo / Small environments and is not intende
 * Events Server
 * EUM Server
 * Machine Agent
+* Analytics Agent (When chosen, will also run Machine Agent as its bundled)
 * Database Agent
 
 ## System Requirements
@@ -62,6 +63,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * ES = Events Service
 * EUM = End User Monitoring Server
 * MA = Machine Agent
+* AA = Analytics Agent
 * DA = Database Agent 
 
 ### Port Requirements for Components (Expose these at the container via -p command)
@@ -89,7 +91,7 @@ Additional Optional Variables
 
 ### Install End User Monitoring Server
 ```
-docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENTS_SERVICE_HOST=192.168.2.1 -e EUM_HOST=192.168.2.1 -e CONTROLLER_HOST=192.168.2.1 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENTS_SERVICE_HOST=192.168.2.X -e EUM_HOST=192.168.2.X -e CONTROLLER_HOST=192.168.2.X -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 * Make note of the added 'EVENT_SERVICE_HOST', 'EUM_HOST', and 'CONTROLLER_HOST' variables. These reference the host(s) in which ES/CONT/EUM is installed and running and should be modified.
 
@@ -101,7 +103,7 @@ Additional Optional Variables
 docker run -d --name="appdynamics-server-MA" --net="host" -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -e CONTROLLER_PORT=8090 -e SCENARIO=MA -e -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 * CONTROLLER_HOST - optional if running controller on same host
-* CONTROLLER_PORT - optional if running controller on same host
+* CONTROLLER_PORT - optional if running controller with default port
 
 Additional Optional Variables
 * ENABLE_SIM - (true | false) Enable server visibility for container
@@ -111,12 +113,22 @@ Additional Optional Variables
    -v /var/run/docker.sock:/var/run/docker.sock:ro -v /:/:ro
    ```
 
+### Install Analytics Agent
+```
+docker run -d --name="appdynamics-server-AA" --net="host" -p 9090:9090 -p 9091:9091 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e EVENTS_SERVICE_HOST=192.168.2.X -e EVENTS_SERVICE_PORT=9080 -e CONTROLLER_HOST=192.168.2.X -e CONTROLLER_PORT=8090 -e SCENARIO=AA -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
+* CONTROLLER_HOST - optional if running controller on same host
+* CONTROLLER_PORT - optional if running controller with default port
+* EVENTS_SERVICE_HOST - optional if running events service on same host
+* EVENTS_SERVICE_PORT - optional if running events service with default port
+
+
 ### Install Database Agent
 ```
 docker run -d --name="appdynamics-server-DA" --net="host" -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -e CONTROLLER_PORT=8090 -e SCENARIO=DA -e -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 * CONTROLLER_HOST - optional if running controller on same host
-* CONTROLLER_PORT - optional if running controller on same host
+* CONTROLLER_PORT - optional if running controller with default port
 
 # Post Install Validation Steps
 The install process takes about 15 minutes on recent desktops. You can monitor the install process via the logs.
@@ -128,8 +140,9 @@ Once installed, open the WebUI at http://CONTROLLERHOST:9191/ and validate that 
 2. Navigate to http://CONTROLLERHOST:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
+* 2019-07-30 - Implemented Analytics Agent, minor code fixes
 * 2019-07-30 - Implemented Deployment Sizing Variable, minor code fixes
-* 2019-03-14 - Implemented Database Agent, Deployment Sizing Variable
+* 2019-03-14 - Implemented Database Agent
 * 2019-03-11 - Implemented Machine Agent
 * 2019-03-05 - Separated install/startup scripts - Instrumented Install Scenarios
 * 2019-02-28 - Release 1.0.0 - Removed manual post-installation steps. Everything is now automatic!
