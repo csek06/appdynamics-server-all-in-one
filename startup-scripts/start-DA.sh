@@ -27,12 +27,14 @@ DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.agent.accountAccessKey=${CONTROLLER_
 #DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.controller.ssl.enabled=${CONTROLLER_SSL_ENABLED}"
 DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
 
-DA_FILE=$DATABASE_AGENT_HOME/db-agent.jar
+DA_FILE=$DATABASE_AGENT_HOME/start-dbagent
 if [ -f "$DA_FILE" ]; then
 	echo "Starting Database Agent"
 	# Start Database Agent
-	echo java ${DA_PROPERTIES} -jar ${DA_FILE}
-	java ${DA_PROPERTIES} -jar ${DA_FILE}
+	#echo java ${DA_PROPERTIES} -jar ${DA_FILE}
+	#java ${DA_PROPERTIES} -jar ${DA_FILE}
+	echo ${DA_FILE} ${DA_PROPERTIES}
+	$DA_FILE ${DA_PROPERTIES}
 else
 	echo "Database Agent File not found here - $DA_FILE"
 fi
