@@ -28,7 +28,11 @@ else
 	VARFILE=/your-platform-install/install-scripts/response-eum.varfile
 	if [ -f "$VARFILE" ];then 
 		if [ -z $EVENT_SERVICE_HOST ]; then 
-			EVENT_SERVICE_HOST=localhost
+			if [ -z $CONTROLLER_HOST ]; then
+				EVENT_SERVICE_HOST=localhost
+			else
+				EVENT_SERVICE_HOST=$CONTROLLER_HOST
+			fi
 		fi
 		if [ -z $EUM_SIZE ]; then
 			EUM_SIZE=demo
