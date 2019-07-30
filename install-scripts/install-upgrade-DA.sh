@@ -13,6 +13,7 @@ if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 	rm -f tmpout.json
 
 	# check if user downloaded latest EUM server binary
+	cd /config
 	if [ -f /config/$FILENAME ]; then
 		echo "Found latest Database Agent '$FILENAME' in /config/ "
 	else
