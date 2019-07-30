@@ -37,10 +37,10 @@ fi
 AA_FILE=/config/appdynamics/machine-agent/monitors/analytics-agent/conf/analytics-agent.properties
 if [ -f "$AA_FILE" ]; then
 	echo "Setting analytics-agent.properties"
-	sed -i s/http.event.endpoint=.*/http.event.endpoint=http:\/\/$EVENTS_SERVICE_HOST:$EVENTS_SERVICE_PORT/ $AA_FILE
-	sed -i s/ad.controller.url=.*/ad.controller.url=http:\/\/$CONTROLLER_HOST:$CONTROLLER_PORT/ $AA_FILE
-	sed -i s/http.event.accountName=.*/http.event.accountName=$GLOBAL_ACCOUNT_NAME/ $AA_FILE
-	sed -i s/http.event.accessKey=.*/http.event.accessKey=$CONTROLLER_KEY/ $AA_FILE
+	sed -i 's,http.event.endpoint=.*,http.event.endpoint=http://$EVENTS_SERVICE_HOST:$EVENTS_SERVICE_PORT,' $AA_FILE
+	sed -i 's,ad.controller.url=.*,ad.controller.url=http://$CONTROLLER_HOST:$CONTROLLER_PORT,' $AA_FILE
+	sed -i 's,http.event.accountName=.*,http.event.accountName=$GLOBAL_ACCOUNT_NAME,' $AA_FILE
+	sed -i 's,http.event.accessKey=.*,http.event.accessKey=$CONTROLLER_KEY,' $AA_FILE
 else
 	echo "Analytics Agent File not found here - $AA_FILE"
 fi 
