@@ -16,7 +16,9 @@ if [ -z $CONTROLLER_KEY ]; then
 	CONTROLLER_KEY=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 	rm cookie.appd
 fi
-
+if [ -z $DB_AGENT_NAME ]; then
+	DB_AGENT_NAME="MY_DB_Agent"
+fi 
 if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
 	ENABLE_CONTAINERIDASHOSTID="false"
 fi
@@ -26,6 +28,7 @@ DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.controller.port=${CONTROLLER_PORT}"
 DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.agent.accountAccessKey=${CONTROLLER_KEY}"
 #DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.controller.ssl.enabled=${CONTROLLER_SSL_ENABLED}"
 DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
+DA_PROPERTIES="$DA_PROPERTIES -Ddbagent.name=${DB_AGENT_NAME}"
 
 DA_FILE=$DATABASE_AGENT_HOME/start-dbagent
 if [ -f "$DA_FILE" ]; then
