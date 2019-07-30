@@ -77,12 +77,15 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 Additional Optional Variables
-* CONTROLLER_SIZE - (demo, small, medium, large, extra-large) Ensure you have [proper Hardware requirements](https://docs.appdynamics.com/display/latest/Controller+System+Requirements)!
+* CONTROLLER_SIZE - (demo, small, medium, large, extra-large) Default is demo. Ensure you have [proper Hardware requirements](https://docs.appdynamics.com/display/latest/Controller+System+Requirements)!
 
 ### Install Enterprise Console, Controller, Events Service
 ```
 docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -p 9080:9080 -p 9081:9081 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e CONTROLLER_HOST=192.168.2.X -e SCENARIO=ECCONTES -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
+Additional Optional Variables
+* ES_SIZE - (dev, prod) Default is dev. Ensure you have [proper Hardware requirements] (https://docs.appdynamics.com/display/PRO45/Install+the+Events+Service+on+Linux#InstalltheEventsServiceonLinux-deployinganeventsservicecluster)!
+
 ### Install End User Monitoring Server
 ```
 docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENT_SERVICE_HOST=192.168.2.1 -e EUM_HOST=192.168.2.1 -e CONTROLLER_HOST=192.168.2.1 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
