@@ -1,6 +1,7 @@
 #!/bin/bash
-
+cd /config
 # Check for install - install if not found.
+DA_DIR=/config/appdynamics/database-agent
 if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 	#Check the latest version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=db&os=linux&platform_admin_os=&events=&eum="
@@ -13,7 +14,6 @@ if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 	rm -f tmpout.json
 
 	# check if user downloaded latest EUM server binary
-	cd /config
 	if [ -f /config/$FILENAME ]; then
 		echo "Found latest Database Agent '$FILENAME' in /config/ "
 	else
@@ -23,7 +23,6 @@ if [ ! -f /config/appdynamics/database-agent/bin/database-agent ]; then
 		echo "file downloaded"
 	fi
 	echo "Unzipping: $FILENAME"
-	DA_DIR=/config/appdynamics/database-agent
 	mkdir -p $DA_DIR
 	unzip -q /config/$FILENAME -d $DA_DIR
 	echo "Unzip complete"
