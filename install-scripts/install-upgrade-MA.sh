@@ -13,6 +13,7 @@ if [ ! -f /config/appdynamics/machine-agent/bin/machine-agent ]; then
 	rm -f tmpout.json
 
 	# check if user downloaded latest EUM server binary
+	cd /config
 	if [ -f /config/$FILENAME ]; then
 		echo "Found latest Machine Agent '$FILENAME' in /config/ "
 	else
