@@ -11,9 +11,12 @@ else
 	if [ ! -f /config/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
 		echo "Please install Enterprise Console on Host and map appdata to /config"
 	else
+		if [ -z $ES_SIZE ]; then
+			ES_SIZE="dev"			
+		fi
 		echo "Installing Events Service"
 		cd /config/appdynamics/enterprise-console/platform-admin/bin
-		./platform-admin.sh install-events-service  --profile dev --hosts $CONTROLLER_HOST
+		./platform-admin.sh install-events-service  --profile $ES_SIZE --hosts $CONTROLLER_HOST
 	fi
 fi
 
