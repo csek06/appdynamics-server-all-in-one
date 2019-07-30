@@ -27,6 +27,15 @@ if [[ $SCENARIO = *EUM* ]]; then
 	echo "Platform will use EUM";
 	EUM=true
 fi
+if [[ $SCENARIO = *AA* ]]; then
+	echo "Platform will use Analytics Agent";
+	AA=true
+	# must also have MA
+	if [[ ! $SCENARIO = *MA* ]]; then
+		echo "Adding MA to SCENARIO variable";
+		SCENARIO="$SCENARIO MA"
+	fi
+fi
 if [[ $SCENARIO = *MA* ]]; then
 	echo "Platform will use Machine Agent";
 	MA=true
@@ -141,6 +150,16 @@ if [ "$MA" = "true" ]; then
 	if [ -f "$MA_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $MA_INSTALL_UPGRADE_FILE
 		bash $MA_INSTALL_UPGRADE_FILE
+		# adding analytics agent if applicable
+		if [ "$AA" = "true" ]; then
+			AA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-AA.sh
+			if [ -f "$AA_INSTALL_UPGRADE_FILE" ]; then
+				chmod +x $AA_INSTALL_UPGRADE_FILE
+				bash $AA_INSTALL_UPGRADE_FILE
+			else
+				echo "Analytics Agent install file not found here - $AA_INSTALL_UPGRADE_FILE"
+			fi
+		fi
 	else
 		echo "Machine Agent install file not found here - $MA_INSTALL_UPGRADE_FILE"
 	fi

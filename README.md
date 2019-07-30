@@ -88,7 +88,7 @@ Additional Optional Variables
 
 ### Install End User Monitoring Server
 ```
-docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENT_SERVICE_HOST=192.168.2.1 -e EUM_HOST=192.168.2.1 -e CONTROLLER_HOST=192.168.2.1 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENTS_SERVICE_HOST=192.168.2.1 -e EUM_HOST=192.168.2.1 -e CONTROLLER_HOST=192.168.2.1 -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 * Make note of the added 'EVENT_SERVICE_HOST', 'EUM_HOST', and 'CONTROLLER_HOST' variables. These reference the host(s) in which ES/CONT/EUM is installed and running and should be modified.
 
