@@ -44,6 +44,10 @@ if [[ $SCENARIO = *DA* ]]; then
 	echo "Container will use Database Agent";
 	DA=true
 fi
+if [[ $SCENARIO = *GEO* ]]; then
+	echo "Container will use Custom Geo Server";
+	GEO=true
+fi
 
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
@@ -172,6 +176,16 @@ if [ "$DA" = "true" ]; then
 		bash $DA_INSTALL_UPGRADE_FILE
 	else
 		echo "Database Agent install file not found here - $DA_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
+if [ "$GEO" = "true" ]; then
+	GEO_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-GEO.sh
+	if [ -f "$GEO_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $GEO_INSTALL_UPGRADE_FILE
+		bash $GEO_INSTALL_UPGRADE_FILE
+	else
+		echo "Custom Geo Server install file not found here - $GEO_INSTALL_UPGRADE_FILE"
 	fi
 fi
 
