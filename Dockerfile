@@ -15,8 +15,7 @@ usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
 mkdir -p /your-platform-install/defaults && \
 mkdir -p /your-platform-install/install-scripts && \
-mkdir -p /your-platform-install/startup-scripts && \
-mkdir -p /config/tomcat
+mkdir -p /your-platform-install/startup-scripts
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
 COPY install-scripts/ /your-platform-install/defaults/install-scripts/
