@@ -16,7 +16,7 @@ mkdir -p /etc/my_init.d && \
 mkdir -p /your-platform-install/defaults && \
 mkdir -p /your-platform-install/install-scripts && \
 mkdir -p /your-platform-install/startup-scripts && \
-mkdir -p /config/tomcat9 && \
+mkdir -p /config/tomcat && \
 RUN export JAVA_HOME=/usr/lib/jvm/zulu-12-amd64 && \
 RUN export CATALINA_HOME=/config/tomcat && \
 RUN export CATALINA_PID=/config/tomcat/temp/tomcat.pid && \
@@ -31,7 +31,7 @@ COPY startup-scripts/ /your-platform-install/defaults/startup-scripts/
 RUN chmod +x /etc/my_init.d/firstrun.sh
 
 RUN useradd =s /bin/false -d /config/tomcat tomcat
-RUN chgrp -R tomcat /opt/tomcat
+RUN chgrp -R tomcat /config/tomcat
 RUN chmod -R g+r /config/tomcat/conf
 RUN chmod g+x /config/tomcat/conf
 RUN chown -R tomcat /config/tomcat/webapps/ /config/tomcat/work/ /config/tomcat/temp /config/tomcat/logs/
