@@ -254,6 +254,16 @@ if [ "$DA" = "true" ]; then
 	fi
 fi
 
+if [ "$GEO" = "true" ]; then
+	GEO_START_FILE=/your-platform-install/startup-scripts/start-GEO.sh
+	if [ -f "$GEO_START_FILE" ]; then
+		chmod +x $GEO_START_FILE
+		bash $GEO_START_FILE
+	else
+		echo "Custom Geo Server startup file not found here - $GEO_START_FILE"
+	fi
+fi
+
 if [ "$CONT" = "true" ]; then
 	if [ -f /config/license.lic ]; then
 		mv -f /config/license.lic /config/appdynamics/controller/
