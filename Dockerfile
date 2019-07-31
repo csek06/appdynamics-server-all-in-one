@@ -15,7 +15,11 @@ usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
 mkdir -p /your-platform-install/defaults && \
 mkdir -p /your-platform-install/install-scripts && \
-mkdir -p /your-platform-install/startup-scripts
+mkdir -p /your-platform-install/startup-scripts && \
+RUN export JAVA_HOME=/usr/lib/jvm/zulu-12-amd64 && \
+RUN export CATALINA_HOME=/usr/share/tomcat9 && \
+RUN export CATALINA_PID=/var/lib/tomcat9/tomcat.pid && \
+RUN export CATALINA_BASE=/var/lib/tomcat9
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
 COPY install-scripts/ /your-platform-install/defaults/install-scripts/
