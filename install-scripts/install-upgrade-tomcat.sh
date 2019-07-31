@@ -2,6 +2,7 @@
 
 # initialize variables
 TOMCAT_HOME=/config/tomcat
+mkdir -p $TOMCAT_HOME
 cd $TOMCAT_HOME
 
 if [ -f "$TOMCAT_HOME" ]; then
