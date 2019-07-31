@@ -2,7 +2,7 @@
 
 # initialize variables
 TOMCAT_HOME=/config/tomcat
-mkdir -p ${TOMCAT_HOME}
+mkdir -p $TOMCAT_HOME
 cd $TOMCAT_HOME
 
 export JAVA_HOME=/usr/lib/jvm/zulu-12-amd64
