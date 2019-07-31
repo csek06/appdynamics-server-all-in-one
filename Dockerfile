@@ -7,7 +7,7 @@ VOLUME ["/config"]
 RUN export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive && \
 RUN export JAVA_HOME="/usr/lib/jvm/zulu-12-amd64" && \
 RUN export CATALINA_HOME="/config/tomcat" && \
-RUN export CATALINA_PID="/config/tomcat/temp/tomcat.pid && \
+RUN export CATALINA_PID="/config/tomcat/temp/tomcat.pid" && \
 RUN export CATALINA_BASE="/config/tomcat" && \
 apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9 && \
 apt-add-repository 'deb http://repos.azulsystems.com/ubuntu stable main' && \
