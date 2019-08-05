@@ -16,6 +16,9 @@ if [ -z $CONTROLLER_KEY ]; then
 	CONTROLLER_KEY=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 	rm cookie.appd
 fi
+if [ -z $MA_AGENT_NAME ]; then
+	MA_AGENT_NAME=$(hostname)
+fi 
 if [ -z $MA_ENABLE_SIM ]; then
 	MA_ENABLE_SIM="false"
 fi
@@ -38,6 +41,7 @@ MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.agent.accountAccessKey=${CONTROLLER_
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.sim.enabled=${MA_ENABLE_SIM}"
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${MA_ENABLE_SIM_DOCKER}"
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${MA_ENABLE_CONTAINERIDASHOSTID}"
+MA_PROPERTIES="$MA_PROPERTIES -Ddbagent.name=${MA_AGENT_NAME}"
 
 MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
 MA_PID_FILE=$MACHINE_AGENT_HOME/machine-agent.id
