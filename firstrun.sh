@@ -49,6 +49,22 @@ if [[ $SCENARIO = *GEO* ]]; then
 	GEO=true
 fi
 
+# Check for FORM variable
+if [ ! -z $FORM ]; then
+	if [ "$FORM" = "true" ]; then
+		# Check for FORM File
+		FORM_FILE=/config/your-platform.conf
+		if [ -f $FORM_FILE ]; then 
+			# set the environment variables from file
+			set -a; . $FORM_FILE; set +a
+		else 
+			# copy form file to /config
+			cp /your-platform-install/install-scripts/your-platform.conf $FORM_FILE
+			echo "Template platform file copied to /config, please update before install"
+		fi 
+	fi 
+fi
+
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
 if [ -d "/config/your-platform-install/install-scripts" ];then
