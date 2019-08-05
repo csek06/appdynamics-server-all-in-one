@@ -55,7 +55,7 @@ docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -
 * This will install the default (Enterprise Console and Controller) components in a single container. If this is not your intended install, please see the section 'Install Scenarios' below.
 
 ## FORM Feature -- Optional: Reduces number of variables needed at docker 'run' command
-This will check for and utilize the 'your-platform.conf' file located within /config directory. If you don't have the file already downlaoded/modified and placed into the directory a default will be copied over and utilized. If you intend to modify prior to installation, execute the run command, as soon as you see the file created, then stop the container, modify the file, and finally restart the container.
+This will check for and utilize the 'your-platform.conf' file located within /config directory. If you don't have the file already downlaoded/modified and placed into the directory a default will be copied over and utilized. If you intend to modify prior to installation, execute the run command with 'SCENARIO=NONE' to not install/start any services, as soon as you see the file created, then stop the container, modify the file, set/remove SCENARIO appropriately, and finally restart the container.
 For the best use of this feature, modify the entire file and copy to each host that will be running all of your appd dockers and utilize the SCENARIO variable outlined below.
 
 * To enable: add variable '-e FORM="true"' to your run command. Example below:
