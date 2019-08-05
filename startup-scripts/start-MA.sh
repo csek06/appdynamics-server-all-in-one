@@ -16,28 +16,28 @@ if [ -z $CONTROLLER_KEY ]; then
 	CONTROLLER_KEY=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 	rm cookie.appd
 fi
-if [ -z $ENABLE_SIM ]; then
-	ENABLE_SIM="false"
+if [ -z $MA_ENABLE_SIM ]; then
+	MA_ENABLE_SIM="false"
 fi
-if [ -z $ENABLE_SIM_DOCKER ]; then
-	ENABLE_SIM_DOCKER="false"
+if [ -z $MA_ENABLE_SIM_DOCKER ]; then
+	MA_ENABLE_SIM_DOCKER="false"
 else
 	# SIM and SIM Docker both need to be set to true
-	if [ "$ENABLE_SIM_DOCKER" = "true" ]; then
-		ENABLE_SIM="true"
+	if [ "$MA_ENABLE_SIM_DOCKER" = "true" ]; then
+		MA_ENABLE_SIM="true"
 	fi
 fi
-if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
-	ENABLE_CONTAINERIDASHOSTID="false"
+if [ -z $MA_ENABLE_CONTAINERIDASHOSTID ]; then
+	MA_ENABLE_CONTAINERIDASHOSTID="false"
 fi
 MA_PROPERTIES="-Dappdynamics.controller.hostName=${CONTROLLER_HOST}"
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.controller.port=${CONTROLLER_PORT}"
 #MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.agent.accountName=${ACCOUNT_NAME}"
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.agent.accountAccessKey=${CONTROLLER_KEY}"
 #MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.controller.ssl.enabled=${CONTROLLER_SSL_ENABLED}"
-MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.sim.enabled=${ENABLE_SIM}"
-MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${ENABLE_SIM_DOCKER}"
-MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.sim.enabled=${MA_ENABLE_SIM}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${MA_ENABLE_SIM_DOCKER}"
+MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${MA_ENABLE_CONTAINERIDASHOSTID}"
 
 MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
 MA_PID_FILE=$MACHINE_AGENT_HOME/machine-agent.id
