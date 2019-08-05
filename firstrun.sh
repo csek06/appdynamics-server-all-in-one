@@ -59,7 +59,7 @@ if [ ! -z $FORM ]; then
 			set -a; . $FORM_FILE; set +a
 		else 
 			# copy form file to /config
-			cp /your-platform-install/install-scripts/your-platform.conf $FORM_FILE
+			cp -f /your-platform-install/install-scripts/your-platform.conf $FORM_FILE
 			echo "Template platform file copied to /config, please update before install"
 		fi 
 	fi 
