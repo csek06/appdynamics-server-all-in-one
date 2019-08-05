@@ -19,15 +19,15 @@ fi
 if [ -z $DB_AGENT_NAME ]; then
 	DB_AGENT_NAME=$(hostname)
 fi 
-if [ -z $ENABLE_CONTAINERIDASHOSTID ]; then
-	ENABLE_CONTAINERIDASHOSTID="false"
+if [ -z $DB_ENABLE_CONTAINERIDASHOSTID ]; then
+	DB_ENABLE_CONTAINERIDASHOSTID="false"
 fi
 DA_PROPERTIES="-Dappdynamics.controller.hostName=${CONTROLLER_HOST}"
 DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.controller.port=${CONTROLLER_PORT}"
 #DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.agent.accountName=${ACCOUNT_NAME}"
 DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.agent.accountAccessKey=${CONTROLLER_KEY}"
 #DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.controller.ssl.enabled=${CONTROLLER_SSL_ENABLED}"
-DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${ENABLE_CONTAINERIDASHOSTID}"
+DA_PROPERTIES="$DA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${DB_ENABLE_CONTAINERIDASHOSTID}"
 DA_PROPERTIES="$DA_PROPERTIES -Ddbagent.name=${DB_AGENT_NAME}"
 
 DA_FILE=$DATABASE_AGENT_HOME/start-dbagent
