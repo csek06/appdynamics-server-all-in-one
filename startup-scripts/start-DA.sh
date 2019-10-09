@@ -37,6 +37,7 @@ if [ -f "$DA_FILE" ]; then
 	#echo java ${DA_PROPERTIES} -jar ${DA_FILE}
 	#java ${DA_PROPERTIES} -jar ${DA_FILE}
 	echo ${DA_FILE} ${DA_PROPERTIES}
+	chmod +x ${DA_FILE}
 	$DA_FILE ${DA_PROPERTIES}
 else
 	echo "Database Agent File not found here - $DA_FILE"

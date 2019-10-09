@@ -54,6 +54,7 @@ if [ -f "$MA_FILE" ]; then
 	#echo java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
 	#java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
 	echo $MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}
+	chmod +x $MA_FILE
 	$MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}
 else
 	echo "Machine Agent File not found here - $MA_FILE"
