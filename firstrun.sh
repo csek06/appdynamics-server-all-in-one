@@ -44,6 +44,26 @@ if [[ $SCENARIO = *DA* ]]; then
 	echo "Container will use Database Agent";
 	DA=true
 fi
+if [[ $SCENARIO = *GEO* ]]; then
+	echo "Container will use Custom Geo Server";
+	GEO=true
+fi
+
+# Check for FORM variable
+if [ ! -z $FORM ]; then
+	if [ "$FORM" = "true" ]; then
+		# Check for FORM File
+		FORM_FILE=/config/your-platform.conf
+		if [ -f $FORM_FILE ]; then 
+			# set the environment variables from file
+			set -a; . $FORM_FILE; set +a
+		else 
+			# copy form file to /config
+			cp -f /your-platform-install/defaults/install-scripts/your-platform.conf $FORM_FILE
+			echo "Template platform file copied to /config, please update before install"
+		fi 
+	fi 
+fi
 
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
@@ -175,6 +195,16 @@ if [ "$DA" = "true" ]; then
 	fi
 fi
 
+if [ "$GEO" = "true" ]; then
+	GEO_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-GEO.sh
+	if [ -f "$GEO_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $GEO_INSTALL_UPGRADE_FILE
+		bash $GEO_INSTALL_UPGRADE_FILE
+	else
+		echo "Custom Geo Server install file not found here - $GEO_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
 
 echo "Setting correct permissions"
 chown -R nobody:users /config
@@ -237,6 +267,16 @@ if [ "$DA" = "true" ]; then
 		bash $DA_START_FILE
 	else
 		echo "Database Agent startup file not found here - $DA_START_FILE"
+	fi
+fi
+
+if [ "$GEO" = "true" ]; then
+	GEO_START_FILE=/your-platform-install/startup-scripts/start-GEO.sh
+	if [ -f "$GEO_START_FILE" ]; then
+		chmod +x $GEO_START_FILE
+		bash $GEO_START_FILE
+	else
+		echo "Custom Geo Server startup file not found here - $GEO_START_FILE"
 	fi
 fi
 

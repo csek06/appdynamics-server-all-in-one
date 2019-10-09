@@ -54,6 +54,15 @@ docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -
 * If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
 * This will install the default (Enterprise Console and Controller) components in a single container. If this is not your intended install, please see the section 'Install Scenarios' below.
 
+## FORM Feature -- Optional: Reduces number of variables needed at docker 'run' command
+This will check for and utilize the 'your-platform.conf' file located within /config directory. If you don't have the file already downlaoded/modified and placed into the directory a default will be copied over and utilized. If you intend to modify prior to installation, execute the run command with 'SCENARIO=NONE' to not install/start any services, as soon as you see the file created, then stop the container, modify the file, set/remove SCENARIO appropriately, and finally restart the container.
+For the best use of this feature, modify the entire file and copy to each host that will be running all of your appd dockers and utilize the SCENARIO variable outlined below.
+
+* To enable: add variable '-e FORM="true"' to your run command. Example below:
+```
+docker run -d --name="appdynamics-server-all-in-one" --net="host" -p 9191:9191 -p 8090:8090 -p 8181:8181 -e FORM="true" -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
+
 ## Install Scenarios -- Optional Variables for the run command
 By default, this will install the latest version on download.appdynamics.com, and (IN A FUTURE RELEASE) will auto update itself to the latest version on each container start, but if you want to run a different version (to go back to the previous version perhaps), include the following environment variable in your docker run command -e VERSION="X.X.X.X" (currently only the enterprise console can be changed). If you want to change the component installation include the following environment variable in your docker run command -e SCENARIO="ECCONTESEUM" (more on this below). NOTE - you may also need to include additional variables, ensure you investigate the below sections/code.
 
@@ -62,6 +71,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * CONT = Controller
 * ES = Events Service
 * EUM = End User Monitoring Server
+* GEO = Custom Geo Server for Browser RUM
 * MA = Machine Agent
 * AA = Analytics Agent
 * DA = Database Agent 
@@ -71,6 +81,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * Controller: 8090, 8181
 * Events Service: 9080, 9081
 * End User Monitoring: 7001, 7002
+* Custom Geo Server: 8080 (Configurable, internal container port needs to be 8080 however)
 * Machine Agent: No inbound communication (no need to expose)
 * Database Agent: No inbound communication (no need to expose)
 * Analytics Agent: 9090, 9091
@@ -93,10 +104,15 @@ Additional Optional Variables
 ```
 docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=EUM -e EVENTS_SERVICE_HOST=192.168.2.X -e EUM_HOST=192.168.2.X -e CONTROLLER_HOST=192.168.2.X -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
-* Make note of the added 'EVENT_SERVICE_HOST', 'EUM_HOST', and 'CONTROLLER_HOST' variables. These reference the host(s) in which ES/CONT/EUM is installed and running and should be modified.
+* Make note of the added 'EVENTS_SERVICE_HOST', 'EUM_HOST', and 'CONTROLLER_HOST' variables. These reference the host(s) in which ES/CONT/EUM is installed and running and should be modified.
 
 Additional Optional Variables
 * EUM_SIZE - (demo, split) Split is a production level install. Ensure you have [proper Hardware requirements](https://docs.appdynamics.com/display/latest/EUM+Server+Requirements)
+
+### Install Custom Geo Server for Browser RUM
+```
+docker run -d --name="appdynamics-server-GEO" --net="host" -p 80:80 -e AppdUser="john@doe.com" -e AppdPass="XXXX" -e SCENARIO=GEO -v /path/to/config/:/config:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
 
 ### Install Machine Agent
 ```
@@ -106,8 +122,8 @@ docker run -d --name="appdynamics-server-MA" --net="host" -e AppdUser="john@doe.
 * CONTROLLER_PORT - optional if running controller with default port
 
 Additional Optional Variables
-* ENABLE_SIM - (true | false) Enable server visibility for container
-* ENABLE_SIM_DOCKER - (true | false) Enable host server visibility https://docs.appdynamics.com/display/CLOUD/Monitoring+Docker+Containers
+* MA_ENABLE_SIM - (true | false) Enable server visibility for container
+* MA_ENABLE_SIM_DOCKER - (true | false) Enable host server visibility https://docs.appdynamics.com/display/CLOUD/Monitoring+Docker+Containers
    * REQUIRED paths if true
    ```
    -v /var/run/docker.sock:/var/run/docker.sock:ro -v /:/:ro
@@ -140,6 +156,8 @@ Once installed, open the WebUI at http://CONTROLLERHOST:9191/ and validate that 
 2. Navigate to http://CONTROLLERHOST:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
+* 2019-08-05 - Implemented FORM feature: see 'FORM' section above
+* 2019-07-31 - Implemented Custom Geo Server for Browser RUM
 * 2019-07-30 - Implemented Analytics Agent, Implemented Deployment Sizing Variable, minor code fixes
 * 2019-03-14 - Implemented Database Agent
 * 2019-03-11 - Implemented Machine Agent
