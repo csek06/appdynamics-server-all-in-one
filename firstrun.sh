@@ -215,6 +215,9 @@ echo "Starting AppDynamics Services"
 if [ "$CONT" = "true" ]; then
 	CONT_START_FILE=/your-platform-install/startup-scripts/start-Controller.sh
 	if [ -f "$CONT_START_FILE" ]; then
+		if [ -f /config/license.lic ]; then
+			cp /config/license.lic /config/appdynamics/controller/
+		fi
 		chmod +x $CONT_START_FILE
 		bash $CONT_START_FILE
 	else
