@@ -85,7 +85,9 @@ if [ -d "/config/your-platform-install/install-scripts" ];then
 	done
 	mv -f /config$DIR $BACKUP_CUSTOM
 else
-	cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
+	if [ ! -d "/your-platform-install/install-scripts" ]; then
+		cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
+	fi
 fi
 
 # this will overwrite similar named files in container 
@@ -108,7 +110,9 @@ if [ -d "/config/your-platform-install/startup-scripts" ];then
 	done
 	mv -f /config$DIR $BACKUP_CUSTOM
 else
-	cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
+	if [ ! -d "/your-platform-install/startup-scripts" ]; then
+		cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
+	fi
 fi
 
 # Copy install/startup scripts to volume for later update/reconfigure
