@@ -37,6 +37,11 @@ This is intended to be a light-weight installation, however the following minimu
    * Unraid users - simply click the container in your web ui and select ">_ console"
 4. AppDynamics Software will be installed in </path/to/config>/appdynamics directory. This allows you to view/modify contents easily from your host. You can also delete and recreate the container while data persists.
 5. If your installation goes sour, backup your license file, delete the folder </path/to/config>/appdynamics and restart the container.
+6. You can monitor the the logs of your container by issuing the following command
+	```
+	docker logs -f appdynamics-server-all-in-one
+	```
+	Tip - ``` docker ps ``` - this command will list all containers
 
 ## Install On Unraid:
 On Unraid, install from the Community Applications and enter the app folder location, your Appdynamics Community Email and Password. Note: I am not storing your password or doing anything malicious it is required to download the AppDynamics binary from the website, also note is not required if you choose to download the latest version and place it in your app directory. All source code for the installation is found here on Github.
