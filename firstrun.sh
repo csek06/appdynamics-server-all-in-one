@@ -85,7 +85,9 @@ if [ -d "/config/your-platform-install/install-scripts" ];then
 	done
 	mv -f /config$DIR $BACKUP_CUSTOM
 else
-	cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
+	if [ ! -d "/your-platform-install/install-scripts" ]; then
+		cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
+	fi
 fi
 
 # this will overwrite similar named files in container 
@@ -108,7 +110,9 @@ if [ -d "/config/your-platform-install/startup-scripts" ];then
 	done
 	mv -f /config$DIR $BACKUP_CUSTOM
 else
-	cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
+	if [ ! -d "/your-platform-install/startup-scripts" ]; then
+		cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
+	fi
 fi
 
 # Copy install/startup scripts to volume for later update/reconfigure
@@ -215,6 +219,9 @@ echo "Starting AppDynamics Services"
 if [ "$CONT" = "true" ]; then
 	CONT_START_FILE=/your-platform-install/startup-scripts/start-Controller.sh
 	if [ -f "$CONT_START_FILE" ]; then
+		if [ -f /config/license.lic ]; then
+			cp /config/license.lic /config/appdynamics/controller/
+		fi
 		chmod +x $CONT_START_FILE
 		bash $CONT_START_FILE
 	else
