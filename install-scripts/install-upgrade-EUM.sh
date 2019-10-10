@@ -10,8 +10,8 @@ else
 	cd /config
 	echo "Checking EUM server version"
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
-	EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
-	EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")(?!.*dmg)\K(.*?)(?=\"\,\")' tmpout.json)
+	EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")\K.*?(?(?=\"\,\")\.sh|\.sh)' tmpout.json)
+	EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")\K.*?(?(?=\"\,\")\.sh|\.sh)' tmpout.json)
 	rm -f tmpout.json
 	# check if user downloaded latest EUM server binary
 	if [ -f /config/$EUMFILENAME ]; then
