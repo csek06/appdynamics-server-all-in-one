@@ -13,9 +13,7 @@ libaio1 numactl tzdata unzip iproute2 wget zulu-12 && \
 usermod -u 99 nobody && \
 usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
-mkdir -p /your-platform-install/defaults && \
-mkdir -p /your-platform-install/install-scripts && \
-mkdir -p /your-platform-install/startup-scripts
+mkdir -p /your-platform-install/defaults
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
 COPY install-scripts/ /your-platform-install/defaults/install-scripts/
