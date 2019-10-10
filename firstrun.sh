@@ -86,6 +86,7 @@ if [ -d "/config/your-platform-install/install-scripts" ];then
 	mv -f /config$DIR $BACKUP_CUSTOM
 else
 	if [ ! -d "/your-platform-install/install-scripts" ]; then
+		mkdir -p /your-platform-install/defaults/install-scripts
 		cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
 	fi
 fi
@@ -111,6 +112,7 @@ if [ -d "/config/your-platform-install/startup-scripts" ];then
 	mv -f /config$DIR $BACKUP_CUSTOM
 else
 	if [ ! -d "/your-platform-install/startup-scripts" ]; then
+		mkdir -p /your-platform-install/startup-scripts
 		cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
 	fi
 fi
