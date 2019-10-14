@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # initialize variables
-MACHINE_AGENT_HOME=/config/appdynamics/machine-agent
+MACHINE_AGENT_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent
 if [ -z $CONTROLLER_HOST ]; then
 	CONTROLLER_HOST="localhost"
 fi
@@ -11,10 +11,14 @@ fi
 if [ -z $CONTROLLER_KEY ]; then
 	# Connect to Controller and obtain the AccessKey
 	curl -s -c cookie.appd --user admin@customer1:appd -X GET http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/auth?action=login
-	X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
-	JSESSIONID_H=$(grep -oP '(JSESSIONID\s)\K(.*)?(?=$)' cookie.appd)
-	CONTROLLER_KEY=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
-	rm cookie.appd
+	if [ -f "cookie.appd" ]; then
+		X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
+		JSESSIONID_H=$(grep -oP '(JSESSIONID\s)\K(.*)?(?=$)' cookie.appd)
+		CONTROLLER_KEY=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
+		rm cookie.appd
+	else
+		echo "Couldn't connect MA to controller to obtain controller key"
+	fi
 fi
 if [ -z $MA_AGENT_NAME ]; then
 	MA_AGENT_NAME=$(hostname)
@@ -43,7 +47,7 @@ MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${MA_ENABLE_SIM_DOCKE
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${MA_ENABLE_CONTAINERIDASHOSTID}"
 MA_PROPERTIES="$MA_PROPERTIES -Ddbagent.name=${MA_AGENT_NAME}"
 
-MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
+MA_FILE=$APPD_INSTALL_DIR/appdynamics/machine-agent/bin/machine-agent
 MA_PID_FILE=$MACHINE_AGENT_HOME/machine-agent.id
 if [ -f "$MA_FILE" ]; then
 	if [ -f "$MA_PID_FILE" ]; then

@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # initialize variables
-TOMCAT_FILE=/config/tomcat/bin/startup.sh
-cd /config
+TOMCAT_FILE=$APPD_INSTALL_DIR/tomcat/bin/startup.sh
+cd $APPD_INSTALL_DIR
 
 if [ ! -f "$TOMCAT_FILE" ]; then
-	TOMCAT_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-tomcat.sh
+	TOMCAT_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-tomcat.sh
 	if [ -f "$TOMCAT_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $TOMCAT_INSTALL_UPGRADE_FILE
 		bash $TOMCAT_INSTALL_UPGRADE_FILE
@@ -35,30 +35,30 @@ fi
 rm -f tmpout.json
 
 # Check if Geo Server is already installed
-GEO_DIR=/config/tomcat/webapps
+GEO_DIR=$APPD_INSTALL_DIR/tomcat/webapps
 GEO_FILE=$GEO_DIR/geo/geo-ip-mappings.xml
 if [ ! -f "$GEO_FILE" ]; then
 	# check if user didn't downloaded latest Enterprise Console binary
 	if [ ! -f /config/$FILENAME ]; then
-		echo "Didn't find '$FILENAME' in /config/ - downloading instead"
+		echo "Didn't find '$FILENAME' in '$APPD_INSTALL_DIR' - downloading instead"
 		echo "Downloading Customer Geo Server version '$VERSION'"
 		TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
 		curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
 		echo "file downloaded"
 	else
-		echo "Found Custom Geo Server version:'$VERSION' - '$FILENAME' in /config/ "
+		echo "Found Custom Geo Server version:'$VERSION' - '$FILENAME' in '$APPD_INSTALL_DIR' "
 	fi
 	
 	echo "Unzipping: $FILENAME"
-	unzip -oq /config/$FILENAME GeoServer/geo/* -d $GEO_DIR
-	unzip -oq /config/$FILENAME GeoServer/README.txt -d $GEO_DIR
-	unzip -oq /config/$FILENAME GeoServer/schema.xsd -d $GEO_DIR
+	unzip -oq $APPD_INSTALL_DIR/$FILENAME GeoServer/geo/* -d $GEO_DIR
+	unzip -oq $APPD_INSTALL_DIR/$FILENAME GeoServer/README.txt -d $GEO_DIR
+	unzip -oq $APPD_INSTALL_DIR/$FILENAME GeoServer/schema.xsd -d $GEO_DIR
 	mv $GEO_DIR/GeoServer/README.txt $GEO_DIR/GeoServer/geo/
 	mv $GEO_DIR/GeoServer/schema.xsd $GEO_DIR/GeoServer/geo/
 	mv $GEO_DIR/GeoServer/geo/ $GEO_DIR/
 	rm -r $GEO_DIR/GeoServer/
 	echo "Unzip complete"
-	rm /config/$FILENAME
+	rm $APPD_INSTALL_DIR/$FILENAME
 else
 	echo "Custom Geo Server Already Installed"
 fi 
