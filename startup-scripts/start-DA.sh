@@ -17,7 +17,7 @@ if [ -z $CONTROLLER_KEY ]; then
 		CONTROLLER_KEY=$(curl http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 		rm cookie.appd
 	else
-		echo "Couldn't connect to controller to obtain controller key"
+		echo "Couldn't connect DA to controller to obtain controller key"
 	fi
 fi
 if [ -z $DB_AGENT_NAME ]; then
