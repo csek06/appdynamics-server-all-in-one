@@ -6,6 +6,38 @@ echo $TZ > /etc/timezone
 export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure tzdata
 
+# Set STANDALONE MODE = downloaded source and plan on running outside of docker
+STANDALONE=false
+
+APPD_INSTALL_DIR=/config
+mkdir -p $APPD_INSTALL_DIR
+
+APPD_SCRIPTS_DIR=/your-platform-install
+if [ "$STANDALONE" = "true" ]; then
+	APPD_SCRIPTS_DIR=.
+fi
+
+# Check for FORM variable
+if [ ! -z $FORM ]; then
+	if [ "$FORM" = "true" ]; then
+		# Check for FORM File
+		FORM_FILE=$APPD_INSTALL_DIR/your-platform.conf
+		if [ -f $FORM_FILE ]; then 
+			# set the environment variables from file
+			set -a; . $FORM_FILE; set +a
+		else
+			if [ "$STANDALONE" = "true" ]; then
+				DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.conf
+			else
+				DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.conf
+			fi
+			# copy form file to /config
+			cp -f $DEFAULT_FORM_FILE $FORM_FILE
+			echo "Template platform file copied to /config, please update before install"
+		fi 
+	fi 
+fi
+
 # Check for Install Scenario Variable
 if [ -z $SCENARIO ]; then
 	SCENARIO=ECCONT
@@ -49,79 +81,63 @@ if [[ $SCENARIO = *GEO* ]]; then
 	GEO=true
 fi
 
-# Check for FORM variable
-if [ ! -z $FORM ]; then
-	if [ "$FORM" = "true" ]; then
-		# Check for FORM File
-		FORM_FILE=/config/your-platform.conf
-		if [ -f $FORM_FILE ]; then 
-			# set the environment variables from file
-			set -a; . $FORM_FILE; set +a
-		else 
-			# copy form file to /config
-			cp -f /your-platform-install/defaults/install-scripts/your-platform.conf $FORM_FILE
-			echo "Template platform file copied to /config, please update before install"
-		fi 
-	fi 
-fi
-
 # this will overwrite similar named files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
-if [ -d "/config/your-platform-install/install-scripts" ];then
-	BACKUP_CUSTOM=/config/your-platform-install/backup-custom-install-scripts/
-	mkdir -p $BACKUP_CUSTOM
-	# Checking for custom install scripts
-	DIR=/your-platform-install/defaults/install-scripts/
-	cd $DIR
-	for filename in $(ls); do
-		FILE_CHECK=/config$DIR$filename
-		if [ -f $FILE_CHECK ]; then
-			echo "Manual install file found $filename - overwriting default"
-			cp -rf $FILE_CHECK /your-platform-install/install-scripts/
-		else
-			echo "Custom install file not found $filename - using default"
-			cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
-		fi
-	done
-	mv -f /config$DIR $BACKUP_CUSTOM
-else
-	if [ ! -d "/your-platform-install/install-scripts" ]; then
-		mkdir -p /your-platform-install/defaults/install-scripts
-		cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
-	fi
-fi
+# if [ -d "$APPD_INSTALL_DIR/your-platform-install/install-scripts" ];then
+	# BACKUP_CUSTOM=/config/your-platform-install/backup-custom-install-scripts/
+	# mkdir -p $BACKUP_CUSTOM
+	# # Checking for custom install scripts
+	# DIR=/your-platform-install/defaults/install-scripts/
+	# cd $DIR
+	# for filename in $(ls); do
+		# FILE_CHECK=/config$DIR$filename
+		# if [ -f $FILE_CHECK ]; then
+			# echo "Manual install file found $filename - overwriting default"
+			# cp -rf $FILE_CHECK /your-platform-install/install-scripts/
+		# else
+			# echo "Custom install file not found $filename - using default"
+			# cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
+		# fi
+	# done
+	# mv -f /config$DIR $BACKUP_CUSTOM
+# else
+	# if [ ! -d "/your-platform-install/install-scripts" ]; then
+		# mkdir -p /your-platform-install/defaults/install-scripts
+		# cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
+	# fi
+# fi
 
-# this will overwrite similar named files in container 
-# if there is an issue with a script than delete the file in your volume and restart container.
-if [ -d "/config/your-platform-install/startup-scripts" ];then
-	BACKUP_CUSTOM=/config/your-platform-install/backup-custom-startup-scripts/
-	mkdir -p $BACKUP_CUSTOM
-	# Checking for custom startup scripts
-	DIR=/your-platform-install/defaults/startup-scripts/
-	cd $DIR
-	for filename in $(ls); do
-		FILE_CHECK=/config$DIR$filename
-		if [ -f $FILE_CHECK ]; then
-			echo "Manual startup file found $filename - overwriting default"
-			cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
-		else
-			echo "Custom startup file not found $filename - using default"
-			cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
-		fi
-	done
-	mv -f /config$DIR $BACKUP_CUSTOM
-else
-	if [ ! -d "/your-platform-install/startup-scripts" ]; then
-		mkdir -p /your-platform-install/startup-scripts
-		cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
-	fi
-fi
+# # this will overwrite similar named files in container 
+# # if there is an issue with a script than delete the file in your volume and restart container.
+# if [ -d "/config/your-platform-install/startup-scripts" ];then
+	# BACKUP_CUSTOM=/config/your-platform-install/backup-custom-startup-scripts/
+	# mkdir -p $BACKUP_CUSTOM
+	# # Checking for custom startup scripts
+	# DIR=/your-platform-install/defaults/startup-scripts/
+	# cd $DIR
+	# for filename in $(ls); do
+		# FILE_CHECK=/config$DIR$filename
+		# if [ -f $FILE_CHECK ]; then
+			# echo "Manual startup file found $filename - overwriting default"
+			# cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
+		# else
+			# echo "Custom startup file not found $filename - using default"
+			# cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
+		# fi
+	# done
+	# mv -f /config$DIR $BACKUP_CUSTOM
+# else
+	# if [ ! -d "/your-platform-install/startup-scripts" ]; then
+		# mkdir -p /your-platform-install/startup-scripts
+		# cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
+	# fi
+# fi
 
 # Copy install/startup scripts to volume for later update/reconfigure
 # cp -rf /your-platform-install/ /config/
 
 if [ "$EC" = "true" ]; then
-	EC_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EC.sh
+	EC_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-EC.sh
 	if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $EC_INSTALL_UPGRADE_FILE
 		bash $EC_INSTALL_UPGRADE_FILE
@@ -132,7 +148,7 @@ fi
 
 # Ensure the EC is started to allow the install of other services
 if [ "$EC" = "true" ]; then
-	EC_START_FILE=/your-platform-install/startup-scripts/start-EC.sh
+	EC_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-EC.sh
 	if [ -f "$EC_START_FILE" ]; then
 		chmod +x $EC_START_FILE
 		bash $EC_START_FILE
@@ -142,7 +158,7 @@ if [ "$EC" = "true" ]; then
 fi
 
 if [ "$CONT" = "true" ]; then
-	CONT_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-Controller.sh
+	CONT_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-Controller.sh
 	if [ -f "$CONT_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $CONT_INSTALL_UPGRADE_FILE
 		bash $CONT_INSTALL_UPGRADE_FILE
@@ -152,7 +168,7 @@ if [ "$CONT" = "true" ]; then
 fi
 
 if [ "$ES" = "true" ]; then
-	ES_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-ES.sh
+	ES_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-ES.sh
 	if [ -f "$ES_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $ES_INSTALL_UPGRADE_FILE
 		bash $ES_INSTALL_UPGRADE_FILE
@@ -162,7 +178,7 @@ if [ "$ES" = "true" ]; then
 fi
 
 if [ "$EUM" = "true" ]; then
-	EUM_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-EUM.sh
+	EUM_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-EUM.sh
 	if [ -f "$EUM_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $EUM_INSTALL_UPGRADE_FILE
 		bash $EUM_INSTALL_UPGRADE_FILE
@@ -172,13 +188,13 @@ if [ "$EUM" = "true" ]; then
 fi
 
 if [ "$MA" = "true" ]; then
-	MA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-MA.sh
+	MA_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-MA.sh
+	AA_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-AA.sh
 	if [ -f "$MA_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $MA_INSTALL_UPGRADE_FILE
 		bash $MA_INSTALL_UPGRADE_FILE
 		# adding analytics agent if applicable
 		if [ "$AA" = "true" ]; then
-			AA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-AA.sh
 			if [ -f "$AA_INSTALL_UPGRADE_FILE" ]; then
 				chmod +x $AA_INSTALL_UPGRADE_FILE
 				bash $AA_INSTALL_UPGRADE_FILE
@@ -192,7 +208,7 @@ if [ "$MA" = "true" ]; then
 fi
 
 if [ "$DA" = "true" ]; then
-	DA_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-DA.sh
+	DA_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-DA.sh
 	if [ -f "$DA_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $DA_INSTALL_UPGRADE_FILE
 		bash $DA_INSTALL_UPGRADE_FILE
@@ -202,7 +218,7 @@ if [ "$DA" = "true" ]; then
 fi
 
 if [ "$GEO" = "true" ]; then
-	GEO_INSTALL_UPGRADE_FILE=/your-platform-install/install-scripts/install-upgrade-GEO.sh
+	GEO_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-GEO.sh
 	if [ -f "$GEO_INSTALL_UPGRADE_FILE" ]; then
 		chmod +x $GEO_INSTALL_UPGRADE_FILE
 		bash $GEO_INSTALL_UPGRADE_FILE
@@ -219,10 +235,10 @@ chown -R nobody:users /config
 echo "Starting AppDynamics Services"
 
 if [ "$CONT" = "true" ]; then
-	CONT_START_FILE=/your-platform-install/startup-scripts/start-Controller.sh
+	CONT_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-Controller.sh
 	if [ -f "$CONT_START_FILE" ]; then
-		if [ -f /config/license.lic ]; then
-			cp /config/license.lic /config/appdynamics/controller/
+		if [ -f $APPD_INSTALL_DIR/license.lic ]; then
+			cp $APPD_INSTALL_DIR/license.lic $APPD_INSTALL_DIR/appdynamics/controller/
 		fi
 		chmod +x $CONT_START_FILE
 		bash $CONT_START_FILE
@@ -232,7 +248,7 @@ if [ "$CONT" = "true" ]; then
 fi
 
 if [ "$ES" = "true" ]; then
-	ES_START_FILE=/your-platform-install/startup-scripts/start-ES.sh
+	ES_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-ES.sh
 	if [ -f "$ES_START_FILE" ]; then
 		chmod +x $ES_START_FILE
 		bash $ES_START_FILE
@@ -242,12 +258,12 @@ if [ "$ES" = "true" ]; then
 fi
 
 if [ "$EUM" = "true" ]; then
-	EUM_START_FILE=/your-platform-install/startup-scripts/start-EUM.sh
+	EUM_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-EUM.sh
 	if [ -f "$EUM_START_FILE" ]; then
 		chmod +x $EUM_START_FILE
 		bash $EUM_START_FILE
 		# Activate new EUM license file
-		EUM_ACTIVATE_LICENSE_FILE=/your-platform-install/startup-scripts/activate-eum-license.sh
+		EUM_ACTIVATE_LICENSE_FILE=$APPD_SCRIPTS_DIR/startup-scripts/activate-eum-license.sh
 		if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
 			chmod +x $EUM_ACTIVATE_LICENSE_FILE
 			bash $EUM_ACTIVATE_LICENSE_FILE
@@ -260,7 +276,7 @@ if [ "$EUM" = "true" ]; then
 fi
 
 if [ "$MA" = "true" ]; then
-	MA_START_FILE=/your-platform-install/startup-scripts/start-MA.sh
+	MA_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-MA.sh
 	if [ -f "$MA_START_FILE" ]; then
 		chmod +x $MA_START_FILE
 		bash $MA_START_FILE
@@ -270,7 +286,7 @@ if [ "$MA" = "true" ]; then
 fi
 
 if [ "$DA" = "true" ]; then
-	DA_START_FILE=/your-platform-install/startup-scripts/start-DA.sh
+	DA_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-DA.sh
 	if [ -f "$DA_START_FILE" ]; then
 		chmod +x $DA_START_FILE
 		bash $DA_START_FILE
@@ -280,7 +296,7 @@ if [ "$DA" = "true" ]; then
 fi
 
 if [ "$GEO" = "true" ]; then
-	GEO_START_FILE=/your-platform-install/startup-scripts/start-GEO.sh
+	GEO_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-GEO.sh
 	if [ -f "$GEO_START_FILE" ]; then
 		chmod +x $GEO_START_FILE
 		bash $GEO_START_FILE
@@ -290,8 +306,8 @@ if [ "$GEO" = "true" ]; then
 fi
 
 if [ "$CONT" = "true" ]; then
-	if [ -f /config/license.lic ]; then
-		mv -f /config/license.lic /config/appdynamics/controller/
+	if [ -f $APPD_INSTALL_DIR/license.lic ]; then
+		mv -f $APPD_INSTALL_DIR/license.lic $APPD_INSTALL_DIR/appdynamics/controller/
 	fi
 fi
 
