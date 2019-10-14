@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Use manual version or latest available from AppDynamics
-cd /config
+cd $APPD_INSTALL_DIR
 if [ ! "$EC_VERSION" = "latest" ]; then
 	echo "Manual version override:" $EC_VERSION
 	#Check for valid version on appdynamics
@@ -21,9 +21,9 @@ fi
 rm -f tmpout.json
 
 # check if enterprise console is installed
-if [ -f /config/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
+if [ -f $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
 	# check if enterprise console is out of date compared to $EC_VERSION
-	cd /config/appdynamics/enterprise-console/platform-admin/archives/platform-configuration/
+	cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/archives/platform-configuration/
 	INSTALLED_VERSION=$(grep -oPz '(^platformVersion\:\s\")\K(.*?)(?=\"$)' * | tr -d '\0')
 	echo "Enterprise Console: $INSTALLED_VERSION is installed"
 	if [ "$EC_VERSION" != "$INSTALLED_VERSION" ]; then
@@ -35,17 +35,17 @@ if [ -f /config/appdynamics/enterprise-console/platform-admin/bin/platform-admin
 	fi
 else
 	# check if user didn't downloaded latest Enterprise Console binary
-	if [ ! -f /config/$FILENAME ]; then
-		echo "Didn't find '$FILENAME' in /config/ - downloading instead"
+	if [ ! -f $APPD_INSTALL_DIR/$FILENAME ]; then
+		echo "Didn't find '$FILENAME' in '$APPD_INSTALL_DIR' - downloading instead"
 		echo "Downloading AppDynamics Enterprise Console version '$EC_VERSION'"
 		TOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
 		curl -L -O -H "Authorization: Bearer ${TOKEN}" ${DOWNLOAD_PATH}
 		echo "file downloaded"
 	else
-		echo "Found latest Enterprise Console '$FILENAME' in /config/ "
+		echo "Found latest Enterprise Console '$FILENAME' in '$APPD_INSTALL_DIR' "
 	fi
 	#Configure Appd for IP address given as environment variable
-	VARFILE=/your-platform-install/install-scripts/response.varfile
+	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response.varfile
 	if [ -f "$VARFILE" ];then 
 		appdserver="serverHostName=${CONTROLLER_HOST}"
 		echo "setting '$appdserver' in '$VARFILE'"

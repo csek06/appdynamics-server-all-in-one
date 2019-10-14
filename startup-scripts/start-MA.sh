@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # initialize variables
-MACHINE_AGENT_HOME=/config/appdynamics/machine-agent
+MACHINE_AGENT_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent
 if [ -z $CONTROLLER_HOST ]; then
 	CONTROLLER_HOST="localhost"
 fi
@@ -43,7 +43,7 @@ MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${MA_ENABLE_SIM_DOCKE
 MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${MA_ENABLE_CONTAINERIDASHOSTID}"
 MA_PROPERTIES="$MA_PROPERTIES -Ddbagent.name=${MA_AGENT_NAME}"
 
-MA_FILE=/config/appdynamics/machine-agent/bin/machine-agent
+MA_FILE=$APPD_INSTALL_DIR/appdynamics/machine-agent/bin/machine-agent
 MA_PID_FILE=$MACHINE_AGENT_HOME/machine-agent.id
 if [ -f "$MA_FILE" ]; then
 	if [ -f "$MA_PID_FILE" ]; then

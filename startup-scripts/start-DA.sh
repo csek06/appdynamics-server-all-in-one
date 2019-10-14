@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # initialize variables
-DATABASE_AGENT_HOME=/config/appdynamics/database-agent
+DATABASE_AGENT_HOME=$APPD_INSTALL_DIR/appdynamics/database-agent
 if [ -z $CONTROLLER_HOST ]; then
 	CONTROLLER_HOST="localhost"
 fi
