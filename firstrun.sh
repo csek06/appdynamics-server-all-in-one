@@ -50,7 +50,7 @@ if [ ! -z $FORM ]; then
 			fi
 			# copy form file to /config
 			cp -f $DEFAULT_FORM_FILE $FORM_FILE
-			echo "Template platform file copied to /config, please update before install"
+			echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update before install"
 		fi 
 	fi 
 fi
@@ -246,7 +246,8 @@ fi
 
 
 echo "Setting correct permissions"
-chown -R nobody:users /config
+chown -R nobody:users $APPD_SCRIPTS_DIR
+chown -R nobody:users $APPD_INSTALL_DIR
 
 # Start the AppDynamics Services
 echo "Starting AppDynamics Services"
