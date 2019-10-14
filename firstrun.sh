@@ -6,15 +6,20 @@ echo $TZ > /etc/timezone
 export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
 dpkg-reconfigure tzdata
 
-# Set STANDALONE MODE = downloaded source and plan on running outside of docker
-STANDALONE=false
-
 APPD_INSTALL_DIR=/config
 mkdir -p $APPD_INSTALL_DIR
 
+# Set STANDALONE MODE = downloaded source and plan on running outside of docker
+STANDALONE=false
 APPD_SCRIPTS_DIR=/your-platform-install
 if [ "$STANDALONE" = "true" ]; then
 	APPD_SCRIPTS_DIR=$PWD
+	if [ -z $FORM ]; then
+		FORM=true
+	fi
+	if [ -z $SCENARIO ]; then
+		SCENARIO=none
+	fi
 fi
 
 # Check for FORM variable
