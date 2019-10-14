@@ -14,7 +14,7 @@ mkdir -p $APPD_INSTALL_DIR
 
 APPD_SCRIPTS_DIR=/your-platform-install
 if [ "$STANDALONE" = "true" ]; then
-	APPD_SCRIPTS_DIR=.
+	APPD_SCRIPTS_DIR=$PWD
 fi
 
 # Check for FORM variable
@@ -311,4 +311,4 @@ if [ "$CONT" = "true" ]; then
 	fi
 fi
 
-echo "System Started"
+echo "Finished running script"
