@@ -1,5 +1,15 @@
 #!/bin/bash
-
+# Install updates and necessary OS packages - not necessary for docker
+RHEL_OR_CENTOS=false
+UBUNTU=false
+if [ "$RHEL_OR_CENTOS" = "true" ]; then
+	sudo yum update -y
+	sudo yum install libaio numactl unzip -y
+fi
+if [ "$UBUNTU" = "true" ]; then
+	sudo apt-get update
+	sudo apt-get install -y libaio1 numactl tzdata unzip iproute2
+fi
 #Get docker env timezone and set system timezone
 echo "setting the correct local time"
 echo $TZ > /etc/timezone
@@ -21,6 +31,8 @@ if [ "$STANDALONE" = "true" ]; then
 		SCENARIO=none
 	fi
 fi
+
+
 
 # Check for FORM variable
 if [ ! -z $FORM ]; then
