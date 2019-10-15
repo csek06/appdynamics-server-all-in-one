@@ -52,8 +52,10 @@ else
 		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/serverHostName=.*/$appdserver/ $VARFILE
-		sed -i s/platformAdmin.dataDir=.*/$MYSQL_DATA_DIR/ $VARFILE
-		sed -i s/sys.installationDir=.*/$SYS_INSTALL_DIR/ $VARFILE
+		echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
+		sed -i s#platformAdmin\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
+		echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
+		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
 		chmod +x ./$FILENAME
 		echo "Installing Enterprise Console"
 		./$FILENAME -q -varfile $VARFILE
