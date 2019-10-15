@@ -4,7 +4,7 @@ RHEL_OR_CENTOS=false
 UBUNTU=false
 if [ "$RHEL_OR_CENTOS" = "true" ]; then
 	sudo yum update -y
-	sudo yum install libaio numactl unzip -y
+	sudo yum install libaio ncurses numactl unzip tar -y
 fi
 if [ "$UBUNTU" = "true" ]; then
 	sudo apt-get update
