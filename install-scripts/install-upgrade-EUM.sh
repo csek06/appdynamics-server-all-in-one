@@ -10,8 +10,8 @@ else
 	cd $APPD_INSTALL_DIR
 	echo "Checking EUM server version"
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
-	EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")\K.*?(?(?=\"\,\")\.sh|\.sh)' tmpout.json)
-	EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")\K.*?(?(?=\"\,\")\.sh|\.sh)' tmpout.json)
+	EUMDOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+	EUMFILENAME=$(grep -oP '(?:filename\"\:\")\K(euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
 	rm -f tmpout.json
 	# check if user downloaded latest EUM server binary
 	if [ -f $APPD_INSTALL_DIR/$EUMFILENAME ]; then
@@ -38,13 +38,20 @@ else
 			EUM_SIZE=demo
 		fi
 		appdserver="eventsService.host=${EVENTS_SERVICE_HOST}"
-		echo "setting '$appdserver' in '$VARFILE'"
-		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
+		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/EUM"
+		MYSQL_DATA_DIR="mysql.dataDir=${APPD_INSTALL_DIR}/appdynamics/EUM/data"
 		echo "setting eum size '$EUM_SIZE' in '$VARFILE'"
 		sed -i s/euem.InstallationMode=.*/euem.InstallationMode=$EUM_SIZE/ $VARFILE
+		echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
+		sed -i s#mysql\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
+		echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
+		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
+		echo "setting '$appdserver' in '$VARFILE'"
+		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
 		./$EUMFILENAME -q -varfile $VARFILE
 		# assuming install went fine
-		rm -f ./$EUMFILENAME
+		# let the user cleanup binaries
+		# rm -f ./$EUMFILENAME
 	else
 		echo "Couldn't find $VARFILE"
 	fi
@@ -52,7 +59,7 @@ else
 	EUM_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-EUM-Config.sh
 	if [ -f "$EUM_POST_CONF_FILE" ]; then
 		chmod +x $EUM_POST_CONF_FILE
-		sh $EUM_POST_CONF_FILE
+		. $EUM_POST_CONF_FILE
 	else
 		echo "EUM Server post-config file not found here - $EUM_POST_CONF_FILE"
 	fi

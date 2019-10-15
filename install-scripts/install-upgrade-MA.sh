@@ -27,7 +27,8 @@ if [ ! -f $MA_DIR/bin/machine-agent ]; then
 	mkdir -p $MA_DIR
 	unzip -q $APPD_INSTALL_DIR/$FILENAME -d $MA_DIR
 	echo "Unzip complete"
-	rm $APPD_INSTALL_DIR/$FILENAME
+	# let the user cleanup binaries
+	# rm $APPD_INSTALL_DIR/$FILENAME
 else
 	echo "Found existing machine agent"
 fi

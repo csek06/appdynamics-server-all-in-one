@@ -3,12 +3,26 @@
 RHEL_OR_CENTOS=false
 UBUNTU=false
 if [ "$RHEL_OR_CENTOS" = "true" ]; then
+	echo "updating and installing packages"
 	sudo yum update -y
-	sudo yum install libaio numactl unzip -y
+	sudo yum install curl libaio ncurses numactl tar tzdata unzip -y
+	echo "updating firewall ports"
+	sudo firewall-cmd --zone=public --add-port=9191/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=8090/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=8181/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=7001/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=7002/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=9080/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=9081/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=9300-9400/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+	sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
+	sudo firewall-cmd --reload
+	echo "completed firewall ports update"
 fi
 if [ "$UBUNTU" = "true" ]; then
 	sudo apt-get update
-	sudo apt-get install -y libaio1 numactl tzdata unzip iproute2
+	sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
 fi
 #Get docker env timezone and set system timezone
 echo "setting the correct local time"

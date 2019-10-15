@@ -4,7 +4,7 @@
 # This needs to run while EUM DB is running // need to put a check in place to validate it is running
 LICENSE_OG="$APPD_INSTALL_DIR/license.lic"
 LICENSE_LOC="$APPD_INSTALL_DIR/appdynamics/controller/license.lic"
-cd /config/appdynamics/EUM/eum-processor/
+cd $APPD_INSTALL_DIR/appdynamics/EUM/eum-processor/
 if [ -f $LICENSE_OG ]; then
 	./bin/provision-license $LICENSE_OG
 fi

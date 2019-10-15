@@ -6,16 +6,16 @@ if [ ! "$EC_VERSION" = "latest" ]; then
 	echo "Manual version override:" $EC_VERSION
 	#Check for valid version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$EC_VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(\"version\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
+	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
 	echo "Filename expected: $FILENAME"
 else
 	#Check the latest version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(\"version\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
+	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
 	echo "Latest version on appdynamics is" $EC_VERSION
 fi
 rm -f tmpout.json
@@ -48,13 +48,20 @@ else
 	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response.varfile
 	if [ -f "$VARFILE" ];then 
 		appdserver="serverHostName=${CONTROLLER_HOST}"
+		MYSQL_DATA_DIR="platformAdmin.dataDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/mysql/data"
+		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/serverHostName=.*/$appdserver/ $VARFILE
+		echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
+		sed -i s#platformAdmin\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
+		echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
+		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
 		chmod +x ./$FILENAME
 		echo "Installing Enterprise Console"
 		./$FILENAME -q -varfile $VARFILE
 		# assuming install went fine
-		rm -f ./$FILENAME
+		# let the user cleanup binaries
+		# rm -f ./$FILENAME
 	else
 		echo "Couldn't find $VARFILE"
 	fi
