@@ -58,7 +58,8 @@ if [ ! -f "$GEO_FILE" ]; then
 	mv $GEO_DIR/GeoServer/geo/ $GEO_DIR/
 	rm -r $GEO_DIR/GeoServer/
 	echo "Unzip complete"
-	rm $APPD_INSTALL_DIR/$FILENAME
+	# let the user cleanup binaries
+	# rm $APPD_INSTALL_DIR/$FILENAME
 else
 	echo "Custom Geo Server Already Installed"
 fi 
