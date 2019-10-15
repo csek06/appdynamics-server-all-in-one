@@ -59,7 +59,7 @@ else
 	EUM_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-EUM-Config.sh
 	if [ -f "$EUM_POST_CONF_FILE" ]; then
 		chmod +x $EUM_POST_CONF_FILE
-		sh $EUM_POST_CONF_FILE
+		. $EUM_POST_CONF_FILE
 	else
 		echo "EUM Server post-config file not found here - $EUM_POST_CONF_FILE"
 	fi
