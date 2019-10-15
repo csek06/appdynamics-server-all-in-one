@@ -10,8 +10,8 @@ else
 	cd $APPD_INSTALL_DIR
 	echo "Checking EUM server version"
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
-	EUMDOWNLOAD_PATH=$(grep -oP '(?:\"download_path\"\:\")\K.*?(?(?=\"\,\")\.sh|\.sh)' tmpout.json)
-	EUMFILENAME=$(grep -oP '(?:\"filename\"\:\")\K.*?(?(?=\"\,\")\.sh|\.sh)' tmpout.json)
+	EUMDOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+	EUMFILENAME=$(grep -oP '(?:filename\"\:\")\K(euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
 	rm -f tmpout.json
 	# check if user downloaded latest EUM server binary
 	if [ -f $APPD_INSTALL_DIR/$EUMFILENAME ]; then
