@@ -54,7 +54,8 @@ else
 		echo "Installing Enterprise Console"
 		./$FILENAME -q -varfile $VARFILE
 		# assuming install went fine
-		rm -f ./$FILENAME
+		# let the user cleanup binaries
+		# rm -f ./$FILENAME
 	else
 		echo "Couldn't find $VARFILE"
 	fi
