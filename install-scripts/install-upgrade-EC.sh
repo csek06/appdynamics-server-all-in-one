@@ -6,16 +6,16 @@ if [ ! "$EC_VERSION" = "latest" ]; then
 	echo "Manual version override:" $EC_VERSION
 	#Check for valid version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$EC_VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(\"version\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
+	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
 	echo "Filename expected: $FILENAME"
 else
 	#Check the latest version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(\"version\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(\"download_path\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
-	FILENAME=$(grep -oP '(\"filename\"\:\")\K(.*?)(?=\"\,\")' tmpout.json)
+	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
 	echo "Latest version on appdynamics is" $EC_VERSION
 fi
 rm -f tmpout.json
