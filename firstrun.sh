@@ -191,6 +191,31 @@ if [ "$ES" = "true" ]; then
 	fi
 fi
 
+# CONT and ES must be started before installing some other components
+if [ "$CONT" = "true" ]; then
+	CONT_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-Controller.sh
+	if [ -f "$CONT_START_FILE" ]; then
+		if [ -f $APPD_INSTALL_DIR/license.lic ]; then
+			cp $APPD_INSTALL_DIR/license.lic $APPD_INSTALL_DIR/appdynamics/controller/
+		fi
+		chmod +x $CONT_START_FILE
+		. $CONT_START_FILE
+	else
+		echo "EC Server startup file not found here - $CONT_START_FILE"
+	fi
+fi
+
+if [ "$ES" = "true" ]; then
+	ES_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-ES.sh
+	if [ -f "$ES_START_FILE" ]; then
+		chmod +x $ES_START_FILE
+		. $ES_START_FILE
+	else
+		echo "ES Server startup file not found here - $ES_START_FILE"
+	fi
+fi
+
+
 if [ "$EUM" = "true" ]; then
 	EUM_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-EUM.sh
 	if [ -f "$EUM_INSTALL_UPGRADE_FILE" ]; then
@@ -249,28 +274,7 @@ chown -R nobody:users $APPD_INSTALL_DIR
 # Start the AppDynamics Services
 echo "Starting AppDynamics Services"
 
-if [ "$CONT" = "true" ]; then
-	CONT_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-Controller.sh
-	if [ -f "$CONT_START_FILE" ]; then
-		if [ -f $APPD_INSTALL_DIR/license.lic ]; then
-			cp $APPD_INSTALL_DIR/license.lic $APPD_INSTALL_DIR/appdynamics/controller/
-		fi
-		chmod +x $CONT_START_FILE
-		. $CONT_START_FILE
-	else
-		echo "EC Server startup file not found here - $CONT_START_FILE"
-	fi
-fi
 
-if [ "$ES" = "true" ]; then
-	ES_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-ES.sh
-	if [ -f "$ES_START_FILE" ]; then
-		chmod +x $ES_START_FILE
-		. $ES_START_FILE
-	else
-		echo "ES Server startup file not found here - $ES_START_FILE"
-	fi
-fi
 
 if [ "$EUM" = "true" ]; then
 	EUM_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-EUM.sh
