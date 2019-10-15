@@ -44,7 +44,8 @@ else
 		sed -i s/euem.InstallationMode=.*/euem.InstallationMode=$EUM_SIZE/ $VARFILE
 		./$EUMFILENAME -q -varfile $VARFILE
 		# assuming install went fine
-		rm -f ./$EUMFILENAME
+		# let the user cleanup binaries
+		# rm -f ./$EUMFILENAME
 	else
 		echo "Couldn't find $VARFILE"
 	fi
