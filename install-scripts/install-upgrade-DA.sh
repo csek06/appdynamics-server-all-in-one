@@ -26,7 +26,8 @@ if [ ! -f $DA_DIR/db-agent.jar ]; then
 	mkdir -p $DA_DIR
 	unzip -q $APPD_INSTALL_DIR/$FILENAME -d $DA_DIR
 	echo "Unzip complete"
-	rm $APPD_INSTALL_DIR/$FILENAME
+	# let the user cleanup binaries
+	# rm $APPD_INSTALL_DIR/$FILENAME
 else
 	echo "Found existing database agent"
 fi
