@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /config
+cd $APPD_INSTALL_DIR
 # Check for install - install if not found.
 DA_DIR=$APPD_INSTALL_DIR/appdynamics/database-agent
 if [ ! -f $DA_DIR/db-agent.jar ]; then

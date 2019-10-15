@@ -1,7 +1,28 @@
 #!/bin/bash
+
+# Identify where scripts are
+APPD_SCRIPTS_DIR=/your-platform-install
+if [ ! -f $APPD_SCRIPTS_DIR ]; then
+	APPD_SCRIPTS_DIR=$PWD
+fi
+# Load FORM Variables
+# Check for FORM File in a modified place
+FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.conf
+if [ -f $FORM_FILE ]; then 
+	# set the environment variables from file
+	set -a; . $FORM_FILE; set +a
+else
+	DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.conf
+	if [ ! -f $DEFAULT_FORM_FILE ]; then
+		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.conf
+	fi
+	# copy form file to $APPD_SCRIPTS_DIR
+	cp -f $DEFAULT_FORM_FILE $FORM_FILE
+	echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update and rerun script"
+	exit 1
+fi 
+
 # Install updates and necessary OS packages - not necessary for docker
-RHEL_OR_CENTOS=false
-UBUNTU=false
 if [ "$RHEL_OR_CENTOS" = "true" ]; then
 	echo "updating and installing packages"
 	sudo yum update -y
@@ -24,56 +45,20 @@ if [ "$UBUNTU" = "true" ]; then
 	sudo apt-get update
 	sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
 fi
-#Get docker env timezone and set system timezone
-echo "setting the correct local time"
-echo $TZ > /etc/timezone
-export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
-dpkg-reconfigure tzdata
 
-APPD_INSTALL_DIR=/config
+if [ ! "$STANDALONE" = "true" ]; then
+	#Get docker env timezone and set system timezone
+	echo "setting the correct local time"
+	echo $TZ > /etc/timezone
+	export DEBCONF_NONINTERACTIVE_SEEN=true DEBIAN_FRONTEND=noninteractive
+	dpkg-reconfigure tzdata
+fi
+
+# Create $APPD_INSTALL_DIR
 mkdir -p $APPD_INSTALL_DIR
 
-# Set STANDALONE MODE = downloaded source and plan on running outside of docker
-STANDALONE=false
-APPD_SCRIPTS_DIR=/your-platform-install
-if [ "$STANDALONE" = "true" ]; then
-	APPD_SCRIPTS_DIR=$PWD
-	if [ -z $FORM ]; then
-		FORM=true
-	fi
-	if [ -z $SCENARIO ]; then
-		SCENARIO=none
-	fi
-fi
 
-
-
-# Check for FORM variable
-if [ ! -z $FORM ]; then
-	if [ "$FORM" = "true" ]; then
-		# Check for FORM File
-		FORM_FILE=$APPD_INSTALL_DIR/your-platform.conf
-		if [ -f $FORM_FILE ]; then 
-			# set the environment variables from file
-			set -a; . $FORM_FILE; set +a
-		else
-			if [ "$STANDALONE" = "true" ]; then
-				DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.conf
-			else
-				DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.conf
-			fi
-			# copy form file to /config
-			cp -f $DEFAULT_FORM_FILE $FORM_FILE
-			echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update before install"
-		fi 
-	fi 
-fi
-
-# Check for Install Scenario Variable
-if [ -z $SCENARIO ]; then
-	SCENARIO=ECCONT
-fi
-
+# Enable SCENARIO
 if [[ $SCENARIO = *EC* ]]; then
 	echo "Container will use EC";
 	EC=true
@@ -164,9 +149,7 @@ fi
 	# fi
 # fi
 
-# Copy install/startup scripts to volume for later update/reconfigure
-# cp -rf /your-platform-install/ /config/
-
+# Installation of various components
 if [ "$EC" = "true" ]; then
 	EC_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-EC.sh
 	if [ -f "$EC_INSTALL_UPGRADE_FILE" ]; then
@@ -258,7 +241,7 @@ if [ "$GEO" = "true" ]; then
 	fi
 fi
 
-
+# Ensuring appropriate permissions for deployment
 echo "Setting correct permissions"
 chown -R nobody:users $APPD_SCRIPTS_DIR
 chown -R nobody:users $APPD_INSTALL_DIR
