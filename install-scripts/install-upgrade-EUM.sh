@@ -38,10 +38,16 @@ else
 			EUM_SIZE=demo
 		fi
 		appdserver="eventsService.host=${EVENTS_SERVICE_HOST}"
-		echo "setting '$appdserver' in '$VARFILE'"
-		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
+		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/EUM"
+		MYSQL_DATA_DIR="mysql.dataDir=${APPD_INSTALL_DIR}/appdynamics/EUM/data"
 		echo "setting eum size '$EUM_SIZE' in '$VARFILE'"
 		sed -i s/euem.InstallationMode=.*/euem.InstallationMode=$EUM_SIZE/ $VARFILE
+		echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
+		sed -i s#mysql\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
+		echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
+		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
+		echo "setting '$appdserver' in '$VARFILE'"
+		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
 		./$EUMFILENAME -q -varfile $VARFILE
 		# assuming install went fine
 		# let the user cleanup binaries
