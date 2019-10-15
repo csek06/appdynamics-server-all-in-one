@@ -4,11 +4,11 @@ RHEL_OR_CENTOS=false
 UBUNTU=false
 if [ "$RHEL_OR_CENTOS" = "true" ]; then
 	sudo yum update -y
-	sudo yum install libaio ncurses numactl unzip tar -y
+	sudo yum install curl libaio ncurses numactl tar tzdata unzip -y
 fi
 if [ "$UBUNTU" = "true" ]; then
 	sudo apt-get update
-	sudo apt-get install -y libaio1 numactl tzdata unzip iproute2
+	sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
 fi
 #Get docker env timezone and set system timezone
 echo "setting the correct local time"
