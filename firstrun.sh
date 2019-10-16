@@ -15,10 +15,13 @@ else
 	DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.conf
 	if [ ! -f $DEFAULT_FORM_FILE ]; then
 		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.conf
+	else
+		# must be docker container
+		FORM_FILE=/config/your-platform.conf
 	fi
 	# copy form file to $APPD_SCRIPTS_DIR
 	cp -f $DEFAULT_FORM_FILE $FORM_FILE
-	echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update and rerun script"
+	echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update and restart docker or rerun script"
 	exit 1
 fi 
 
