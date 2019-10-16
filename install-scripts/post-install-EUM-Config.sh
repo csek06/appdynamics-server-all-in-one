@@ -31,7 +31,7 @@ if [ -f "cookie.appd" ]; then
 	curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=eum.beacon.host&value=http://$EUM_HOST:7001"
 	curl -i -v -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=eum.beacon.https.host&value=https://$EUM_HOST:7002"
 	rm cookie.appd
-	rm coookie.appd2
+	rm cookie.appd2
 else
 	echo "Couldn't connect EUM to controller to obtain controller key"
 fi
