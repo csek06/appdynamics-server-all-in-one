@@ -24,6 +24,7 @@ else
 	fi
 	# copy form file to $APPD_SCRIPTS_DIR
 	cp -f $DEFAULT_FORM_FILE $FORM_FILE
+	chown nobody:users $FORM_FILE
 	echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update and restart docker or rerun script"
 	exit 1
 fi 
@@ -103,57 +104,65 @@ if [[ $SCENARIO = *GEO* ]]; then
 	GEO=true
 fi
 
-# this will overwrite similar named files in container 
+# this will overwrite similar named install files in container 
 # if there is an issue with a script than delete the file in your volume and restart container.
-# if [ -d "$APPD_INSTALL_DIR/your-platform-install/install-scripts" ];then
-	# BACKUP_CUSTOM=/config/your-platform-install/backup-custom-install-scripts/
-	# mkdir -p $BACKUP_CUSTOM
-	# # Checking for custom install scripts
-	# DIR=/your-platform-install/defaults/install-scripts/
-	# cd $DIR
-	# for filename in $(ls); do
-		# FILE_CHECK=/config$DIR$filename
-		# if [ -f $FILE_CHECK ]; then
-			# echo "Manual install file found $filename - overwriting default"
-			# cp -rf $FILE_CHECK /your-platform-install/install-scripts/
-		# else
-			# echo "Custom install file not found $filename - using default"
-			# cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
-		# fi
-	# done
-	# mv -f /config$DIR $BACKUP_CUSTOM
-# else
-	# if [ ! -d "/your-platform-install/install-scripts" ]; then
-		# mkdir -p /your-platform-install/defaults/install-scripts
-		# cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
-	# fi
-# fi
+if [ -d "$APPD_INSTALL_DIR/your-platform-install/install-scripts" ]; then
+	BACKUP_CUSTOM=$APPD_INSTALL_DIR/your-platform-install/backup-custom-install-scripts/
+	mkdir -p $BACKUP_CUSTOM
+	# Checking for custom install scripts
+	DIR=/your-platform-install/defaults/install-scripts/
+	if [ -d $DIR ]; then
+		cd $DIR
+		for filename in $(ls); do
+			FILE_CHECK=$APPD_INSTALL_DIR$DIR$filename
+			if [ -f $FILE_CHECK ]; then
+				echo "Manual install file found $filename - overwriting default"
+				cp -rf $FILE_CHECK /your-platform-install/install-scripts/
+			else
+				echo "Custom install file not found $filename - using default"
+				cp -rf /your-platform-install/defaults/install-scripts/$filename /your-platform-install/install-scripts/
+			fi
+		done
+		mv -f $APPD_INSTALL_DIR$DIR $BACKUP_CUSTOM
+	fi 
+else
+	if [ -d "/your-platform-install" ]; then
+		if [ ! -d "/your-platform-install/install-scripts" ]; then
+			mkdir -p /your-platform-install/defaults/install-scripts
+			cp -rf /your-platform-install/defaults/install-scripts /your-platform-install/
+		fi
+	fi
+fi
 
-# # this will overwrite similar named files in container 
-# # if there is an issue with a script than delete the file in your volume and restart container.
-# if [ -d "/config/your-platform-install/startup-scripts" ];then
-	# BACKUP_CUSTOM=/config/your-platform-install/backup-custom-startup-scripts/
-	# mkdir -p $BACKUP_CUSTOM
-	# # Checking for custom startup scripts
-	# DIR=/your-platform-install/defaults/startup-scripts/
-	# cd $DIR
-	# for filename in $(ls); do
-		# FILE_CHECK=/config$DIR$filename
-		# if [ -f $FILE_CHECK ]; then
-			# echo "Manual startup file found $filename - overwriting default"
-			# cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
-		# else
-			# echo "Custom startup file not found $filename - using default"
-			# cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
-		# fi
-	# done
-	# mv -f /config$DIR $BACKUP_CUSTOM
-# else
-	# if [ ! -d "/your-platform-install/startup-scripts" ]; then
-		# mkdir -p /your-platform-install/startup-scripts
-		# cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
-	# fi
-# fi
+# this will overwrite similar named startup files in container 
+# if there is an issue with a script than delete the file in your volume and restart container.
+if [ -d "$APPD_INSTALL_DIR/your-platform-install/startup-scripts" ]; then
+	BACKUP_CUSTOM=$APPD_INSTALL_DIR/your-platform-install/backup-custom-startup-scripts/
+	mkdir -p $BACKUP_CUSTOM
+	# Checking for custom startup scripts
+	DIR=/your-platform-install/defaults/startup-scripts/
+	if [ -d $DIR ]; then
+		cd $DIR
+		for filename in $(ls); do
+			FILE_CHECK=$APPD_INSTALL_DIR$DIR$filename
+			if [ -f $FILE_CHECK ]; then
+				echo "Manual startup file found $filename - overwriting default"
+				cp -rf $FILE_CHECK /your-platform-install/startup-scripts/
+			else
+				echo "Custom startup file not found $filename - using default"
+				cp -rf /your-platform-install/defaults/startup-scripts/$filename /your-platform-install/startup-scripts/
+			fi
+		done
+		mv -f $APPD_INSTALL_DIR$DIR $BACKUP_CUSTOM
+	fi
+else
+	if [ -d "/your-platform-install" ]; then
+		if [ ! -d "/your-platform-install/startup-scripts" ]; then
+			mkdir -p /your-platform-install/startup-scripts
+			cp -rf /your-platform-install/defaults/startup-scripts /your-platform-install/
+		fi
+	fi
+fi
 
 # Installation of various components
 if [ "$EC" = "true" ]; then
