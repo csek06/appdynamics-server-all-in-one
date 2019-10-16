@@ -48,19 +48,25 @@ else
 		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
-		./$EUMFILENAME -q -varfile $VARFILE
-		# assuming install went fine
-		# let the user cleanup binaries
-		# rm -f ./$EUMFILENAME
+		ES_EUM_KEY=$(curl --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
+		echo "setting '$ES_EUM_KEY' in '$VARFILE'"
+		sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
+		if [ -z $ES_EUM_KEY ]; then
+			echo "Couldn't connect to controller and obtain EUM Key - not installing EUM"
+		else
+			./$EUMFILENAME -q -varfile $VARFILE
+			# assuming install went fine
+			# let the user cleanup binaries
+			# rm -f ./$EUMFILENAME
+			EUM_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-EUM-Config.sh
+			if [ -f "$EUM_POST_CONF_FILE" ]; then
+				chmod +x $EUM_POST_CONF_FILE
+				. $EUM_POST_CONF_FILE
+			else
+				echo "EUM Server post-config file not found here - $EUM_POST_CONF_FILE"
+			fi
+		fi
 	else
 		echo "Couldn't find $VARFILE"
 	fi
-  
-	EUM_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-EUM-Config.sh
-	if [ -f "$EUM_POST_CONF_FILE" ]; then
-		chmod +x $EUM_POST_CONF_FILE
-		. $EUM_POST_CONF_FILE
-	else
-		echo "EUM Server post-config file not found here - $EUM_POST_CONF_FILE"
-	fi
-fi
+ fi
