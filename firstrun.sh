@@ -296,14 +296,6 @@ if [ "$EUM" = "true" ]; then
 	if [ -f "$EUM_START_FILE" ]; then
 		chmod +x $EUM_START_FILE
 		. $EUM_START_FILE
-		# Activate new EUM license file
-		EUM_ACTIVATE_LICENSE_FILE=$APPD_SCRIPTS_DIR/startup-scripts/activate-eum-license.sh
-		if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
-			chmod +x $EUM_ACTIVATE_LICENSE_FILE
-			. $EUM_ACTIVATE_LICENSE_FILE
-		else
-			echo "EUM activate license file not found here - $EUM_ACTIVATE_LICENSE_FILE"
-		fi
 	else
 		echo "EUM Server startup file not found here - $EUM_START_FILE"
 	fi
