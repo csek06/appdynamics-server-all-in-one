@@ -5,10 +5,12 @@ if [ -d "/your-platform-install" ]; then
 	# this must be a docker install
 	FORM_FILE=/config/your-platform.conf
 	APPD_SCRIPTS_DIR=/your-platform-install
-else if [ -d "$PWD/install-scripts" ]; then
-	# this must be a standalone install
-	APPD_SCRIPTS_DIR=$PWD
-	FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.conf
+else 
+	if [ -d "$PWD/install-scripts" ]; then
+		# this must be a standalone install
+		APPD_SCRIPTS_DIR=$PWD
+		FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.conf
+	fi
 fi
 
 # Identify if a custom form file exists in known / local location
