@@ -1,13 +1,17 @@
 #!/bin/bash
 
-# Identify where scripts are
-APPD_SCRIPTS_DIR=/your-platform-install
-if [ ! -d $APPD_SCRIPTS_DIR ]; then
+# Set location of FORM file based upon deployment type
+if [ -d "/your-platform-install" ]; then
+	# this must be a docker install
+	FORM_FILE=/config/your-platform.conf
+	APPD_SCRIPTS_DIR=/your-platform-install
+else if [ -d "$PWD/install-scripts" ]; then
+	# this must be a standalone install
 	APPD_SCRIPTS_DIR=$PWD
+	FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.conf
 fi
-# Load FORM Variables
-# Check for FORM File in a modified place
-FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.conf
+
+# Identify if a custom form file exists in known / local location
 if [ -f $FORM_FILE ]; then 
 	# set the environment variables from file
 	set -a; . $FORM_FILE; set +a
@@ -15,9 +19,6 @@ else
 	DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.conf
 	if [ ! -f $DEFAULT_FORM_FILE ]; then
 		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.conf
-	else
-		# must be docker container
-		FORM_FILE=/config/your-platform.conf
 	fi
 	# copy form file to $APPD_SCRIPTS_DIR
 	cp -f $DEFAULT_FORM_FILE $FORM_FILE
