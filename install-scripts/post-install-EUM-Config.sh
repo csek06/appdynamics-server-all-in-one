@@ -13,8 +13,8 @@ fi
 # Making post install configurations
 # Sync Account Key between Controller and EUM Server - this should be in install
 cd $APPD_INSTALL_DIR/appdynamics/EUM/eum-processor/
-ES_EUM_KEY=$(curl --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
-sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
+# ES_EUM_KEY=$(curl --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
+# sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
 
 # Change other EUM properties
 sed -i s/onprem.dbUser=.*/onprem.dbUser=root/ bin/eum.properties
