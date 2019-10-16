@@ -18,6 +18,6 @@ else
 		cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin
 		./platform-admin.sh create-platform --name my-platform --installation-dir $APPD_INSTALL_DIR/appdynamics/
 		./platform-admin.sh add-hosts --hosts $CONTROLLER_HOST
-		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$CONTROLLER_HOST controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd newDatabaseUserPassword=appd controllerProfile=$CONTROLLER_SIZE
+		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$CONTROLLER_HOST controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd mysqlRootPassword=appd controllerProfile=$CONTROLLER_SIZE
 	fi
 fi
