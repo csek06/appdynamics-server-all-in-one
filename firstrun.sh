@@ -2,7 +2,7 @@
 
 # Identify where scripts are
 APPD_SCRIPTS_DIR=/your-platform-install
-if [ ! -f $APPD_SCRIPTS_DIR ]; then
+if [ ! -d $APPD_SCRIPTS_DIR ]; then
 	APPD_SCRIPTS_DIR=$PWD
 fi
 # Load FORM Variables
