@@ -16,8 +16,8 @@ mkdir -p /etc/my_init.d && \
 mkdir -p /your-platform-install/defaults
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
-COPY install-scripts/ /your-platform-install/defaults/install-scripts/
-COPY startup-scripts/ /your-platform-install/defaults/startup-scripts/
+COPY --chown=nobody:users install-scripts/ /your-platform-install/defaults/install-scripts/
+COPY --chown=nobody:users startup-scripts/ /your-platform-install/defaults/startup-scripts/
 
 RUN chmod +x /etc/my_init.d/firstrun.sh
 ENV JAVA_HOME="/usr/lib/jvm/zulu-12-amd64"
