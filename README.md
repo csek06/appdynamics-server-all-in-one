@@ -5,9 +5,12 @@ This is a docker container or Standalone Script to install/run an On-Premise Dep
 NOTE - This should only be used for Demo / Small environments and is not intended for a Production installation.
 
 
-### Optional Component Installations
+## Component Installations this Script Can Handle
+* Enterprise Console
+* Controller
 * Events Server
 * EUM Server
+* Custom GEO Server
 * Machine Agent
 * Analytics Agent (When chosen, will also run Machine Agent as its bundled)
 * Database Agent
