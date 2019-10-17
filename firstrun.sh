@@ -71,23 +71,23 @@ mkdir -p $APPD_INSTALL_DIR
 
 # Enable SCENARIO
 if [[ $SCENARIO = *EC* ]]; then
-	echo "Container will use EC";
+	echo "Script Will Install/Start Enterprise Console";
 	EC=true
 fi
 if [[ $SCENARIO = *ES* ]]; then
-	echo "Container will use ES";
+	echo "Script Will Install/Start Events Service";
 	ES=true
 fi
 if [[ $SCENARIO = *CONT* ]]; then
-	echo "Container will use Controller";
+	echo "Script Will Install/Start Controller";
 	CONT=true
 fi
 if [[ $SCENARIO = *EUM* ]]; then
-	echo "Container will use EUM";
+	echo "Script Will Install/Start EUM Server";
 	EUM=true
 fi
 if [[ $SCENARIO = *AA* ]]; then
-	echo "Container will use Analytics Agent";
+	echo "Script Will Install/Start Analytics Agent";
 	AA=true
 	# must also have MA
 	if [[ ! $SCENARIO = *MA* ]]; then
@@ -96,15 +96,15 @@ if [[ $SCENARIO = *AA* ]]; then
 	fi
 fi
 if [[ $SCENARIO = *MA* ]]; then
-	echo "Container will use Machine Agent";
+	echo "Script Will Install/Start Machine Agent";
 	MA=true
 fi
 if [[ $SCENARIO = *DA* ]]; then
-	echo "Container will use Database Agent";
+	echo "Script Will Install/Start Database Agent";
 	DA=true
 fi
 if [[ $SCENARIO = *GEO* ]]; then
-	echo "Container will use Custom Geo Server";
+	echo "Script Will Install/Start Custom Geo Server";
 	GEO=true
 fi
 
