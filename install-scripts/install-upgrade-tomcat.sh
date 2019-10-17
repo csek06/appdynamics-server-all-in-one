@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # initialize variables
-TOMCAT_HOME=/config/tomcat
+TOMCAT_HOME=$APPD_INSTALL_DIR/tomcat
 mkdir -p $TOMCAT_HOME
 cd $TOMCAT_HOME
 

@@ -1,7 +1,7 @@
 #!/bin/bash
-cd /config
+cd $APPD_INSTALL_DIR
 # Check for install - install if not found.
-MA_DIR=/config/appdynamics/machine-agent
+MA_DIR=$APPD_INSTALL_DIR/appdynamics/machine-agent
 if [ ! -f $MA_DIR/bin/machine-agent ]; then
 	#Check the latest version on appdynamics
 	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=machine&os=linux&platform_admin_os=&events=&eum="
@@ -14,10 +14,10 @@ if [ ! -f $MA_DIR/bin/machine-agent ]; then
 	rm -f tmpout.json
 
 	# check if user downloaded latest EUM server binary
-	if [ -f /config/$FILENAME ]; then
-		echo "Found latest Machine Agent '$FILENAME' in /config/ "
+	if [ -f $APPD_INSTALL_DIR/$FILENAME ]; then
+		echo "Found latest Machine Agent '$FILENAME' in '$APPD_INSTALL_DIR' "
 	else
-		echo "Didn't find '$FILENAME' in /config/ - downloading"
+		echo "Didn't find '$FILENAME' in '$APPD_INSTALL_DIR' - downloading"
 		NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
 		curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${DOWNLOAD_PATH}
 		echo "file downloaded"
@@ -25,9 +25,10 @@ if [ ! -f $MA_DIR/bin/machine-agent ]; then
 	echo "Unzipping: $FILENAME"
 	
 	mkdir -p $MA_DIR
-	unzip -q /config/$FILENAME -d $MA_DIR
+	unzip -q $APPD_INSTALL_DIR/$FILENAME -d $MA_DIR
 	echo "Unzip complete"
-	rm /config/$FILENAME
+	# let the user cleanup binaries
+	# rm $APPD_INSTALL_DIR/$FILENAME
 else
 	echo "Found existing machine agent"
 fi
