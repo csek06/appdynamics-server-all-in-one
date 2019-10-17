@@ -72,7 +72,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * AA = Analytics Agent
 * DA = Database Agent 
 
-### Port Requirements for Components (Expose these at the container via -p command or insure --net="host" is used)
+### Port Requirements for Components (Expose these at the container via -p command or ensure --net="host" is used)
 * Enterprise Console: 9191
 * Controller: 8090, 8181
 * Events Service: 9080, 9081
