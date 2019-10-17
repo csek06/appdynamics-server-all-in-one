@@ -18,7 +18,7 @@ else
 		echo "Found latest EUM Server '$EUMFILENAME' in '$APPD_INSTALL_DIR' "
 	else
 		echo "Didn't find '$EUMFILENAME' in '$APPD_INSTALL_DIR' - downloading"
-		NEWTOKEN=$(curl -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+		NEWTOKEN=$(curl -s -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
 		curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
 		echo "file downloaded"
 	fi
@@ -48,7 +48,7 @@ else
 		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
-		ES_EUM_KEY=$(curl --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
+		ES_EUM_KEY=$(curl -s --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
 		echo "setting '$ES_EUM_KEY' in '$VARFILE'"
 		sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
 		if [ -z $ES_EUM_KEY ]; then

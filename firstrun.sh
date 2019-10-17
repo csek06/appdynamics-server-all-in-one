@@ -47,10 +47,14 @@ if [ "$RHEL_OR_CENTOS" = "true" ]; then
 	sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
 	sudo firewall-cmd --reload
 	echo "completed firewall ports update"
+	echo "Changing your-platform.conf to no longer update packages and FW"
+	sed -i s/RHEL_OR_CENTOS=.*/RHEL_OR_CENTOS=false/ $FORM_FILE
 fi
 if [ "$UBUNTU" = "true" ]; then
 	sudo apt-get update
 	sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
+	echo "Changing your-platform.conf to no longer update packages"
+	sed -i s/UBUNTU=.*/UBUNTU=false/ $FORM_FILE
 fi
 
 if [ ! "$STANDALONE" = "true" ]; then
