@@ -24,11 +24,11 @@ rm -f tmpout.json
 if [ -f $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
 	# check if enterprise console is out of date compared to $EC_VERSION
 	cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/archives/platform-configuration/
-	INSTALLED_VERSION=$(grep -oPz '(^platformVersion\:\s\")\K(.*?)(?=\"$)' * | tr -d '\0')
-	echo "Enterprise Console: $INSTALLED_VERSION is installed"
-	if [ "$EC_VERSION" != "$INSTALLED_VERSION" ]; then
+	EC_INSTALLED_VERSION=$(grep -oP '(^platformVersion\:\s\")\K(.*?)(?=\"$)' * | tr -d '\0')
+	echo "Enterprise Console: $EC_INSTALLED_VERSION is installed"
+	if [ "$EC_VERSION" != "$EC_INSTALLED_VERSION" ]; then
 		echo "Version mismatch between found and requested/latest"
-		echo "Found Installed EC Version: $INSTALLED_VERSION , but requesting version $EC_VERSION"
+		echo "Found Installed EC Version: $EC_INSTALLED_VERSION , but requesting version $EC_VERSION"
 		echo "Upgraded needed, however this feature is not yet implemented!!!"
 	else
 		echo "You have the most up to date version: $EC_VERSION"
