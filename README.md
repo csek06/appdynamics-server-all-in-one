@@ -26,6 +26,11 @@ This is intended to be a light-weight installation, however the following minimu
 
 * For disk space, note actual install is less than 1GB however once AppD starts monitoring transactions your data pool will fill up.
 
+## Standalone Script OS Supportability
+* RHEL
+* CentOS
+* Ubuntu
+
 ## Pre-install Notes
 1. You can download the latest software at download.appdynamics.com and place the binaries of the enterprise console (optional components) in the '/path/to/config' (container directory) or in the same directory as the 'firstrun.sh' script file. Otherwise, the script will download it for you if you have given your AppDynamics Community credentials in the 'your-platform.conf' file which will be placed in '/path/to/config' or the directory of 'firstrun.sh'.
 2. You can place your 'license.lic' file in '/path/to/config' or directory of 'firstrun.sh' before install and it will activate on initial build or upon startup of container. This is handy for updating your license file periodically.
@@ -72,7 +77,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * AA = Analytics Agent
 * DA = Database Agent 
 
-### Port Requirements for Components (Expose these at the container via -p command or insure --net="host" is used)
+### Port Requirements for Components (Expose these at the container via -p command or ensure --net="host" is used)
 * Enterprise Console: 9191
 * Controller: 8090, 8181
 * Events Service: 9080, 9081
