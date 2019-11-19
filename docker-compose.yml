@@ -1,0 +1,60 @@
+version: "3.7"
+services:
+
+  ec_cont_es:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_ec_cont_es
+    ports:
+      - "8090"
+      - "8181"
+      - "9080"
+      - "9081"
+      - "9191"
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=ECCONTES
+    volumes:
+      - /opt/appdynamics:/config
+  
+  eum:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_eum
+    ports:
+      - "7001"
+      - "7002"
+    depends_on:
+      - ec_cont_es
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=EUM
+    volumes:
+      - /opt/appdynamics:/config
+    restart: on-failure
+      
+  database_agent:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_db_agent
+    depends_on:
+      - ec_cont_es
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=DA
+    volumes:
+      - /opt/appdynamics:/config
+    restart: on-failure
+    
+  machine_agent:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_ma_agent
+    depends_on:
+      - ec_cont_es
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=MAAA
+    volumes:
+      - /opt/appdynamics:/config
+    restart: on-failure
