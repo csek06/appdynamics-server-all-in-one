@@ -3,6 +3,7 @@
 PA_FILE=$APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh
 if [ -f "$PA_FILE" ]; then
 	if [ -z $EC_INSTALLED_VERSION ]; then
+		echo "EC_INSTALLED_VERSION is null, attempting to retrieve enterprise console version..."
 		cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/archives/platform-configuration/
 		EC_INSTALLED_VERSION=$(grep -oP '(^platformVersion\:\s\")\K(.*?)(?=\"$)' * | tr -d '\0')
 	fi
