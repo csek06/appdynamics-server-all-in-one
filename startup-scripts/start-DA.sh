@@ -34,6 +34,7 @@ if [ ! -z $JAVA_HOME ]; then
 			rm cookie.appd
 		else
 			echo "Couldn't connect DA to controller to obtain controller key -- NOT starting DA"
+			exit 1
 		fi
 	fi
 
