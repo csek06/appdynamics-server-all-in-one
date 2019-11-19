@@ -29,7 +29,7 @@ if [ -f $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin/plat
 	if [ "$EC_VERSION" != "$EC_INSTALLED_VERSION" ]; then
 		echo "Version mismatch between found and requested/latest"
 		echo "Found Installed EC Version: $EC_INSTALLED_VERSION , but requesting version $EC_VERSION"
-		echo "Upgraded needed, however this feature is not yet implemented!!!"
+		echo "Upgrade needed, however this feature is not yet implemented!!!"
 	else
 		echo "You have the most up to date version: $EC_VERSION"
 	fi
