@@ -42,6 +42,7 @@ else
 		
 		if [ -z $ES_EUM_KEY ]; then
 			echo "Couldn't connect to controller and obtain EUM Key - not installing EUM"
+			exit 1
 		else
 			echo "setting '$ES_EUM_KEY' in '$VARFILE'"
 			sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
