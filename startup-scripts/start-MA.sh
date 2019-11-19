@@ -18,6 +18,7 @@ if [ -z $CONTROLLER_KEY ]; then
 		rm cookie.appd
 	else
 		echo "Couldn't connect MA to controller to obtain controller key -- NOT starting MA"
+		exit 1
 	fi
 fi
 
