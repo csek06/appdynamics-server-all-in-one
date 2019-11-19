@@ -3,13 +3,13 @@
 # Set location of FORM file based upon deployment type
 if [ -d "/your-platform-install" ]; then
 	# this must be a docker install
-	FORM_FILE=/config/your-platform.conf
+	FORM_FILE=/config/your-platform.env
 	APPD_SCRIPTS_DIR=/your-platform-install
 else 
 	if [ -d "$PWD/install-scripts" ]; then
 		# this must be a standalone install
 		APPD_SCRIPTS_DIR=$PWD
-		FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.conf
+		FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.env
 	fi
 fi
 
@@ -18,9 +18,9 @@ if [ -f $FORM_FILE ]; then
 	# set the environment variables from file
 	set -a; . $FORM_FILE; set +a
 else
-	DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.conf
+	DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.env
 	if [ ! -f $DEFAULT_FORM_FILE ]; then
-		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.conf
+		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.env
 	fi
 	# copy form file to $APPD_SCRIPTS_DIR
 	cp -f $DEFAULT_FORM_FILE $FORM_FILE
@@ -47,13 +47,13 @@ if [ "$RHEL_OR_CENTOS" = "true" ]; then
 	sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
 	sudo firewall-cmd --reload
 	echo "completed firewall ports update"
-	echo "Changing your-platform.conf to no longer update packages and FW"
+	echo "Changing your-platform.env to no longer update packages and FW"
 	sed -i s/RHEL_OR_CENTOS=.*/RHEL_OR_CENTOS=false/ $FORM_FILE
 fi
 if [ "$UBUNTU" = "true" ]; then
 	sudo apt-get update
 	sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
-	echo "Changing your-platform.conf to no longer update packages"
+	echo "Changing your-platform.env to no longer update packages"
 	sed -i s/UBUNTU=.*/UBUNTU=false/ $FORM_FILE
 fi
 
