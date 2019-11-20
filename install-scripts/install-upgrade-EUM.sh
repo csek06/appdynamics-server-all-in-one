@@ -47,6 +47,7 @@ else
 			echo "setting '$ES_EUM_KEY' in '$VARFILE'"
 			sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
 			appdserver="eventsService.host=${EVENTS_SERVICE_HOST}"
+			eumserver="euem.Host=${EUM_HOST}"
 			SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/EUM"
 			MYSQL_DATA_DIR="mysql.dataDir=${APPD_INSTALL_DIR}/appdynamics/EUM/data"
 			echo "setting eum size '$EUM_SIZE' in '$VARFILE'"
@@ -57,6 +58,8 @@ else
 			sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
 			echo "setting '$appdserver' in '$VARFILE'"
 			sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
+			echo "setting '$eumserver' in '$VARFILE'"
+			sed -i s/euem.Host=.*/$eumserver/ $VARFILE
 			echo "--- Installing EUM Server ---"
 			./$EUMFILENAME -q -varfile $VARFILE
 			# assuming install went fine
