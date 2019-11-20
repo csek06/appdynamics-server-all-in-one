@@ -12,6 +12,9 @@ else
 		echo "Please install Enterprise Console on Host and map appdata to '$APPD_INSTALL_DIR'"
 	else
 		echo "Installing Controller and local database"
+		if [ -z $CONTROLLER_HOST ]; then
+			CONTROLLER_HOST=$HOSTNAME
+		fi
 		if [ -z $CONTROLLER_SIZE ]; then
 			CONTROLLER_SIZE=demo
 		fi
