@@ -1,7 +1,7 @@
 version: "3.7"
 services:
 
-  ec_cont_es:
+  eccontes:
     image: csek06/appdynamics-server-all-in-one:dev
     container_name: appd_ec_cont_es
     hostname: $HOSTNAME
@@ -16,6 +16,7 @@ services:
     environment:
       - SCENARIO=ECCONTES
       - COMPOSED=true
+      - CONTROLLER_HOST=eccontes
     volumes:
       - /opt/appdynamics:/config
   
@@ -27,46 +28,46 @@ services:
       - "7001:7001"
       - "7002:7002"
     depends_on:
-      - ec_cont_es
+      - eccontes
     env_file:
       - your-platform.env
     environment:
       - SCENARIO=EUM
       - COMPOSED=true
-      - CONTROLLER_HOST=ec_cont_es
+      - CONTROLLER_HOST=eccontes
       - EUM_HOST=$HOSTNAME
-      - EVENTS_SERVICE_HOST=ec_cont_es
+      - EVENTS_SERVICE_HOST=eccontes
     links:
-      - ec_cont_es
+      - eccontes
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
       
-  database_agent:
+  databaseagent:
     image: csek06/appdynamics-server-all-in-one:dev
     container_name: appd_db_agent
     hostname: $HOSTNAME
     depends_on:
-      - ec_cont_es
+      - eccontes
     env_file:
       - your-platform.env
     environment:
       - SCENARIO=DA
       - COMPOSED=true
-      - CONTROLLER_HOST=ec_cont_es
+      - CONTROLLER_HOST=eccontes
       - DB_AGENT_NAME=$HOSTNAME
     links:
-      - ec_cont_es
+      - eccontes
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
     
-  machine_agent:
+  machineagent:
     image: csek06/appdynamics-server-all-in-one:dev
     container_name: appd_ma_agent
     hostname: $HOSTNAME
     depends_on:
-      - ec_cont_es
+      - eccontes
     ports:
       - "9090:9090"
       - "9091:9091"
@@ -75,11 +76,11 @@ services:
     environment:
       - SCENARIO=MAAA
       - COMPOSED=true
-      - CONTROLLER_HOST=ec_cont_es
-      - EVENTS_SERVICE_HOST=ec_cont_es
+      - CONTROLLER_HOST=eccontes
+      - EVENTS_SERVICE_HOST=eccontes
       - MA_AGENT_NAME=$HOSTNAME
     links:
-      - ec_cont_es
+      - eccontes
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
