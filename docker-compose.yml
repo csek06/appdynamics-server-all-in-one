@@ -15,6 +15,7 @@ services:
       - your-platform.env
     environment:
       - SCENARIO=ECCONTES
+      - COMPOSED=true
     volumes:
       - /opt/appdynamics:/config
   
@@ -31,6 +32,7 @@ services:
       - your-platform.env
     environment:
       - SCENARIO=EUM
+      - COMPOSED=true
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
@@ -45,6 +47,7 @@ services:
       - your-platform.env
     environment:
       - SCENARIO=DA
+      - COMPOSED=true
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
@@ -59,6 +62,7 @@ services:
       - your-platform.env
     environment:
       - SCENARIO=MAAA
+      - COMPOSED=true
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
