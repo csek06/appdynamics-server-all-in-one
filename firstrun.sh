@@ -1,60 +1,63 @@
 #!/bin/bash
 
-# Set location of FORM file based upon deployment type
-if [ -d "/your-platform-install" ]; then
-	# this must be a docker install
-	FORM_FILE=/config/your-platform.env
-	APPD_SCRIPTS_DIR=/your-platform-install
-else 
-	if [ -d "$PWD/install-scripts" ]; then
-		# this must be a standalone install
-		APPD_SCRIPTS_DIR=$PWD
-		FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.env
+# no need for the below if using docker-compose
+if [ ! "$COMPOSED" = "true" ]; then
+	# Set location of FORM file based upon deployment type
+	if [ -d "/your-platform-install" ]; then
+		# this must be a docker install
+		FORM_FILE=/config/your-platform.env
+		APPD_SCRIPTS_DIR=/your-platform-install
+	else 
+		if [ -d "$PWD/install-scripts" ]; then
+			# this must be a standalone install
+			APPD_SCRIPTS_DIR=$PWD
+			FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.env
+		fi
 	fi
-fi
 
-# Identify if a custom form file exists in known / local location
-if [ -f $FORM_FILE ]; then 
-	# set the environment variables from file
-	set -a; . $FORM_FILE; set +a
-else
-	DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.env
-	if [ ! -f $DEFAULT_FORM_FILE ]; then
-		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.env
+	# Identify if a custom form file exists in known / local location
+	if [ -f $FORM_FILE ]; then 
+		# set the environment variables from file
+		set -a; . $FORM_FILE; set +a
+	else
+		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.env
+		if [ ! -f $DEFAULT_FORM_FILE ]; then
+			DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.env
+		fi
+		# copy form file to $APPD_SCRIPTS_DIR
+		cp -f $DEFAULT_FORM_FILE $FORM_FILE
+		chown nobody:users $FORM_FILE
+		echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update and restart docker or rerun script"
+		exit 1
+	fi 
+
+	# Install updates and necessary OS packages - not necessary for docker
+	if [ "$RHEL_OR_CENTOS" = "true" ]; then
+		echo "updating and installing packages"
+		sudo yum update -y
+		sudo yum install curl libaio ncurses numactl tar tzdata unzip -y
+		echo "updating firewall ports"
+		sudo firewall-cmd --zone=public --add-port=9191/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=8090/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=8181/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=7001/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=7002/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9080/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9081/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9300-9400/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
+		sudo firewall-cmd --reload
+		echo "completed firewall ports update"
+		echo "Changing your-platform.env to no longer update packages and FW"
+		sed -i s/RHEL_OR_CENTOS=.*/RHEL_OR_CENTOS=false/ $FORM_FILE
 	fi
-	# copy form file to $APPD_SCRIPTS_DIR
-	cp -f $DEFAULT_FORM_FILE $FORM_FILE
-	chown nobody:users $FORM_FILE
-	echo "Template platform file copied to '$APPD_SCRIPTS_DIR', please update and restart docker or rerun script"
-	exit 1
-fi 
-
-# Install updates and necessary OS packages - not necessary for docker
-if [ "$RHEL_OR_CENTOS" = "true" ]; then
-	echo "updating and installing packages"
-	sudo yum update -y
-	sudo yum install curl libaio ncurses numactl tar tzdata unzip -y
-	echo "updating firewall ports"
-	sudo firewall-cmd --zone=public --add-port=9191/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=8090/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=8181/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=7001/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=7002/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=9080/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=9081/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=9300-9400/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
-	sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
-	sudo firewall-cmd --reload
-	echo "completed firewall ports update"
-	echo "Changing your-platform.env to no longer update packages and FW"
-	sed -i s/RHEL_OR_CENTOS=.*/RHEL_OR_CENTOS=false/ $FORM_FILE
-fi
-if [ "$UBUNTU" = "true" ]; then
-	sudo apt-get update
-	sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
-	echo "Changing your-platform.env to no longer update packages"
-	sed -i s/UBUNTU=.*/UBUNTU=false/ $FORM_FILE
+	if [ "$UBUNTU" = "true" ]; then
+		sudo apt-get update
+		sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
+		echo "Changing your-platform.env to no longer update packages"
+		sed -i s/UBUNTU=.*/UBUNTU=false/ $FORM_FILE
+	fi
 fi
 
 if [ ! "$STANDALONE" = "true" ]; then
