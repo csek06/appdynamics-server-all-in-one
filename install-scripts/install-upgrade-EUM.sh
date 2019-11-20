@@ -24,7 +24,7 @@ else
 	fi
 	chmod +x ./$EUMFILENAME
 
-	echo "Installing EUM server"
+	
 	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response-eum.varfile
 	if [ -f "$VARFILE" ];then 
 		if [ -z $CONTROLLER_HOST ]; then
@@ -43,6 +43,7 @@ else
 			echo "Couldn't connect to controller $CONTROLLER_HOST:$CONTROLLER_PORT and obtain EUM Key - not installing EUM"
 			exit 1
 		else
+			echo "Setting EUM properties"
 			echo "setting '$ES_EUM_KEY' in '$VARFILE'"
 			sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
 			appdserver="eventsService.host=${EVENTS_SERVICE_HOST}"
