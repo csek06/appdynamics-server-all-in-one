@@ -27,12 +27,11 @@ else
 	echo "Installing EUM server"
 	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response-eum.varfile
 	if [ -f "$VARFILE" ];then 
+		if [ -z $CONTROLLER_HOST ]; then
+			CONTROLLER_HOST=$HOSTNAME
+		fi
 		if [ -z $EVENTS_SERVICE_HOST ]; then 
-			if [ -z $CONTROLLER_HOST ]; then
-				EVENTS_SERVICE_HOST=$HOSTNAME
-			else
-				EVENTS_SERVICE_HOST=$CONTROLLER_HOST
-			fi
+			EVENTS_SERVICE_HOST=$CONTROLLER_HOST
 		fi
 		if [ -z $EUM_SIZE ]; then
 			EUM_SIZE=demo
