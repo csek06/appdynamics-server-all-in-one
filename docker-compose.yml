@@ -34,6 +34,8 @@ services:
       - SCENARIO=EUM
       - COMPOSED=true
       - CONTROLLER_HOST=ec_cont_es
+      - EUM_HOST=$HOSTNAME
+      - EVENTS_SERVICE_HOST=ec_cont_es
     links:
       - ec_cont_es
     volumes:
@@ -52,6 +54,7 @@ services:
       - SCENARIO=DA
       - COMPOSED=true
       - CONTROLLER_HOST=ec_cont_es
+      - DB_AGENT_NAME=$HOSTNAME
     links:
       - ec_cont_es
     volumes:
@@ -73,6 +76,8 @@ services:
       - SCENARIO=MAAA
       - COMPOSED=true
       - CONTROLLER_HOST=ec_cont_es
+      - EVENTS_SERVICE_HOST=ec_cont_es
+      - MA_AGENT_NAME=$HOSTNAME
     links:
       - ec_cont_es
     volumes:
