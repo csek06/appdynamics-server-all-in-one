@@ -33,6 +33,9 @@ services:
     environment:
       - SCENARIO=EUM
       - COMPOSED=true
+      - CONTROLLER_HOST=ec_cont_es
+    links:
+      - ec_cont_es
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
@@ -48,6 +51,9 @@ services:
     environment:
       - SCENARIO=DA
       - COMPOSED=true
+      - CONTROLLER_HOST=ec_cont_es
+    links:
+      - ec_cont_es
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
@@ -58,11 +64,17 @@ services:
     hostname: $HOSTNAME
     depends_on:
       - ec_cont_es
+    ports:
+      - "9090:9090"
+      - "9091:9091"
     env_file:
       - your-platform.env
     environment:
       - SCENARIO=MAAA
       - COMPOSED=true
+      - CONTROLLER_HOST=ec_cont_es
+    links:
+      - ec_cont_es
     volumes:
       - /opt/appdynamics:/config
     restart: on-failure
