@@ -6,11 +6,11 @@ services:
     container_name: appd_ec_cont_es
     hostname: $HOSTNAME
     ports:
-      - "8090"
-      - "8181"
-      - "9080"
-      - "9081"
-      - "9191"
+      - "8090:8090"
+      - "8181:8181"
+      - "9080:9080"
+      - "9081:9081"
+      - "9191:9191"
     env_file:
       - your-platform.env
     environment:
@@ -23,8 +23,8 @@ services:
     container_name: appd_eum
     hostname: $HOSTNAME
     ports:
-      - "7001"
-      - "7002"
+      - "7001:7001"
+      - "7002:7002"
     depends_on:
       - ec_cont_es
     env_file:
