@@ -11,10 +11,7 @@ if [ -z $CONTROLLER_PORT ]; then
 	CONTROLLER_PORT="8090"
 fi
 # Making post install configurations
-# Sync Account Key between Controller and EUM Server - this should be in install
 cd $APPD_INSTALL_DIR/appdynamics/EUM/eum-processor/
-# ES_EUM_KEY=$(curl --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
-# sed -i s/analytics.accountAccessKey=.*/analytics.accountAccessKey=$ES_EUM_KEY/ bin/eum.properties
 
 # Change other EUM properties
 sed -i s/onprem.dbUser=.*/onprem.dbUser=root/ bin/eum.properties
@@ -33,5 +30,5 @@ if [ -f "cookie.appd" ]; then
 	rm cookie.appd
 	rm cookie.appd2
 else
-	echo "Couldn't connect EUM to controller to obtain controller key"
+	echo "Couldn't connect EUM to controller to set EUM properties"
 fi
