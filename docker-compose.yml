@@ -3,7 +3,7 @@ services:
 
   eccontes:
     image: csek06/appdynamics-server-all-in-one:dev
-    container_name: appd_ec_cont_es
+    container_name: appd_eccontes
     hostname: $HOSTNAME
     ports:
       - "8090:8090"
@@ -35,7 +35,7 @@ services:
       - SCENARIO=EUM
       - COMPOSED=true
       - CONTROLLER_HOST=eccontes
-      - EUM_HOST=$HOSTNAME
+      - EUM_HOST=eum
       - EVENTS_SERVICE_HOST=eccontes
     links:
       - eccontes
