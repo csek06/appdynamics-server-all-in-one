@@ -2,10 +2,10 @@
 
 # Check for host variables
 if [ -z $CONTROLLER_HOST ]; then
-	CONTROLLER_HOST=localhost
+	CONTROLLER_HOST=$HOSTNAME
 fi
 if [ -z $EUM_HOST ]; then
-	EUM_HOST=localhost
+	EUM_HOST=$HOSTNAME
 fi
 if [ -z $CONTROLLER_PORT ]; then
 	CONTROLLER_PORT="8090"
