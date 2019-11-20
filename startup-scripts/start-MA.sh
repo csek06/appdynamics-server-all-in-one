@@ -17,7 +17,7 @@ if [ -z $CONTROLLER_KEY ]; then
 		CONTROLLER_KEY=$(curl -s http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 		rm cookie.appd
 	else
-		echo "Couldn't connect MA to controller to obtain controller key -- NOT starting MA"
+		echo "Couldn't connect MA to controller $CONTROLLER_HOST:$CONTROLLER_PORT to obtain controller key -- NOT starting MA"
 		exit 1
 	fi
 fi

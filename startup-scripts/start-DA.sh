@@ -33,7 +33,7 @@ if [ ! -z $JAVA_HOME ]; then
 			CONTROLLER_KEY=$(curl -s http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 			rm cookie.appd
 		else
-			echo "Couldn't connect DA to controller to obtain controller key -- NOT starting DA"
+			echo "Couldn't connect DA to controller $CONTROLLER_HOST:$CONTROLLER_PORT to obtain controller key -- NOT starting DA"
 			exit 1
 		fi
 	fi

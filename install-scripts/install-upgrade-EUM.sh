@@ -41,7 +41,7 @@ else
 		ES_EUM_KEY=$(curl -s --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
 		
 		if [ -z $ES_EUM_KEY ]; then
-			echo "Couldn't connect to controller and obtain EUM Key - not installing EUM"
+			echo "Couldn't connect to controller $CONTROLLER_HOST:$CONTROLLER_PORT and obtain EUM Key - not installing EUM"
 			exit 1
 		else
 			echo "setting '$ES_EUM_KEY' in '$VARFILE'"
