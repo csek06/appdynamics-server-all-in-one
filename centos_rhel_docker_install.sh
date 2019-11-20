@@ -20,7 +20,7 @@ echo "completed firewall ports update"
 SELINUX_FILE=/etc/selinux/config
 if [ -f $SELINUX_FILE ]; then
 	sudo setenforce 0
-	sed -i s/RHEL_OR_CENTOS=.*/RHEL_OR_CENTOS=false/ $SELINUX_FILE
+	sed -i s/SELINUX=.*/SELINUX=disabled/ $SELINUX_FILE
 fi
 
 sudo yum install -y yum-utils device-mapper-persistent-data lvm2
