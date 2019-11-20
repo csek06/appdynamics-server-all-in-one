@@ -19,7 +19,7 @@ if [ ! -z $JAVA_HOME ]; then
 	# initialize variables
 	DATABASE_AGENT_HOME=$APPD_INSTALL_DIR/appdynamics/database-agent
 	if [ -z $CONTROLLER_HOST ]; then
-		CONTROLLER_HOST="localhost"
+		CONTROLLER_HOST=$HOSTNAME
 	fi
 	if [ -z $CONTROLLER_PORT ]; then
 		CONTROLLER_PORT="8090"
