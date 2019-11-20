@@ -56,10 +56,11 @@ if [ ! -z $CONTROLLER_KEY ]; then
 		if [ -f "$MA_PID_FILE" ]; then
 			rm $MA_PID_FILE
 		fi
+		if [ -f "$APPD_INSTALL_DIR/appdynamics/machine-agent/jre/bin/java" ]; then
+			export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent/jre
+		fi
 		echo "Starting Machine Agent"
 		# Start Machine Agent
-		#echo java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
-		#java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
 		echo $MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}
 		chmod +x $MA_FILE
 		$MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}
