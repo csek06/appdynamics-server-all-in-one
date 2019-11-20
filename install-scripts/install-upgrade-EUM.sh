@@ -29,7 +29,7 @@ else
 	if [ -f "$VARFILE" ];then 
 		if [ -z $EVENTS_SERVICE_HOST ]; then 
 			if [ -z $CONTROLLER_HOST ]; then
-				EVENTS_SERVICE_HOST=localhost
+				EVENTS_SERVICE_HOST=$HOSTNAME
 			else
 				EVENTS_SERVICE_HOST=$CONTROLLER_HOST
 			fi

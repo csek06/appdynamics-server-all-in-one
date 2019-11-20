@@ -47,6 +47,9 @@ else
 	#Configure Appd for IP address given as environment variable
 	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response.varfile
 	if [ -f "$VARFILE" ];then 
+		if [ -z $CONTROLLER_HOST ]; then
+			CONTROLLER_HOST=$HOSTNAME
+		fi
 		appdserver="serverHostName=${CONTROLLER_HOST}"
 		MYSQL_DATA_DIR="platformAdmin.dataDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/mysql/data"
 		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/"
