@@ -3,7 +3,7 @@
 # initialize variables
 MACHINE_AGENT_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent
 if [ -z $CONTROLLER_HOST ]; then
-	CONTROLLER_HOST="localhost"
+	CONTROLLER_HOST=$HOSTNAME
 fi
 if [ -z $CONTROLLER_PORT ]; then
 	CONTROLLER_PORT="8090"
