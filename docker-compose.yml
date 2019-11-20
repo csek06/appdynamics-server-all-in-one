@@ -16,6 +16,7 @@ services:
     environment:
       - SCENARIO=ECCONTES
       - COMPOSED=true
+      - CONTROLLER_HOST=eccontes
     volumes:
       - /opt/appdynamics:/config
   
