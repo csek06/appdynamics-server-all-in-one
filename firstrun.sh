@@ -1,20 +1,20 @@
 #!/bin/bash
 
+# Set location of FORM file based upon deployment type
+if [ -d "/your-platform-install" ]; then
+	# this must be a docker install
+	FORM_FILE=/config/your-platform.env
+	APPD_SCRIPTS_DIR=/your-platform-install
+else 
+	if [ -d "$PWD/install-scripts" ]; then
+		# this must be a standalone install
+		APPD_SCRIPTS_DIR=$PWD
+		FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.env
+	fi
+fi
+
 # no need for the below if using docker-compose
 if [ ! "$COMPOSED" = "true" ]; then
-	# Set location of FORM file based upon deployment type
-	if [ -d "/your-platform-install" ]; then
-		# this must be a docker install
-		FORM_FILE=/config/your-platform.env
-		APPD_SCRIPTS_DIR=/your-platform-install
-	else 
-		if [ -d "$PWD/install-scripts" ]; then
-			# this must be a standalone install
-			APPD_SCRIPTS_DIR=$PWD
-			FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.env
-		fi
-	fi
-
 	# Identify if a custom form file exists in known / local location
 	if [ -f $FORM_FILE ]; then 
 		# set the environment variables from file
