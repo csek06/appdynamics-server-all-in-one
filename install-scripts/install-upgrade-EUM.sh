@@ -58,7 +58,7 @@ else
 			echo "setting '$appdserver' in '$VARFILE'"
 			sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
 			echo "--- Installing EUM Server ---"
-			./$EUMFILENAME -q -varfile $VARFILE
+			./$EUMFILENAME -varfile $VARFILE
 			# assuming install went fine
 			# let the user cleanup binaries
 			# rm -f ./$EUMFILENAME
