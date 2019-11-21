@@ -3,7 +3,7 @@
 # initialize variables
 MACHINE_AGENT_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent
 if [ -z $CONTROLLER_HOST ]; then
-	CONTROLLER_HOST="localhost"
+	CONTROLLER_HOST=$HOSTNAME
 fi
 if [ -z $CONTROLLER_PORT ]; then
 	CONTROLLER_PORT="8090"
@@ -17,7 +17,8 @@ if [ -z $CONTROLLER_KEY ]; then
 		CONTROLLER_KEY=$(curl -s http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 		rm cookie.appd
 	else
-		echo "Couldn't connect MA to controller to obtain controller key -- NOT starting MA"
+		echo "Couldn't connect MA to controller $CONTROLLER_HOST:$CONTROLLER_PORT to obtain controller key -- NOT starting MA"
+		exit 1
 	fi
 fi
 
@@ -57,8 +58,6 @@ if [ ! -z $CONTROLLER_KEY ]; then
 		fi
 		echo "Starting Machine Agent"
 		# Start Machine Agent
-		#echo java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
-		#java ${MA_PROPERTIES} -jar ${MACHINE_AGENT_HOME}/machineagent.jar
 		echo $MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}
 		chmod +x $MA_FILE
 		$MA_FILE -d ${MA_PROPERTIES} -p ${MA_PID_FILE}

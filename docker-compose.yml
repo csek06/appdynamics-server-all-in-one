@@ -1,0 +1,87 @@
+version: "3.7"
+services:
+
+  eccontes:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_eccontes
+    hostname: $HOSTNAME
+    ports:
+      - "8090:8090"
+      - "8181:8181"
+      - "9080:9080"
+      - "9081:9081"
+      - "9191:9191"
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=ECCONTES
+      - COMPOSED=true
+      - CONTROLLER_HOST=eccontes
+    volumes:
+      - /opt/appdynamics:/opt/appdynamics
+  
+  eum:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_eum
+    hostname: $HOSTNAME
+    ports:
+      - "7001:7001"
+      - "7002:7002"
+    depends_on:
+      - eccontes
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=EUM
+      - COMPOSED=true
+      - CONTROLLER_HOST=eccontes
+      - EUM_HOST=eum
+      - EVENTS_SERVICE_HOST=eccontes
+      - EUM_SIZE=split
+    links:
+      - eccontes
+    volumes:
+      - /opt/appdynamics:/opt/appdynamics
+    restart: on-failure
+      
+  databaseagent:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_db_agent
+    hostname: $HOSTNAME
+    depends_on:
+      - eccontes
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=DA
+      - COMPOSED=true
+      - CONTROLLER_HOST=eccontes
+      - DB_AGENT_NAME=$HOSTNAME
+    links:
+      - eccontes
+    volumes:
+      - /opt/appdynamics:/opt/appdynamics
+    restart: on-failure
+    
+  machineagent:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_ma_agent
+    hostname: $HOSTNAME
+    depends_on:
+      - eccontes
+    ports:
+      - "9090:9090"
+      - "9091:9091"
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=MAAA
+      - COMPOSED=true
+      - CONTROLLER_HOST=eccontes
+      - EVENTS_SERVICE_HOST=eccontes
+      - MA_AGENT_NAME=$HOSTNAME
+    links:
+      - eccontes
+    volumes:
+      - /opt/appdynamics:/opt/appdynamics
+    restart: on-failure

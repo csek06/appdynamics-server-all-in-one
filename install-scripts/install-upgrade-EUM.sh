@@ -24,36 +24,50 @@ else
 	fi
 	chmod +x ./$EUMFILENAME
 
-	echo "Installing EUM server"
+	
 	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response-eum.varfile
 	if [ -f "$VARFILE" ];then 
+		if [ -z $CONTROLLER_HOST ]; then
+			CONTROLLER_HOST=$HOSTNAME
+		fi
 		if [ -z $EVENTS_SERVICE_HOST ]; then 
-			if [ -z $CONTROLLER_HOST ]; then
-				EVENTS_SERVICE_HOST=localhost
-			else
-				EVENTS_SERVICE_HOST=$CONTROLLER_HOST
-			fi
+			EVENTS_SERVICE_HOST=$CONTROLLER_HOST
 		fi
 		if [ -z $EUM_SIZE ]; then
 			EUM_SIZE=demo
 		fi
-		appdserver="eventsService.host=${EVENTS_SERVICE_HOST}"
-		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/EUM"
-		MYSQL_DATA_DIR="mysql.dataDir=${APPD_INSTALL_DIR}/appdynamics/EUM/data"
-		echo "setting eum size '$EUM_SIZE' in '$VARFILE'"
-		sed -i s/euem.InstallationMode=.*/euem.InstallationMode=$EUM_SIZE/ $VARFILE
-		echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
-		sed -i s#mysql\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
-		echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
-		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
-		echo "setting '$appdserver' in '$VARFILE'"
-		sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
+		if [ "$CONTROLLER_HOST" != "$EUM_HOST" ]; then
+			echo "$CONTROLLER_HOST is different than $EUM_HOST -- changing to 'split' install mode"
+			EUM_SIZE=split
+		fi
+		
 		ES_EUM_KEY=$(curl -s --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
-		echo "setting '$ES_EUM_KEY' in '$VARFILE'"
-		sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
+		
 		if [ -z $ES_EUM_KEY ]; then
-			echo "Couldn't connect to controller and obtain EUM Key - not installing EUM"
+			echo "Couldn't connect to controller $CONTROLLER_HOST:$CONTROLLER_PORT and obtain EUM Key - not installing EUM"
+			exit 1
 		else
+			echo "Setting EUM properties"
+			echo "setting '$ES_EUM_KEY' in '$VARFILE'"
+			sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
+			appdserver="eventsService.host=${EVENTS_SERVICE_HOST}"
+			eumserver="euem.Host=${EUM_HOST}"
+			SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/EUM"
+			MYSQL_DATA_DIR="mysql.dataDir=${APPD_INSTALL_DIR}/appdynamics/EUM/data"
+			MYSQL_DB_HOST="mysql.dbHostName=${EUM_HOST}"
+			echo "setting eum size '$EUM_SIZE' in '$VARFILE'"
+			sed -i s/euem.InstallationMode=.*/euem.InstallationMode=$EUM_SIZE/ $VARFILE
+			echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
+			sed -i s#mysql\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
+			echo "setting '$MYSQL_DB_HOST' in '$VARFILE'"
+			sed -i s/mysql.dbHostName=.*/$MYSQL_DB_HOST/ $VARFILE
+			echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
+			sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
+			echo "setting '$appdserver' in '$VARFILE'"
+			sed -i s/eventsService.host=.*/$appdserver/ $VARFILE
+			echo "setting '$eumserver' in '$VARFILE'"
+			sed -i s/euem.Host=.*/$eumserver/ $VARFILE
+			echo "--- Installing EUM Server ---"
 			./$EUMFILENAME -q -varfile $VARFILE
 			# assuming install went fine
 			# let the user cleanup binaries

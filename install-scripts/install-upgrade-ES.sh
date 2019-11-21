@@ -14,6 +14,9 @@ else
 		if [ -z $ES_SIZE ]; then
 			ES_SIZE="dev"			
 		fi
+		if [ -z $CONTROLLER_HOST ]; then
+			CONTROLLER_HOST=$HOSTNAME
+		fi
 		echo "Installing Events Service"
 		cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin
 		./platform-admin.sh install-events-service  --profile $ES_SIZE --hosts $CONTROLLER_HOST
