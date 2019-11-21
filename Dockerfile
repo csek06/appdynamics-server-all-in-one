@@ -13,7 +13,6 @@ libaio1 numactl tzdata unzip iproute2 iputils-ping wget zulu-12 && \
 usermod -u 99 nobody && \
 usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
-mkdir -p /opt/appdynamics && \
 mkdir -p /your-platform-install/defaults
 
 COPY firstrun.sh /etc/my_init.d/firstrun.sh
