@@ -37,6 +37,7 @@ services:
       - CONTROLLER_HOST=eccontes
       - EUM_HOST=eum
       - EVENTS_SERVICE_HOST=eccontes
+      - EUM_SIZE=split
     links:
       - eccontes
     volumes:
