@@ -3,7 +3,7 @@
 # Set location of FORM file based upon deployment type
 if [ -d "/your-platform-install" ]; then
 	# this must be a docker install
-	FORM_FILE=/config/your-platform.env
+	FORM_FILE=/opt/appdynamics/your-platform.env
 	APPD_SCRIPTS_DIR=/your-platform-install
 else 
 	if [ -d "$PWD/install-scripts" ]; then
