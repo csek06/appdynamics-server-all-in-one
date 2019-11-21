@@ -20,6 +20,7 @@ if [ ! "$COMPOSED" = "true" ]; then
 		# set the environment variables from file
 		set -a; . $FORM_FILE; set +a
 	else
+		echo "Platform file does not exist here - $FORM_FILE"
 		DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/defaults/install-scripts/your-platform.env
 		if [ ! -f $DEFAULT_FORM_FILE ]; then
 			DEFAULT_FORM_FILE=$APPD_SCRIPTS_DIR/install-scripts/your-platform.env
