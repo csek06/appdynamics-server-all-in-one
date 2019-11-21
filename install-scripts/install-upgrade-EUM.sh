@@ -36,6 +36,10 @@ else
 		if [ -z $EUM_SIZE ]; then
 			EUM_SIZE=demo
 		fi
+		if [ "$CONTROLLER_HOST" != "$EUM_HOST" ]; then
+			echo "$CONTROLLER_HOST is different than $EUM_HOST -- changing to 'split' install mode"
+			EUM_SIZE=split
+		fi
 		
 		ES_EUM_KEY=$(curl -s --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
 		
