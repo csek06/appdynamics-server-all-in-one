@@ -28,13 +28,13 @@ if [ -f "cookie.appd" ]; then
 	EUM_BEACON_HTTP_HOST="name=eum.beacon.host&value=http://$EUM_HOST:7001"
 	EUM_BEACON_HTTPS_HOST="name=eum.beacon.https.host&value=https://$EUM_HOST:7002"
 	echo "Setting $ES_HOST_VALUE in Controller"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$ES_HOST_VALUE"
+	curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$ES_HOST_VALUE"
 	echo "Setting $EUM_CLOUD_HOST in Controller"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_CLOUD_HOST"
+	curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_CLOUD_HOST"
 	echo "Setting $EUM_BEACON_HTTP_HOST in Controller"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_BEACON_HTTP_HOST"
+	curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_BEACON_HTTP_HOST"
 	echo "Setting $EUM_BEACON_HTTPS_HOST in Controller"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_BEACON_HTTPS_HOST"
+	curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_BEACON_HTTPS_HOST"
 	rm cookie.appd
 	rm cookie.appd2
 else
