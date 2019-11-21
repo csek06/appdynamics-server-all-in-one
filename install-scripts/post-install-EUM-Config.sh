@@ -23,10 +23,18 @@ curl -s -c cookie.appd --user root@system:appd -X GET http://$CONTROLLER_HOST:$C
 if [ -f "cookie.appd" ]; then
 	X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
 	X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=eum.es.host&value=http://$EVENT_SERVICE_HOST:9080"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=eum.cloud.host&value=http://$EUM_HOST:7001"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=eum.beacon.host&value=http://$EUM_HOST:7001"
-	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST  "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=eum.beacon.https.host&value=https://$EUM_HOST:7002"
+	ES_HOST_VALUE="name=eum.es.host&value=http://$EVENT_SERVICE_HOST:9080"
+	EUM_CLOUD_HOST="name=eum.cloud.host&value=http://$EUM_HOST:7001"
+	EUM_BEACON_HTTP_HOST="name=eum.beacon.host&value=http://$EUM_HOST:7001"
+	EUM_BEACON_HTTPS_HOST="name=eum.beacon.https.host&value=https://$EUM_HOST:7002"
+	echo "Setting $ES_HOST_VALUE in Controller"
+	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$ES_HOST_VALUE"
+	echo "Setting $EUM_CLOUD_HOST in Controller"
+	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_CLOUD_HOST"
+	echo "Setting $EUM_BEACON_HTTP_HOST in Controller"
+	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_BEACON_HTTP_HOST"
+	echo "Setting $EUM_BEACON_HTTPS_HOST in Controller"
+	curl -i -s -b cookie.appd -c cookie.appd2 -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$EUM_BEACON_HTTPS_HOST"
 	rm cookie.appd
 	rm cookie.appd2
 else
