@@ -2,7 +2,7 @@ version: "3.7"
 services:
 
   eccontes:
-    image: csek06/appdynamics-server-all-in-one:dev
+    image: csek06/appdynamics-server-all-in-one
     container_name: appd_eccontes
     hostname: $HOSTNAME
     ports:
@@ -18,10 +18,10 @@ services:
       - COMPOSED=true
       - CONTROLLER_HOST=eccontes
     volumes:
-      - /opt/appdynamics:/config
+      - /opt/appdynamics:/opt/appdynamics
   
   eum:
-    image: csek06/appdynamics-server-all-in-one:dev
+    image: csek06/appdynamics-server-all-in-one
     container_name: appd_eum
     hostname: $HOSTNAME
     ports:
@@ -41,11 +41,11 @@ services:
     links:
       - eccontes
     volumes:
-      - /opt/appdynamics:/config
+      - /opt/appdynamics:/opt/appdynamics
     restart: on-failure
       
   databaseagent:
-    image: csek06/appdynamics-server-all-in-one:dev
+    image: csek06/appdynamics-server-all-in-one
     container_name: appd_db_agent
     hostname: $HOSTNAME
     depends_on:
@@ -60,11 +60,11 @@ services:
     links:
       - eccontes
     volumes:
-      - /opt/appdynamics:/config
+      - /opt/appdynamics:/opt/appdynamics
     restart: on-failure
     
   machineagent:
-    image: csek06/appdynamics-server-all-in-one:dev
+    image: csek06/appdynamics-server-all-in-one
     container_name: appd_ma_agent
     hostname: $HOSTNAME
     depends_on:
@@ -83,5 +83,5 @@ services:
     links:
       - eccontes
     volumes:
-      - /opt/appdynamics:/config
+      - /opt/appdynamics:/opt/appdynamics
     restart: on-failure
