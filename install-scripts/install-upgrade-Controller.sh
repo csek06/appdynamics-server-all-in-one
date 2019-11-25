@@ -18,6 +18,14 @@ else
 		if [ -z $CONTROLLER_SIZE ]; then
 			CONTROLLER_SIZE=demo
 		fi
+		if [ "$CONTROLLER_SIZE" = "demo" ]; then
+			echo "changing heap size to 4096m"
+			sed -i "s|glassfish_max_heap_size = \"1024m\"|glassfish_max_heap_size = \"4096m\"|g" $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/archives/controller/4*/playbooks/controller-demo.groovy
+		fi
+		if [ "$CONTROLLER_SIZE" = "small" ]; then
+			echo "changing heap size to 4096m"
+			sed -i "s|glassfish_max_heap_size = \"1536m\"|glassfish_max_heap_size = \"4096m\"|g" $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/archives/controller/4*/playbooks/controller-small.groovy
+		fi
 		cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin
 		./platform-admin.sh create-platform --name my-platform --installation-dir $APPD_INSTALL_DIR/appdynamics/
 		./platform-admin.sh add-hosts --hosts $CONTROLLER_HOST

@@ -35,4 +35,4 @@ sudo chmod +x /usr/local/bin/docker-compose
 
 sudo usermod -aG docker $USER
 
-echo "--- host os preparation complete, you can now perform docker-compose ---"
+echo "--- host os preparation complete, you can now perform docker-compose (if you aren't root, you will need to logout and back in for group settings to take effect)---"
