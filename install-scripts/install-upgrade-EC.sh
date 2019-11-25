@@ -53,12 +53,15 @@ else
 		appdserver="serverHostName=${CONTROLLER_HOST}"
 		MYSQL_DATA_DIR="platformAdmin.dataDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/mysql/data"
 		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/"
+		CONTROLLER_USE_SSL="platformAdmin.useHttps\$Boolean=$CONTROLLER_USE_HTTPS"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/serverHostName=.*/$appdserver/ $VARFILE
 		echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
 		sed -i s#platformAdmin\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
 		echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
 		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
+		echo "setting '$CONTROLLER_USE_SSL' in '$VARFILE'"
+		sed -i s#platform-admin\.useHttps.*#$CONTROLLER_USE_SSL# $VARFILE
 		chmod +x ./$FILENAME
 		echo "Installing Enterprise Console"
 		./$FILENAME -q -varfile $VARFILE
