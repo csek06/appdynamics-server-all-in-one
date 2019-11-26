@@ -12,6 +12,9 @@ else
 		echo "Please install Enterprise Console on Host and map appdata to '$APPD_INSTALL_DIR'"
 	else
 		echo "Installing Controller and local database"
+		if [ -z $DOCKER_HOST ]; then
+			CONTROLLER_HOST=$DOCKER_HOST
+		fi
 		if [ -z $CONTROLLER_HOST ]; then
 			CONTROLLER_HOST=$HOSTNAME
 		fi
@@ -30,20 +33,5 @@ else
 		./platform-admin.sh create-platform --name my-platform --installation-dir $APPD_INSTALL_DIR/appdynamics/
 		./platform-admin.sh add-hosts --hosts $CONTROLLER_HOST
 		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$CONTROLLER_HOST controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd newDatabaseRootPassword=appd controllerProfile=$CONTROLLER_SIZE
-		# Configuration to allow auto broadcast the actual host to agents - not the possible internal docker host
-		if [ "$CONTROLLER_HOST" != "$HOSTNAME" ]; then
-			echo "Updating external broadcast hostname to $HOSTNAME"
-			if [ -z $CONTROLLER_USE_HTTPS ]; then
-				CONTROLLER_USE_HTTPS=false
-			fi
-			if [ "$CONTROLLER_USE_HTTPS" = true ]; then
-				CONT_PROTO=https
-				CONTROLLER_PORT=443
-			else
-				CONT_PROTO=http
-				CONTROLLER_PORT=8090
-			fi
-			./platform-admin.sh update-service-configurations --service controller --job update-configs --args controllerExternalUrl=$CONT_PROTO://$HOSTNAME:$CONTROLLER_PORT
-		fi
 	fi
 fi
