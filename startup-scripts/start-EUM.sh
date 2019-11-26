@@ -2,7 +2,7 @@
 
 # Check to see if the EUM server is already up...
 EUM_STATUS="$(curl -s $EUM_HOST:7001/eumaggregator/ping)"
-if [ ! $EUM_STATUS = "ping" ]; then
+if [ ! "$EUM_STATUS" = "ping" ]; then
 	# Utilizing AppD Shipped JRE
 	JAVA_JAR_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/jre/bin/java
 	if [ -f $JAVA_JAR_FILE ]; then
