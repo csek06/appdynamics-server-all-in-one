@@ -47,6 +47,9 @@ else
 	#Configure Appd for IP address given as environment variable
 	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response.varfile
 	if [ -f "$VARFILE" ];then 
+		if [ -z $DOCKER_HOST ]; then
+			CONTROLLER_HOST=$DOCKER_HOST
+		fi
 		if [ -z $CONTROLLER_HOST ]; then
 			CONTROLLER_HOST=$HOSTNAME
 		fi
