@@ -31,7 +31,7 @@ else
 		./platform-admin.sh add-hosts --hosts $CONTROLLER_HOST
 		./platform-admin.sh submit-job --service controller --job install --args controllerPrimaryHost=$CONTROLLER_HOST controllerAdminUsername=admin controllerAdminPassword=appd controllerRootUserPassword=appd newDatabaseRootPassword=appd controllerProfile=$CONTROLLER_SIZE
 		# Configuration to allow auto broadcast the actual host to agents - not the possible internal docker host
-		if [ -z $DOCKER_HOST ]; then
+		if [ ! -z $DOCKER_HOST ]; then
 			if [ "$CONTROLLER_HOST" != "$DOCKER_HOST" ]; then
 				echo "Updating external broadcast hostname to $DOCKER_HOST"
 				if [ -z $CONTROLLER_USE_HTTPS ]; then
