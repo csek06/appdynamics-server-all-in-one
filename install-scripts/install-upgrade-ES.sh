@@ -14,6 +14,9 @@ else
 		if [ -z $ES_SIZE ]; then
 			ES_SIZE="dev"			
 		fi
+		if [ -z $DOCKER_HOST ]; then
+			CONTROLLER_HOST=$DOCKER_HOST
+		fi
 		if [ -z $CONTROLLER_HOST ]; then
 			CONTROLLER_HOST=$HOSTNAME
 		fi
