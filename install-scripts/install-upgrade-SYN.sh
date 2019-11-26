@@ -57,13 +57,12 @@ else
 		MYSQL_FILE=$APPD_INSTALL_DIR/EUM/mysql/bin/mysql
 		if [ -f "$MYSQL_FILE" ]; then
 			echo "Updating mysql to accomodate synthetic server"
-			$MYSQL_FILE -u root --password="appd" --socket $APPD_INSTALL_DIR/EUM/mysql/mysql.sock
-			GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';
-			GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$HOSTNAME';
-			SET PASSWORD FOR 'root'@'$HOSTNAME' = PASSWORD('appd');
-			show grants for eum_user@$HOSTNAME;
-			show grants for root@$HOSTNAME;
-			exit
+			$MYSQL_FILE -u root --password="appd" --socket $APPD_INSTALL_DIR/EUM/mysql/mysql.sock -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';"
+			$MYSQL_FILE -u root --password="appd" --socket $APPD_INSTALL_DIR/EUM/mysql/mysql.sock -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$HOSTNAME';"
+			$MYSQL_FILE -u root --password="appd" --socket $APPD_INSTALL_DIR/EUM/mysql/mysql.sock -e "SET PASSWORD FOR 'root'@'$HOSTNAME' = PASSWORD('appd');"
+			$MYSQL_FILE -u root --password="appd" --socket $APPD_INSTALL_DIR/EUM/mysql/mysql.sock -e "show grants for eum_user@$HOSTNAME;"
+			$MYSQL_FILE -u root --password="appd" --socket $APPD_INSTALL_DIR/EUM/mysql/mysql.sock -e "show grants for root@$HOSTNAME;"
+			
 			# Setup groovy inputs
 			GROOVY_FILE=$SYN_DIR/inputs.groovy
 			cp $SYN_DIR/inputs.groovy.sample $GROOVY_FILE
