@@ -42,6 +42,8 @@ else
 					
 					echo "Setting $ES_HOST_VALUE in Controller"
 					curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$ES_HOST_VALUE"
+				else
+					echo "Couldn't connect to controller host to update the Event Service URL to $DOCKER_HOST"
 				fi
 			fi
 		fi
