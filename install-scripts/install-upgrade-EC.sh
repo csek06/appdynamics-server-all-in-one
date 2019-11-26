@@ -50,6 +50,9 @@ else
 		if [ -z $CONTROLLER_HOST ]; then
 			CONTROLLER_HOST=$HOSTNAME
 		fi
+		if [ -z $CONTROLLER_USE_HTTPS ]; then
+			CONTROLLER_USE_HTTPS=false
+		fi
 		appdserver="serverHostName=${CONTROLLER_HOST}"
 		MYSQL_DATA_DIR="platformAdmin.dataDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/mysql/data"
 		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/"
