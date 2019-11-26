@@ -45,6 +45,28 @@ services:
     volumes:
       - /opt/appdynamics:/opt/appdynamics
     restart: on-failure
+    
+  syntheticserver:
+    image: csek06/appdynamics-server-all-in-one
+    container_name: appd_syn_server
+    hostname: syntheticserver
+    ports:
+      - ""
+    depends_on:
+      - eccontes
+      - eum
+    env_file:
+      - your-platform.env
+    environment:
+      - SCENARIO=SYN
+      - COMPOSED=true
+      - CONTROLLER_HOST=eccontes
+      - DOCKER_HOST=$HOSTNAME
+    links:
+      - eccontes
+    volumes:
+      - /opt/appdynamics:/opt/appdynamics
+    restart: on-failure
       
   databaseagent:
     image: csek06/appdynamics-server-all-in-one
