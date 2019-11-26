@@ -2,7 +2,11 @@
 
 # Check for host variables
 if [ -z $CONTROLLER_HOST ]; then
-	CONTROLLER_HOST=$HOSTNAME
+	if [ -z $DOCKER_HOST ]; then
+		CONTROLLER_HOST=$DOCKER_HOST
+	else
+		CONTROLLER_HOST=$HOSTNAME
+	fi
 fi
 if [ -z $EUM_HOST ]; then
 	EUM_HOST=$HOSTNAME
