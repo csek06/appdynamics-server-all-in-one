@@ -90,6 +90,10 @@ if [[ $SCENARIO = *EUM* ]]; then
 	echo "Script Will Install/Start EUM Server";
 	EUM=true
 fi
+if [[ $SCENARIO = *SYN* ]]; then
+	echo "Script Will Install/Start Synthetic Server";
+	SYN=true
+fi
 if [[ $SCENARIO = *AA* ]]; then
 	echo "Script Will Install/Start Analytics Agent";
 	AA=true
@@ -249,6 +253,16 @@ if [ "$EUM" = "true" ]; then
 	fi
 fi
 
+if [ "$SYN" = "true" ]; then
+	SYN_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-SYN.sh
+	if [ -f "$SYN_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $SYN_INSTALL_UPGRADE_FILE
+		. $SYN_INSTALL_UPGRADE_FILE
+	else
+		echo "Synthetic Server install file not found here - $SYN_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
 if [ "$MA" = "true" ]; then
 	MA_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-MA.sh
 	AA_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-AA.sh
@@ -306,6 +320,14 @@ if [ "$EUM" = "true" ]; then
 		. $EUM_START_FILE
 	else
 		echo "EUM Server startup file not found here - $EUM_START_FILE"
+	fi
+fi
+
+if [ "$SYN" = "true" ]; then
+	SYN_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-SYN.sh
+	if [ -f "$SYN_START_FILE" ]; then
+		chmod +x $SYN_START_FILE
+		. $SYN_START_FILE
 	fi
 fi
 

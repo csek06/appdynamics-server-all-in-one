@@ -25,7 +25,7 @@ else
 		./platform-admin.sh install-events-service  --profile $ES_SIZE --hosts $CONTROLLER_HOST
 		
 		# Configuration to allow auto broadcast the actual ES host to agents - not the possible internal docker host
-		if [ -z $DOCKER_HOST ]; then
+		if [ ! -z $DOCKER_HOST ]; then
 			if [ "$CONTROLLER_HOST" != "$DOCKER_HOST" ]; then
 				echo "Updating external broadcast ES hostname to $DOCKER_HOST"
 				if [ "$PROXY" = "true" ]; then

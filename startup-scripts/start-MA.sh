@@ -3,7 +3,7 @@
 # initialize variables
 MACHINE_AGENT_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent
 if [ -z $CONTROLLER_HOST ]; then
-	if [ -z $DOCKER_HOST ]; then
+	if [ ! -z $DOCKER_HOST ]; then
 		CONTROLLER_HOST=$DOCKER_HOST
 	else
 		CONTROLLER_HOST=$HOSTNAME

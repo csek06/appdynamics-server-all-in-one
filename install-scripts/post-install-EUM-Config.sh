@@ -2,7 +2,7 @@
 
 # Check for host variables
 if [ -z $CONTROLLER_HOST ]; then
-	if [ -z $DOCKER_HOST ]; then
+	if [ ! -z $DOCKER_HOST ]; then
 		CONTROLLER_HOST=$DOCKER_HOST
 	else
 		CONTROLLER_HOST=$HOSTNAME
