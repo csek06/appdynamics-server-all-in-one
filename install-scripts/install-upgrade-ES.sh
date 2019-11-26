@@ -20,6 +20,26 @@ else
 		echo "Installing Events Service"
 		cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin
 		./platform-admin.sh install-events-service  --profile $ES_SIZE --hosts $CONTROLLER_HOST
+		
+		# Configuration to allow auto broadcast the actual ES host to agents - not the possible internal docker host
+		if [ "$CONTROLLER_HOST" != "$HOSTNAME" ]; then
+			echo "Updating external broadcast ES hostname to $HOSTNAME"
+			if [ "$PROXY" = "true" ]; then
+				ES_PORT=80
+			else
+				ES_PORT=9080
+			fi
+			# Connect EUM Server with Controller
+			curl -s -c cookie.appd --user root@system:appd -X GET http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/auth?action=login
+			if [ -f "cookie.appd" ]; then
+				X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
+				X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
+				ES_HOST_VALUE="name=appdynamics.on.premise.event.service.url&value=http://$HOSTNAME:$ES_PORT"
+				
+				echo "Setting $ES_HOST_VALUE in Controller"
+				curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$ES_HOST_VALUE"
+			fi
+		fi
 	fi
 fi
 
