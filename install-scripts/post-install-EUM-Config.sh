@@ -34,10 +34,6 @@ if [ -f "cookie.appd" ]; then
 		EUM_BEACON_HTTP_HOST="name=eum.beacon.host&value=http://$EUM_HOST:7001"
 		EUM_BEACON_HTTPS_HOST="name=eum.beacon.https.host&value=https://$EUM_HOST:7002"
 	fi
-	ES_HOST_VALUE="name=eum.es.host&value=http://$EVENTS_SERVICE_HOST:9080"
-	EUM_CLOUD_HOST="name=eum.cloud.host&value=http://$EUM_HOST:7001"
-	EUM_BEACON_HTTP_HOST="name=eum.beacon.host&value=http://$EUM_HOST:7001"
-	EUM_BEACON_HTTPS_HOST="name=eum.beacon.https.host&value=https://$EUM_HOST:7002"
 	echo "Setting $ES_HOST_VALUE in Controller"
 	curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$ES_HOST_VALUE"
 	echo "Setting $EUM_CLOUD_HOST in Controller"
