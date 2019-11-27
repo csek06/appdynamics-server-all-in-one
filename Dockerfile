@@ -9,7 +9,7 @@ apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219B
 apt-add-repository 'deb http://repos.azulsystems.com/ubuntu stable main' && \
 apt-get update && \
 apt-get install -y \
-libaio1 numactl tzdata unzip iproute2 iputils-ping python2.7 python-pip wget zulu-12 && \
+curl libaio1 libncurses5 numactl iproute2 iputils-ping python2.7 python-pip tzdata unzip wget zulu-12 && \
 usermod -u 99 nobody && \
 usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
