@@ -62,10 +62,15 @@ else
 			echo "Updating mysql to accomodate synthetic server"
 			SOCK_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/mysql/mysql.sock
 			if [ -f $SOCK_FILE.lock ]; then
+				echo "attempting grant all priveleges for root user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';"
+				echo "attempting grant all priveleges for eum user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$HOSTNAME';"
+				echo "attempting set password for root for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'$HOSTNAME' = PASSWORD('appd');"
+				echo "attempting show grants for eum user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for eum_user@$HOSTNAME;"
+				echo "attempting show grants for root user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for root@$HOSTNAME;"
 				
 				# Setup groovy inputs
