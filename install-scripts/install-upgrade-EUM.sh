@@ -78,6 +78,7 @@ else
 				. $EUM_POST_CONF_FILE
 			else
 				echo "EUM Server post-config file not found here - $EUM_POST_CONF_FILE"
+				exit 1
 			fi
 		fi
 	else
