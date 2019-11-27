@@ -64,6 +64,7 @@ services:
       - SCENARIO=SYN
       - COMPOSED=true
       - CONTROLLER_HOST=eccontes
+      - EUM_HOST=eum
       - DOCKER_HOST=$HOSTNAME
     links:
       - eccontes
