@@ -3,6 +3,9 @@
 # Use manual version or latest available from AppDynamics
 cd $APPD_INSTALL_DIR
 SYN_DIR=$APPD_INSTALL_DIR/appdynamics/synthetic-server
+if [ -z $SYN_VERSION ]; then
+	SYN_VERSION=latest
+fi
 if [ ! "$SYN_VERSION" = "latest" ]; then
 	echo "Manual version override:" $SYN_VERSION
 	#Check for valid version on appdynamics
