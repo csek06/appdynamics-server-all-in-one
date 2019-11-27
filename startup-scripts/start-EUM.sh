@@ -30,14 +30,6 @@ if [ ! "$EUM_STATUS" = "ping" ]; then
 			echo "Starting EUM Server"
 			cd $APPD_INSTALL_DIR/appdynamics/EUM/eum-processor/
 			./bin/eum.sh start
-			# Activate new EUM license file
-			EUM_ACTIVATE_LICENSE_FILE=$APPD_SCRIPTS_DIR/startup-scripts/activate-eum-license.sh
-			if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
-				chmod +x $EUM_ACTIVATE_LICENSE_FILE
-				. $EUM_ACTIVATE_LICENSE_FILE
-			else
-				echo "EUM activate license file not found here - $EUM_ACTIVATE_LICENSE_FILE"
-			fi
 		else
 			echo "EUM File not found here - $EUM_FILE"
 		fi
