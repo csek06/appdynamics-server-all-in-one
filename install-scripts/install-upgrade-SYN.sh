@@ -54,7 +54,10 @@ else
 	unzip -q $APPD_INSTALL_DIR/$FILENAME -d $SYN_DIR
 	echo "Unzip complete"
 	echo "Installing Synthetic Server"
-	SYN_INSTALLER="$SYN_DIR/unix/deploy.sh"
+	
+	cd $SYN_DIR
+	
+	SYN_INSTALLER="unix/deploy.sh"
 	if [ -f $SYN_INSTALLER ]; then
 		# Setup EUM mysql db
 		MYSQL_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/mysql/bin/mysql
@@ -118,7 +121,7 @@ else
 					sed -i s#'controller_username = "'.*'"'#"$controller_username"# $GROOVY_FILE
 					sed -i s#'controller_password = "'.*'"'#"$controller_password"# $GROOVY_FILE
 					
-					echo "Ensuring installer: $SYN_INSTALLER is executable"
+					echo "Ensuring installer: $SYN_DIR/$SYN_INSTALLER is executable"
 					chmod +x $SYN_INSTALLER
 					. $SYN_INSTALLER install
 					# assuming install went fine
