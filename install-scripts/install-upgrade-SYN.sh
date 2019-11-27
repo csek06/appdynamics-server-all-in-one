@@ -129,6 +129,7 @@ else
 						bad_java_cmd='$JAVA_HOME/jre/bin/java'
 						correct_java_cmd='$JAVA_HOME/bin/java'
 						current_java_cmd=$(grep -oP '(?:^readonly[\s\S]JAVACMD=\")\K(.*)(?=\")' $bad_file_java)
+						echo "Bad: $bad_java_cmd Current: $current_java_cmd"
 						if [ "$bad_java_cmd" = "$current_java_cmd" ]; then
 							echo "Bad Java command found within $bad_file_java"
 							echo "Setting $correct_java_cmd within $bad_file_java"
