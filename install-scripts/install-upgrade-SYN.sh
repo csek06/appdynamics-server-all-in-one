@@ -123,6 +123,10 @@ else
 					sed -i s#'controller_username = "'.*'"'#"$controller_username"# $GROOVY_FILE
 					sed -i s#'controller_password = "'.*'"'#"$controller_password"# $GROOVY_FILE
 					
+					
+					if [ -f "$APPD_INSTALL_DIR/appdynamics/EUM/jre/bin/java" ]; then
+						export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/EUM/jre
+					fi
 					echo "Ensuring installer: $SYN_DIR/$SYN_INSTALLER is executable"
 					chmod +x $SYN_INSTALLER
 					. $SYN_INSTALLER install
