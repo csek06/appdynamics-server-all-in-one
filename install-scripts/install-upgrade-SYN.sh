@@ -61,7 +61,7 @@ else
 		if [ -f "$MYSQL_FILE" ]; then
 			echo "Updating mysql to accomodate synthetic server"
 			SOCK_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/mysql/mysql.sock
-			if [ -f $SOCK_FILE ]; then
+			if [ -f $SOCK_FILE.lock ]; then
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$HOSTNAME';"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'$HOSTNAME' = PASSWORD('appd');"
