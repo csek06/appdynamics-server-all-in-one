@@ -36,19 +36,20 @@ if [ ! "$COMPOSED" = "true" ]; then
 	if [ "$RHEL_OR_CENTOS" = "true" ]; then
 		echo "updating and installing packages"
 		sudo yum update -y
-		sudo yum install curl epel-release ibaio ncurses numactl tar tzdata unzip -y
+		sudo yum install curl epel-release libaio ncurses numactl tar tzdata unzip -y
 		sudo yum install python-pip -y
 		echo "updating firewall ports"
-		sudo firewall-cmd --zone=public --add-port=9191/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=8090/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=8181/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=7001/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=7002/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=9080/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=9081/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=9300-9400/tcp --permanent
 		sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 		sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=7001-7002/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=8090/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=8181/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9080-9081/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9090-9091/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9191/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9300-9400/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=10101-10102/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=10001-10002/tcp --permanent
 		sudo firewall-cmd --reload
 		echo "completed firewall ports update"
 		echo "Changing your-platform.env to no longer update packages and FW"
