@@ -100,18 +100,18 @@ else
 					echo "Setting $controller_password in $GROOVY_FILE"
 					
 					
-					sed -i s#'db_host = "'.*'"'#$db_host# $GROOVY_FILE
-					sed -i s#'db_port = "'.*'"'#$db_port# $GROOVY_FILE
-					sed -i s#'db_username = "'.*'"'#$db_username# $GROOVY_FILE
-					sed -i s#'db_user_pwd = "'.*'"'#$db_password# $GROOVY_FILE
-					sed -i s#'collector_host = "'.*'"'#$collector_host# $GROOVY_FILE
-					sed -i s#'collector_port = "'.*'"'#$collector_port# $GROOVY_FILE
-					sed -i s#'key_store_password = "'.*'"'#$key_store_password# $GROOVY_FILE
-					sed -i s#'localFileStoreRootPath = "'.*'"'#$localFileStoreRootPath# $GROOVY_FILE
-					sed -i s#'controller_host = "'.*'"'#$controller_host# $GROOVY_FILE
-					sed -i s#'controller_port = "'.*'"'#$controller_port# $GROOVY_FILE
-					sed -i s#'controller_username = "'.*'"'#$controller_username# $GROOVY_FILE
-					sed -i s#'controller_password = "'.*'"'#$controller_password# $GROOVY_FILE
+					sed -i s#'db_host = "'.*'"'#"$db_host"# $GROOVY_FILE
+					sed -i s#'db_port = "'.*'"'#"$db_port"# $GROOVY_FILE
+					sed -i s#'db_username = "'.*'"'#"$db_username"# $GROOVY_FILE
+					sed -i s#'db_user_pwd = "'.*'"'#"$db_password"# $GROOVY_FILE
+					sed -i s#'collector_host = "'.*'"'#"$collector_host"# $GROOVY_FILE
+					sed -i s#'collector_port = "'.*'"'#"$collector_port"# $GROOVY_FILE
+					sed -i s#'key_store_password = "'.*'"'#"$key_store_password"# $GROOVY_FILE
+					sed -i s#'localFileStoreRootPath = "'.*'"'#"$localFileStoreRootPath"# $GROOVY_FILE
+					sed -i s#'controller_host = "'.*'"'#"$controller_host"# $GROOVY_FILE
+					sed -i s#'controller_port = "'.*'"'#"$controller_port"# $GROOVY_FILE
+					sed -i s#'controller_username = "'.*'"'#"$controller_username"# $GROOVY_FILE
+					sed -i s#'controller_password = "'.*'"'#"$controller_password"# $GROOVY_FILE
 					
 					chmod +x $SYN_INSTALLER
 					. $SYN_INSTALLER install
