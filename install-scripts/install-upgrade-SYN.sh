@@ -81,19 +81,19 @@ else
 				cp $SYN_DIR/inputs.groovy.sample $GROOVY_FILE
 				if [ -f "$GROOVY_FILE" ]; then
 					# setting the proper groovy inputs
-					db_host="db_host = ""$EUM_HOST"""
-					db_port="db_port = ""3388"""
-					db_root_password="db_root_pwd = ""appd"""
-					db_username="db_username = ""eum_user"""
-					db_password="db_user_pwd = ""appd"""
-					collector_host="collector_host = ""$EUM_HOST"""
-					collector_port="collector_port = ""7001"""
-					key_store_password="key_store_password = ""appd"""
-					localFileStoreRootPath="localFileStoreRootPath = ""$SYN_DIR/data"""
-					controller_host="controller_host = ""http://$CONROLLER_HOST"""
-					controller_port="controller_port = ""8090"""
-					controller_username="controller_username = ""admin"""
-					controller_password="controller_password = ""appd"""
+					db_host='db_host = "'"$EUM_HOST"'"'
+					db_port='db_port = "3388"'
+					db_root_password='db_root_pwd = "appd"'
+					db_username='db_username = "eum_user"'
+					db_password='db_user_pwd = "appd"'
+					collector_host='collector_host = "'"$EUM_HOST"'"'
+					collector_port='collector_port = "7001"'
+					key_store_password='key_store_password = "appd"'
+					localFileStoreRootPath='localFileStoreRootPath = "'"$SYN_DIR"'/data"'
+					controller_host='controller_host = "http://'"$CONROLLER_HOST"'"'
+					controller_port='controller_port = "8090"'
+					controller_username='controller_username = "admin"'
+					controller_password='controller_password = "appd"'
 					
 					echo "Setting $db_host in $GROOVY_FILE"
 					echo "Setting $db_port in $GROOVY_FILE"
