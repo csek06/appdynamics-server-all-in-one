@@ -25,7 +25,7 @@ fi
 rm -f tmpout.json
 
 # check if synthetic server is installed
-if [ -f $SYN_DIR/unix/deploy.sh ]; then
+if [ -f $SYN_DIR/inputs.groovy ]; then
 	# check if synthetic server is out of date compared to $SYN_VERSION
 	#cd $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/archives/platform-configuration/
 	#SYN_INSTALLED_VERSION=$(grep -oP '(^platformVersion\:\s\")\K(.*?)(?=\"$)' * | tr -d '\0')
