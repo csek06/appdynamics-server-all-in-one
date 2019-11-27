@@ -2,11 +2,7 @@
 
 # Check for host variables
 if [ -z $CONTROLLER_HOST ]; then
-	if [ ! -z $DOCKER_HOST ]; then
-		CONTROLLER_HOST=$DOCKER_HOST
-	else
-		CONTROLLER_HOST=$HOSTNAME
-	fi
+	CONTROLLER_HOST=$HOSTNAME
 fi
 if [ -z $EUM_HOST ]; then
 	EUM_HOST=$HOSTNAME
@@ -27,6 +23,17 @@ curl -s -c cookie.appd --user root@system:appd -X GET http://$CONTROLLER_HOST:$C
 if [ -f "cookie.appd" ]; then
 	X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
 	X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
+	if [ ! -z $DOCKER_HOST ]; then
+		ES_HOST_VALUE="name=eum.es.host&value=http://$DOCKER_HOST:9080"
+		EUM_CLOUD_HOST="name=eum.cloud.host&value=http://$DOCKER_HOST:7001"
+		EUM_BEACON_HTTP_HOST="name=eum.beacon.host&value=http://$DOCKER_HOST:7001"
+		EUM_BEACON_HTTPS_HOST="name=eum.beacon.https.host&value=https://$DOCKER_HOST:7002"
+	else
+		ES_HOST_VALUE="name=eum.es.host&value=http://$EVENTS_SERVICE_HOST:9080"
+		EUM_CLOUD_HOST="name=eum.cloud.host&value=http://$EUM_HOST:7001"
+		EUM_BEACON_HTTP_HOST="name=eum.beacon.host&value=http://$EUM_HOST:7001"
+		EUM_BEACON_HTTPS_HOST="name=eum.beacon.https.host&value=https://$EUM_HOST:7002"
+	fi
 	ES_HOST_VALUE="name=eum.es.host&value=http://$EVENTS_SERVICE_HOST:9080"
 	EUM_CLOUD_HOST="name=eum.cloud.host&value=http://$EUM_HOST:7001"
 	EUM_BEACON_HTTP_HOST="name=eum.beacon.host&value=http://$EUM_HOST:7001"
