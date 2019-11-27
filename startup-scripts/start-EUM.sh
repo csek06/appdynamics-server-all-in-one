@@ -29,7 +29,7 @@ if [ ! "$EUM_STATUS" = "ping" ]; then
 		if [ -f "$EUM_FILE" ]; then
 			echo "Starting EUM Server"
 			cd $APPD_INSTALL_DIR/appdynamics/EUM/eum-processor/
-			./bin/eum.sh start
+			. bin/eum.sh start
 		else
 			echo "EUM File not found here - $EUM_FILE"
 		fi
