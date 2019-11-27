@@ -54,7 +54,7 @@ else
 	SYN_INSTALLER=$SYN_DIR/unix/deploy.sh
 	if [ -f $SYN_INSTALLER ]; then
 		# Setup EUM mysql db
-		MYSQL_FILE=$APPD_INSTALL_DIR/EUM/mysql/bin/mysql
+		MYSQL_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/mysql/bin/mysql
 		if [ -f "$MYSQL_FILE" ]; then
 			echo "Updating mysql to accomodate synthetic server"
 			$MYSQL_FILE -u root --password="appd" --socket $APPD_INSTALL_DIR/EUM/mysql/mysql.sock -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';"
@@ -111,10 +111,10 @@ else
 				chmod +x $SYN_INSTALLER
 				./$SYN_INSTALLER install
 			else
-				echo "mysql file: $MYSQL_FILE not found - not installing Synthetic Server"
+				echo "GROOVY_FILE: $GROOVY_FILE doesn't exist - not installing Synthetic Server"
 			fi
 		else
-			echo "GROOVY_FILE: $GROOVY_FILE doesn't exist - not installing Synthetic Server"
+			echo "mysql file: $MYSQL_FILE not found - not installing Synthetic Server"
 		fi
 	fi
 	# assuming install went fine
