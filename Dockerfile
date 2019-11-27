@@ -15,12 +15,12 @@ usermod -g 100 nobody && \
 mkdir -p /etc/my_init.d && \
 mkdir -p /your-platform-install/defaults
 
-COPY firstrun.sh /etc/my_init.d/firstrun.sh
-COPY --chown=nobody:users install-scripts/ /your-platform-install/defaults/install-scripts/
-COPY --chown=nobody:users startup-scripts/ /your-platform-install/defaults/startup-scripts/
-
-RUN chmod +x /etc/my_init.d/firstrun.sh
 ENV JAVA_HOME="/usr/lib/jvm/zulu-12-amd64"
 ENV CATALINA_HOME="/opt/appdynamics/tomcat"
 ENV CATALINA_PID="/opt/appdynamics/tomcat/temp/tomcat.pid"
 ENV CATALINA_BASE="/opt/appdynamics/tomcat"
+
+COPY firstrun.sh /etc/my_init.d/firstrun.sh
+RUN chmod +x /etc/my_init.d/firstrun.sh
+COPY --chown=nobody:users install-scripts/ /your-platform-install/defaults/install-scripts/
+COPY --chown=nobody:users startup-scripts/ /your-platform-install/defaults/startup-scripts/
