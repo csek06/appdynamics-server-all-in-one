@@ -123,7 +123,20 @@ else
 					sed -i s#'controller_username = "'.*'"'#"$controller_username"# $GROOVY_FILE
 					sed -i s#'controller_password = "'.*'"'#"$controller_password"# $GROOVY_FILE
 					
+					bad_file_java="$SYN_DIR/synthetic-processor/synthetic-sql-store/bin/synthetic-sql-schema-sh"
+					if [ -f $bad_file_java ]; then
+						# possible bad JAVA_CMD set within this file
+						bad_java_cmd='$JAVA_HOME/jre/bin/java'
+						correct_java_cmd='$JAVA_HOME/bin/java'
+						current_java_cmd=$(grep -oP '(?:^readonly[\s\S]JAVACMD=\")\K(.*)(?=\")' $bad_file_java)
+						if [ "$bad_java_cmd" = "$current_java_cmd" ]; then
+							echo "Bad Java command found within $bad_file_java"
+							echo "Setting $correct_java_cmd within $bad_file_java"
+							sed -i s#"$current_java_cmd"#"$correct_java_cmd"# $bad_file_java
+						fi
+					fi
 					
+					# doesn't ship with a JRE checking if one is local
 					if [ -f "$APPD_INSTALL_DIR/appdynamics/EUM/jre/bin/java" ]; then
 						export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/EUM/jre
 					fi
