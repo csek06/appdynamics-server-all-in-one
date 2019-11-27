@@ -123,7 +123,7 @@ else
 					sed -i s#'controller_username = "'.*'"'#"$controller_username"# $GROOVY_FILE
 					sed -i s#'controller_password = "'.*'"'#"$controller_password"# $GROOVY_FILE
 					
-					bad_file_java="$SYN_DIR/synthetic-processor/synthetic-sql-store/bin/synthetic-sql-schema-sh"
+					bad_file_java="$SYN_DIR/synthetic-processor/synthetic-sql-store/bin/synthetic-sql-schema.sh"
 					if [ -f $bad_file_java ]; then
 						# possible bad JAVA_CMD set within this file
 						bad_java_cmd='$JAVA_HOME/jre/bin/java'
