@@ -54,7 +54,7 @@ else
 	unzip -q $APPD_INSTALL_DIR/$FILENAME -d $SYN_DIR
 	echo "Unzip complete"
 	echo "Installing Synthetic Server"
-	SYN_INSTALLER=$SYN_DIR/unix/deploy.sh
+	SYN_INSTALLER="$SYN_DIR/unix/deploy.sh"
 	if [ -f $SYN_INSTALLER ]; then
 		# Setup EUM mysql db
 		MYSQL_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/mysql/bin/mysql
