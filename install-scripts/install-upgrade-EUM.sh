@@ -76,6 +76,15 @@ else
 			if [ -f "$EUM_POST_CONF_FILE" ]; then
 				chmod +x $EUM_POST_CONF_FILE
 				. $EUM_POST_CONF_FILE
+				
+				# Activate EUM license file
+				EUM_ACTIVATE_LICENSE_FILE=$APPD_SCRIPTS_DIR/startup-scripts/activate-eum-license.sh
+				if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
+					chmod +x $EUM_ACTIVATE_LICENSE_FILE
+					. $EUM_ACTIVATE_LICENSE_FILE
+				else
+					echo "EUM activate license file not found here - $EUM_ACTIVATE_LICENSE_FILE"
+				fi
 			else
 				echo "EUM Server post-config file not found here - $EUM_POST_CONF_FILE"
 				exit 1
