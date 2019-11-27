@@ -55,7 +55,7 @@ if [ ! "$COMPOSED" = "true" ]; then
 	fi
 	if [ "$UBUNTU" = "true" ]; then
 		sudo apt-get update
-		sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
+		sudo apt-get install -y curl libaio1 libncurses5 numactl iproute2 iputils-ping python2.7 python-pip tzdata unzip wget zulu-12
 		echo "Changing your-platform.env to no longer update packages"
 		sed -i s/UBUNTU=.*/UBUNTU=false/ $FORM_FILE
 	fi
