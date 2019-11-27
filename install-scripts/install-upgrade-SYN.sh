@@ -127,6 +127,14 @@ else
 					# assuming install went fine
 					# let the user cleanup binaries
 					# rm -f ./$FILENAME
+					SYN_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-SYN-Config.sh
+					if [ -f "$SYN_POST_CONF_FILE" ]; then
+						chmod +x $SYN_POST_CONF_FILE
+						. $SYN_POST_CONF_FILE
+					else
+						echo "Synthetic Server post-config file not found here - $SYN_POST_CONF_FILE"
+						exit 1
+					fi
 				else
 					echo "GROOVY_FILE: $GROOVY_FILE doesn't exist - not installing Synthetic Server"
 					exit 1
