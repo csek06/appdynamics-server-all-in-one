@@ -90,7 +90,7 @@ else
 					collector_port='collector_port = "7001"'
 					key_store_password='key_store_password = "appd"'
 					localFileStoreRootPath='localFileStoreRootPath = "'"$SYN_DIR"'/data"'
-					controller_host='controller_host = "http://'"$CONROLLER_HOST"'"'
+					controller_host='controller_host = "http://'"$CONTROLLER_HOST"'"'
 					controller_port='controller_port = "8090"'
 					controller_username='controller_username = "admin"'
 					controller_password='controller_password = "appd"'
