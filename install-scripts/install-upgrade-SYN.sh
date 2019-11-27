@@ -66,15 +66,15 @@ else
 			SOCK_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/mysql/mysql.sock
 			if [ -f $SOCK_FILE.lock ]; then
 				echo "attempting grant all priveleges for root user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'%';"
 				echo "attempting grant all priveleges for eum user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$HOSTNAME';"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$%';"
 				echo "attempting set password for root for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'$HOSTNAME' = PASSWORD('appd');"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'%' = PASSWORD('appd');"
 				echo "attempting show grants for eum user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for eum_user@$HOSTNAME;"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for eum_user@%;"
 				echo "attempting show grants for root user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for root@$HOSTNAME;"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for root@%;"
 				
 				# Setup groovy inputs
 				GROOVY_FILE=$SYN_DIR/inputs.groovy
@@ -129,7 +129,6 @@ else
 						bad_java_cmd='$JAVA_HOME/jre/bin/java'
 						correct_java_cmd='$JAVA_HOME/bin/java'
 						current_java_cmd=$(grep -oP '(?:^readonly[\s\S]JAVACMD=\")\K(.*)(?=\")' $bad_file_java)
-						echo "Bad: $bad_java_cmd Current: $current_java_cmd"
 						if [ "$bad_java_cmd" = "$current_java_cmd" ]; then
 							echo "Bad Java command found within $bad_file_java"
 							echo "Setting $correct_java_cmd within $bad_file_java"
