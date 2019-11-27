@@ -61,61 +61,69 @@ else
 		if [ -f "$MYSQL_FILE" ]; then
 			echo "Updating mysql to accomodate synthetic server"
 			SOCK_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/mysql/mysql.sock
-			$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';"
-			$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$HOSTNAME';"
-			$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'$HOSTNAME' = PASSWORD('appd');"
-			$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for eum_user@$HOSTNAME;"
-			$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for root@$HOSTNAME;"
-			
-			# Setup groovy inputs
-			GROOVY_FILE=$SYN_DIR/inputs.groovy
-			cp $SYN_DIR/inputs.groovy.sample $GROOVY_FILE
-			if [ -f "$GROOVY_FILE" ]; then
-				# setting the proper groovy inputs
-				db_host='db_host = "${EUM_HOST}"'
-				db_port='db_port = "3388"'
-				db_username='db_username = "eum_user"'
-				db_password='db_user_pwd = "appd"'
-				collector_host='collector_host = "${EUM_HOST}"'
-				collector_port='collector_port = "7001"'
-				key_store_password='key_store_password = "appd"'
-				localFileStoreRootPath='localFileStoreRootPath = "${SYN_DIR}/data"'
-				controller_host='controller_host = "http://${CONROLLER_HOST}"'
-				controller_port='controller_port = "8090"'
-				controller_username='controller_username = "admin"'
-				controller_password='controller_password = "appd"'
+			if [ -f $SOCK_FILE ]; then
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'$HOSTNAME';"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$HOSTNAME';"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'$HOSTNAME' = PASSWORD('appd');"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for eum_user@$HOSTNAME;"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for root@$HOSTNAME;"
 				
-				echo "Setting $db_host in $GROOVY_FILE"
-				echo "Setting $db_port in $GROOVY_FILE"
-				echo "Setting $db_username in $GROOVY_FILE"
-				echo "Setting $db_password in $GROOVY_FILE"
-				echo "Setting $collector_host in $GROOVY_FILE"
-				echo "Setting $collector_port in $GROOVY_FILE"
-				echo "Setting $key_store_password in $GROOVY_FILE"
-				echo "Setting $localFileStoreRootPath in $GROOVY_FILE"
-				echo "Setting $controller_host in $GROOVY_FILE"
-				echo "Setting $controller_port in $GROOVY_FILE"
-				echo "Setting $controller_username in $GROOVY_FILE"
-				echo "Setting $controller_password in $GROOVY_FILE"
-				
-				
-				sed -i s#'db_host = "'.*'"'#$db_host# $GROOVY_FILE
-				sed -i s#'db_port = "'.*'"'#$db_port# $GROOVY_FILE
-				sed -i s#'db_username = "'.*'"'#$db_username# $GROOVY_FILE
-				sed -i s#'db_user_pwd = "'.*'"'#$db_password# $GROOVY_FILE
-				sed -i s#'collector_host = "'.*'"'#$collector_host# $GROOVY_FILE
-				sed -i s#'collector_port = "'.*'"'#$collector_port# $GROOVY_FILE
-				sed -i s#'key_store_password = "'.*'"'#$key_store_password# $GROOVY_FILE
-				sed -i s#'localFileStoreRootPath = "'.*'"'#$localFileStoreRootPath# $GROOVY_FILE
-				sed -i s#'controller_host = "'.*'"'#$controller_host# $GROOVY_FILE
-				sed -i s#'controller_port = "'.*'"'#$controller_port# $GROOVY_FILE
-				sed -i s#'controller_username = "'.*'"'#$controller_username# $GROOVY_FILE
-				sed -i s#'controller_password = "'.*'"'#$controller_password# $GROOVY_FILE
-				
-				chmod +x $SYN_INSTALLER
-				. $SYN_INSTALLER install
+				# Setup groovy inputs
+				GROOVY_FILE=$SYN_DIR/inputs.groovy
+				cp $SYN_DIR/inputs.groovy.sample $GROOVY_FILE
+				if [ -f "$GROOVY_FILE" ]; then
+					# setting the proper groovy inputs
+					db_host='db_host = "${EUM_HOST}"'
+					db_port='db_port = "3388"'
+					db_username='db_username = "eum_user"'
+					db_password='db_user_pwd = "appd"'
+					collector_host='collector_host = "${EUM_HOST}"'
+					collector_port='collector_port = "7001"'
+					key_store_password='key_store_password = "appd"'
+					localFileStoreRootPath='localFileStoreRootPath = "${SYN_DIR}/data"'
+					controller_host='controller_host = "http://${CONROLLER_HOST}"'
+					controller_port='controller_port = "8090"'
+					controller_username='controller_username = "admin"'
+					controller_password='controller_password = "appd"'
+					
+					echo "Setting $db_host in $GROOVY_FILE"
+					echo "Setting $db_port in $GROOVY_FILE"
+					echo "Setting $db_username in $GROOVY_FILE"
+					echo "Setting $db_password in $GROOVY_FILE"
+					echo "Setting $collector_host in $GROOVY_FILE"
+					echo "Setting $collector_port in $GROOVY_FILE"
+					echo "Setting $key_store_password in $GROOVY_FILE"
+					echo "Setting $localFileStoreRootPath in $GROOVY_FILE"
+					echo "Setting $controller_host in $GROOVY_FILE"
+					echo "Setting $controller_port in $GROOVY_FILE"
+					echo "Setting $controller_username in $GROOVY_FILE"
+					echo "Setting $controller_password in $GROOVY_FILE"
+					
+					
+					sed -i s#'db_host = "'.*'"'#$db_host# $GROOVY_FILE
+					sed -i s#'db_port = "'.*'"'#$db_port# $GROOVY_FILE
+					sed -i s#'db_username = "'.*'"'#$db_username# $GROOVY_FILE
+					sed -i s#'db_user_pwd = "'.*'"'#$db_password# $GROOVY_FILE
+					sed -i s#'collector_host = "'.*'"'#$collector_host# $GROOVY_FILE
+					sed -i s#'collector_port = "'.*'"'#$collector_port# $GROOVY_FILE
+					sed -i s#'key_store_password = "'.*'"'#$key_store_password# $GROOVY_FILE
+					sed -i s#'localFileStoreRootPath = "'.*'"'#$localFileStoreRootPath# $GROOVY_FILE
+					sed -i s#'controller_host = "'.*'"'#$controller_host# $GROOVY_FILE
+					sed -i s#'controller_port = "'.*'"'#$controller_port# $GROOVY_FILE
+					sed -i s#'controller_username = "'.*'"'#$controller_username# $GROOVY_FILE
+					sed -i s#'controller_password = "'.*'"'#$controller_password# $GROOVY_FILE
+					
+					chmod +x $SYN_INSTALLER
+					. $SYN_INSTALLER install
+					# assuming install went fine
+					# let the user cleanup binaries
+					# rm -f ./$FILENAME
+				else
+					echo "GROOVY_FILE: $GROOVY_FILE doesn't exist - not installing Synthetic Server"
+					exit 1
+				fi
 			else
-				echo "GROOVY_FILE: $GROOVY_FILE doesn't exist - not installing Synthetic Server"
+				echo "mysql sock file: $SOCK_FILE not found - is EUM running?"
 				exit 1
 			fi
 		else
@@ -123,7 +131,4 @@ else
 			exit 1
 		fi
 	fi
-	# assuming install went fine
-	# let the user cleanup binaries
-	# rm -f ./$FILENAME
 fi
