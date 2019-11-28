@@ -68,7 +68,7 @@ else
 				echo "attempting grant all priveleges for root user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'%';"
 				echo "attempting grant all priveleges for eum user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'$%';"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'%';"
 				echo "attempting set password for root for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'%' = PASSWORD('appd');"
 				echo "attempting show grants for eum user for synthetic server host"
