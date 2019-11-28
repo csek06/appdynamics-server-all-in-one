@@ -24,7 +24,16 @@ if [ ! "$EUM_STATUS" = "ping" ]; then
 		if [ -f $JAVA_JAR_FILE ]; then
 			export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/EUM/jre
 		fi
-
+		
+		echo "Starting the DB first"
+		EUM_DB_DIR=$APPD_INSTALL_DIR/appdynamics/EUM/orcha/orcha-master/bin
+		cd $EUM_DB_DIR
+		EUM_DB_FILE=orcha-master
+		if [ -f $EUM_DB_FILE ]; then
+			./$EUM_DB_FILE -d mysql.groovy -p ../../playbooks/mysql-orcha/start-mysql.orcha -o ../conf/orcha.properties -c local
+		else
+			echo "DB File: $EUM_DB_FILE not found here: $EUM_DB_DIR"
+		fi
 		EUM_FILE=$APPD_INSTALL_DIR/appdynamics/EUM/eum-processor/bin/eum.sh
 		if [ -f "$EUM_FILE" ]; then
 			echo "Starting EUM Server"
@@ -33,6 +42,14 @@ if [ ! "$EUM_STATUS" = "ping" ]; then
 			./$EUM_START_FILE start
 		else
 			echo "EUM File not found here - $EUM_FILE"
+		fi
+		# Activate EUM license file
+		EUM_ACTIVATE_LICENSE_FILE=$APPD_SCRIPTS_DIR/startup-scripts/activate-eum-license.sh
+		if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
+			chmod +x $EUM_ACTIVATE_LICENSE_FILE
+			. $EUM_ACTIVATE_LICENSE_FILE
+		else
+			echo "EUM activate license file not found here - $EUM_ACTIVATE_LICENSE_FILE"
 		fi
 	else
 		echo "Controller Server is not up -- not attempting start"
