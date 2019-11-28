@@ -43,6 +43,14 @@ if [ ! "$EUM_STATUS" = "ping" ]; then
 		else
 			echo "EUM File not found here - $EUM_FILE"
 		fi
+		# Activate EUM license file
+		EUM_ACTIVATE_LICENSE_FILE=$APPD_SCRIPTS_DIR/startup-scripts/activate-eum-license.sh
+		if [ -f "$EUM_ACTIVATE_LICENSE_FILE" ]; then
+			chmod +x $EUM_ACTIVATE_LICENSE_FILE
+			. $EUM_ACTIVATE_LICENSE_FILE
+		else
+			echo "EUM activate license file not found here - $EUM_ACTIVATE_LICENSE_FILE"
+		fi
 	else
 		echo "Controller Server is not up -- not attempting start"
 		exit 1
