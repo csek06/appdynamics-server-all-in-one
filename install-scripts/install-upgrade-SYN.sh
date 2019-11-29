@@ -74,9 +74,9 @@ else
 				echo "attempting set password for eum_user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'eum_user'@'%' = PASSWORD('appd');"
 				echo "attempting show grants for eum user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for eum_user@%;"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for 'eum_user'@'%';"
 				echo "attempting show grants for root user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for root@%;"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for 'root'@'%';"
 				
 				# Setup groovy inputs
 				GROOVY_FILE=$SYN_DIR/inputs.groovy
