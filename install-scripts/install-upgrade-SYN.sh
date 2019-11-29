@@ -157,8 +157,8 @@ else
 					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
 					
 					# Enabling SaaS Hosted Synthetic Agents
-					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-scheduler.yml
-					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
+					sed -i s#'hostsSaasAgents: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-scheduler.yml
+					sed -i s#'hostsSaasAgents: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
 					
 					SYN_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-SYN-Config.sh
 					if [ -f "$SYN_POST_CONF_FILE" ]; then
