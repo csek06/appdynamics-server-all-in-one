@@ -67,14 +67,16 @@ else
 			if [ -f $SOCK_FILE.lock ]; then
 				echo "attempting grant all priveleges for root user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'%';"
-				echo "attempting grant all priveleges for eum user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'eum_user'@'%';"
+				echo "attempting to create synth user for synthetic server host"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "CREATE USER 'synth_user'@'%' IDENTIFIED BY 'appd';"
+				echo "attempting grant all priveleges for synth user for synthetic server host"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'synth_user'@'%';"
 				echo "attempting set password for root for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'root'@'%' = PASSWORD('appd');"
-				echo "attempting set password for eum_user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'eum_user'@'%' = PASSWORD('appd');"
-				echo "attempting show grants for eum user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for 'eum_user'@'%';"
+				echo "attempting set password for synth_user for synthetic server host"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "SET PASSWORD FOR 'synth_user'@'%' = PASSWORD('appd');"
+				echo "attempting show grants for synth user for synthetic server host"
+				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for 'synth_user'@'%';"
 				echo "attempting show grants for root user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "show grants for 'root'@'%';"
 				
@@ -95,7 +97,7 @@ else
 					
 					db_port='db_port = "3388"'
 					db_root_password='db_root_pwd = "appd"'
-					db_username='db_username = "eum_user"'
+					db_username='db_username = "synth_user"'
 					db_password='db_user_pwd = "appd"'
 					collector_port='collector_port = "7001"'
 					key_store_password='key_store_password = "appd"'
