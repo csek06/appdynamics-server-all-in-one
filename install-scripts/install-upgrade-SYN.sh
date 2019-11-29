@@ -138,6 +138,9 @@ else
 						fi
 					fi
 					
+					# Need to install flake8
+					python -m pip install flake8
+					
 					# doesn't ship with a JRE checking if one is local
 					if [ -f "$APPD_INSTALL_DIR/appdynamics/EUM/jre/bin/java" ]; then
 						export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/EUM/jre
@@ -148,6 +151,15 @@ else
 					# assuming install went fine
 					# let the user cleanup binaries
 					# rm -f ./$FILENAME
+					
+					# Bug with newer version of flake8 need to force enable the linter
+					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-scheduler.yml
+					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
+					
+					# Enabling SaaS Hosted Synthetic Agents
+					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-scheduler.yml
+					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
+					
 					SYN_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-SYN-Config.sh
 					if [ -f "$SYN_POST_CONF_FILE" ]; then
 						chmod +x $SYN_POST_CONF_FILE
