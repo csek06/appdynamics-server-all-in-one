@@ -67,8 +67,6 @@ else
 			if [ -f $SOCK_FILE.lock ]; then
 				echo "attempting grant all priveleges for root user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'root'@'%';"
-				echo "attempting to create synth user for synthetic server host"
-				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "CREATE USER 'synth_user'@'%' IDENTIFIED BY 'appd';"
 				echo "attempting grant all priveleges for synth user for synthetic server host"
 				$MYSQL_FILE -u root --password="appd" --socket $SOCK_FILE -e "GRANT ALL PRIVILEGES ON eum_db.* TO 'synth_user'@'%';"
 				echo "attempting set password for root for synthetic server host"
@@ -88,13 +86,11 @@ else
 					if [ ! -z $DOCKER_HOST ]; then
 						collector_host='collector_host = "'"$DOCKER_HOST"'"'
 						controller_host='controller_host = "http://'"$DOCKER_HOST"'"'
-						db_host='db_host = "'"$DOCKER_HOST"'"'
 					else
 						collector_host='collector_host = "'"$EUM_HOST"'"'
-						controller_host='controller_host = "http://'"$CONTROLLER_HOST"'"'
-						db_host='db_host = "'"$EUM_HOST"'"'
+						controller_host='controller_host = "http://'"$CONTROLLER_HOST"'"'			
 					fi
-					
+					db_host='db_host = "'"$EUM_HOST"'"'
 					db_port='db_port = "3388"'
 					db_root_password='db_root_pwd = "appd"'
 					db_username='db_username = "synth_user"'
@@ -166,8 +162,8 @@ else
 					sed -i s#'lintEnabled: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
 					
 					# Enabling SaaS Hosted Synthetic Agents
-					sed -i s#'hostsSaasAgents: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-scheduler.yml
-					sed -i s#'hostsSaasAgents: false'#'lintEnabled: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
+					sed -i s#'hostsSaasAgents: false'#'hostsSaasAgents: true'# $SYN_DIR/synthetic-processor/conf/synthetic-scheduler.yml
+					sed -i s#'hostsSaasAgents: false'#'hostsSaasAgents: true'# $SYN_DIR/synthetic-processor/conf/synthetic-shepherd.yml
 					
 					SYN_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-SYN-Config.sh
 					if [ -f "$SYN_POST_CONF_FILE" ]; then
