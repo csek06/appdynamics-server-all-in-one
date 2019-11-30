@@ -2,23 +2,32 @@
 
 # Use manual version or latest available from AppDynamics
 cd $APPD_INSTALL_DIR
-if [ ! "$EC_VERSION" = "latest" ]; then
-	echo "Manual version override:" $EC_VERSION
-	#Check for valid version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$EC_VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
-	echo "Filename expected: $FILENAME"
-else
-	#Check the latest version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
-	echo "Latest version on appdynamics is" $EC_VERSION
+if [ ! -z $EC_FILENAME ]; then
+	echo "Manual Override - Attempting to use $EC_FILENAME for enterprise console installation..."
+	if [ -f $EC_FILENAME ]; then
+		FILENAME=$EC_FILENAME
+	else
+		echo "Cannot find file: $EC_FILENAME"
+		if [ ! "$EC_VERSION" = "latest" ]; then
+			echo "Manual version override:" $EC_VERSION
+			#Check for valid version on appdynamics
+			curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$EC_VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
+			EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+			DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+			FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
+			echo "Filename expected: $FILENAME"
+		else
+			#Check the latest version on appdynamics
+			curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
+			EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+			DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+			FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
+			echo "Latest version on appdynamics is" $EC_VERSION
+		fi
+		rm -f tmpout.json
+	fi
 fi
-rm -f tmpout.json
+
 
 # check if enterprise console is installed
 if [ -f $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
