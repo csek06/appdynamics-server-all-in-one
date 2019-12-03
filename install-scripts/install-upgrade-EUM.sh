@@ -6,24 +6,28 @@ if [ -f $APPD_INSTALL_DIR/appdynamics/EUM/eum-processor/bin/eum.sh ]; then
 	echo "EUM Server: $INSTALLED_VERSION is installed"
 	# check for upgrade <code to be inserted>, however upgrade path needs to be followed EC > ES > EUM > Controller
 else
-	# Check latest EUM server version on AppDynamics
-	cd $APPD_INSTALL_DIR
-	echo "Checking EUM server version"
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
-	EUMDOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-	EUMFILENAME=$(grep -oP '(?:filename\"\:\")\K(euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
-	rm -f tmpout.json
-	# check if user downloaded latest EUM server binary
-	if [ -f $APPD_INSTALL_DIR/$EUMFILENAME ]; then
-		echo "Found latest EUM Server '$EUMFILENAME' in '$APPD_INSTALL_DIR' "
-	else
-		echo "Didn't find '$EUMFILENAME' in '$APPD_INSTALL_DIR' - downloading"
-		NEWTOKEN=$(curl -s -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
-		curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
-		echo "file downloaded"
+	if [ ! -z $EUM_FILENAME ]; then
+		echo "Manual Override - Attempting to use $EUM_FILENAME for EUM server installation..."
+		if [ ! -f $EUM_FILENAME ]; then
+			echo "File: $EUM_FILENAME not found - checking online"
+			# Check latest EUM server version on AppDynamics
+			cd $APPD_INSTALL_DIR
+			curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=&events=&eum=linux"
+			EUMDOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+			EUM_FILENAME=$(grep -oP '(?:filename\"\:\")\K(euem-64bit-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
+			rm -f tmpout.json
+			# check if user downloaded latest EUM server binary
+			if [ -f $APPD_INSTALL_DIR/$EUM_FILENAME ]; then
+				echo "Found latest EUM Server '$EUM_FILENAME' in '$APPD_INSTALL_DIR' "
+			else
+				echo "Didn't find '$EUM_FILENAME' in '$APPD_INSTALL_DIR' - downloading"
+				NEWTOKEN=$(curl -s -X POST -d '{"username": "'$AppdUser'","password": "'$AppdPass'","scopes": ["download"]}' https://identity.msrv.saas.appdynamics.com/v2.0/oauth/token | grep -oP '(\"access_token\"\:\s\")\K(.*?)(?=\"\,\s\")')
+				curl -L -O -H "Authorization: Bearer ${NEWTOKEN}" ${EUMDOWNLOAD_PATH}
+				echo "file downloaded"
+			fi
+		fi
 	fi
-	chmod +x ./$EUMFILENAME
-
+	chmod +x ./$EUM_FILENAME
 	
 	VARFILE=$APPD_SCRIPTS_DIR/install-scripts/response-eum.varfile
 	if [ -f "$VARFILE" ];then 
@@ -68,10 +72,10 @@ else
 			echo "setting '$eumserver' in '$VARFILE'"
 			sed -i s/euem.Host=.*/$eumserver/ $VARFILE
 			echo "--- Installing EUM Server ---"
-			./$EUMFILENAME -q -varfile $VARFILE
+			./$EUM_FILENAME -q -varfile $VARFILE
 			# assuming install went fine
 			# let the user cleanup binaries
-			# rm -f ./$EUMFILENAME
+			# rm -f ./$EUM_FILENAME
 			EUM_POST_CONF_FILE=$APPD_SCRIPTS_DIR/install-scripts/post-install-EUM-Config.sh
 			if [ -f "$EUM_POST_CONF_FILE" ]; then
 				chmod +x $EUM_POST_CONF_FILE
