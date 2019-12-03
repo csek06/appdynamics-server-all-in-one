@@ -10,6 +10,7 @@ NOTE - This should only be used for Demo / Small environments and is not intende
 * Controller
 * Events Server
 * EUM Server
+* Synthetic Server
 * Custom GEO Server
 * Machine Agent
 * Analytics Agent (When chosen, will also run Machine Agent as its bundled)
@@ -45,6 +46,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * CONT = Controller
 * ES = Events Service
 * EUM = End User Monitoring Server
+* SYN = Synthetic Server
 * GEO = Custom Geo Server for Browser RUM
 * MA = Machine Agent
 * AA = Analytics Agent
@@ -55,6 +57,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * Controller: 8090, 8181
 * Events Service: 9080, 9081
 * End User Monitoring: 7001, 7002
+* Synthetic Server: 10001, 10002, 10101, 10102, 12101, 12102, 16101, 16102 (optional 16101 and 16102 are for AppD externally hosted agents)
 * Custom Geo Server: 8080 (Configurable, internal container port needs to be 8080 however)
 * Machine Agent: No inbound communication (no need to expose)
 * Database Agent: No inbound communication (no need to expose)
@@ -119,6 +122,11 @@ docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -
 docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -v /host/install/dir:/opt/appdynamics:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 
+### Install Synthetic Server
+```
+docker run -d --name="appdynamics-server-SYN" --net="host" -p 10001-10002:10001-10002 -p 10101-10102:10101-10102 -p 12101-12102:12101-12102 -p 16101-16102:16101-16102 -v /host/install/dir:/opt/appdynamics:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
+
 ### Install Custom Geo Server for Browser RUM
 ```
 docker run -d --name="appdynamics-server-GEO" --net="host" -p 80:80 -v /host/install/dir:/opt/appdynamics:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
@@ -160,6 +168,7 @@ Once installed, open the WebUI at http://CONTROLLERHOST:9191/ and validate that 
 2. Navigate to http://CONTROLLERHOST:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
+* 2019-12-03 - Implemented Synthetic Server, Avoid online lookup via FILENAME variable feature, minor code fixes
 * 2019-11-21 - Created docker-compose file, Standardized on Install Directory, minor code fixes
 * 2019-10-17 - Standardized on using FORM, Modularized script to install components outside of Docker, minor code fixes
 * 2019-08-05 - Implemented FORM feature: see 'FORM' section above
