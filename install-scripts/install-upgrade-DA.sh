@@ -8,16 +8,18 @@ if [ ! -f $DA_DIR/db-agent.jar ]; then
 		if [ -f $DA_FILENAME ]; then
 			FILENAME=$DA_FILENAME
 		else
-			#Check the latest version on appdynamics
-			curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=db&os=linux&platform_admin_os=&events=&eum="
-			DA_VERSION=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
-			DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-			FILENAME=$(grep -oP '(?:filename\"\:\")\K(db-agent-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-			echo "Latest version on appdynamics is" $DA_VERSION
-			echo "DOWNLOAD_PATH: $DOWNLOAD_PATH"
-			echo "FILENAME: $FILENAME"
-			rm -f tmpout.json
+			echo "Cannot find file: $DA_FILENAME"
 		fi
+	else
+		#Check the latest version on appdynamics
+		curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=db&os=linux&platform_admin_os=&events=&eum="
+		DA_VERSION=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+		DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"db-agent-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+		FILENAME=$(grep -oP '(?:filename\"\:\")\K(db-agent-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
+		echo "Latest version on appdynamics is" $DA_VERSION
+		echo "DOWNLOAD_PATH: $DOWNLOAD_PATH"
+		echo "FILENAME: $FILENAME"
+		rm -f tmpout.json
 	fi
 
 	# check if user downloaded latest DA  binary
