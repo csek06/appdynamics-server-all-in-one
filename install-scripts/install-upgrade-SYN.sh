@@ -6,23 +6,31 @@ SYN_DIR=$APPD_INSTALL_DIR/appdynamics/synthetic-server
 if [ -z $SYN_VERSION ]; then
 	SYN_VERSION=latest
 fi
-if [ ! "$SYN_VERSION" = "latest" ]; then
-	echo "Manual version override:" $SYN_VERSION
-	#Check for valid version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$SYN_VERISON&apm=&os=&platform_admin_os=&appdynamics_cluster_os=&events=&eum=synthetic-server"
-	SYN_VERSION=$(grep -oP '(?:results.*?)(?:version\"\:\")\K(\d+\.\d+\.\d+\.\d+)(?=\"\,)' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(?:results.*?)(?:download_path\"\:\")\K(https.*?appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:results.*?)(?:filename\"\:\")\K(appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-	echo "Filename expected: $FILENAME"
-else
-	#Check the latest version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=&platform_admin_os=&appdynamics_cluster_os=&events=&eum=synthetic-server"
-	SYN_VERSION=$(grep -oP '(?:results.*?)(?:version\"\:\")\K(\d+\.\d+\.\d+\.\d+)(?=\"\,)' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(?:results.*?)(?:download_path\"\:\")\K(https.*?appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:results.*?)(?:filename\"\:\")\K(appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-	echo "Latest version on appdynamics is" $SYN_VERSION
+if [ ! -z $SYN_FILENAME ]; then
+	echo "Manual Override - Attempting to use $SYN_FILENAME for synthetic server installation..."
+	if [ -f $SYN_FILENAME ]; then
+		FILENAME=$SYN_FILENAME
+	else
+		if [ ! "$SYN_VERSION" = "latest" ]; then
+			echo "Manual version override:" $SYN_VERSION
+			#Check for valid version on appdynamics
+			curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$SYN_VERISON&apm=&os=&platform_admin_os=&appdynamics_cluster_os=&events=&eum=synthetic-server"
+			SYN_VERSION=$(grep -oP '(?:results.*?)(?:version\"\:\")\K(\d+\.\d+\.\d+\.\d+)(?=\"\,)' tmpout.json)
+			DOWNLOAD_PATH=$(grep -oP '(?:results.*?)(?:download_path\"\:\")\K(https.*?appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
+			FILENAME=$(grep -oP '(?:results.*?)(?:filename\"\:\")\K(appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
+			echo "Filename expected: $FILENAME"
+		else
+			#Check the latest version on appdynamics
+			curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=&platform_admin_os=&appdynamics_cluster_os=&events=&eum=synthetic-server"
+			SYN_VERSION=$(grep -oP '(?:results.*?)(?:version\"\:\")\K(\d+\.\d+\.\d+\.\d+)(?=\"\,)' tmpout.json)
+			DOWNLOAD_PATH=$(grep -oP '(?:results.*?)(?:download_path\"\:\")\K(https.*?appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
+			FILENAME=$(grep -oP '(?:results.*?)(?:filename\"\:\")\K(appdynamics-synthetic-server-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
+			echo "Latest version on appdynamics is" $SYN_VERSION
+		fi
+		rm -f tmpout.json
+	fi
 fi
-rm -f tmpout.json
+
 
 # check if synthetic server is installed
 if [ -f $SYN_DIR/inputs.groovy ]; then
