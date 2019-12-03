@@ -8,16 +8,18 @@ if [ ! -f $MA_DIR/bin/machine-agent ]; then
 		if [ -f $MA_FILENAME ]; then
 			FILENAME=$MA_FILENAME
 		else
-			#Check the latest version on appdynamics
-			curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=machine&os=linux&platform_admin_os=&events=&eum="
-			MA_VERSION=$(grep -oP '(?:64-bit linux \(zip\)[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
-			DOWNLOAD_PATH=$(grep -oP '(?:64-bit linux \(zip\)[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-			FILENAME=$(grep -oP '(?:\"filename\"\:\")\K(machineagent-bundle-64bit-linux-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,\"s3)' tmpout.json)
-			echo "Latest version on appdynamics is" $MA_VERSION
-			echo "DOWNLOAD_PATH: $DOWNLOAD_PATH"
-			echo "FILENAME: $FILENAME"
-			rm -f tmpout.json
+			echo "Cannot find file: $MA_FILENAME"
 		fi
+	else
+		#Check the latest version on appdynamics
+		curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=machine&os=linux&platform_admin_os=&events=&eum="
+		MA_VERSION=$(grep -oP '(?:64-bit linux \(zip\)[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+		DOWNLOAD_PATH=$(grep -oP '(?:64-bit linux \(zip\)[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+		FILENAME=$(grep -oP '(?:\"filename\"\:\")\K(machineagent-bundle-64bit-linux-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,\"s3)' tmpout.json)
+		echo "Latest version on appdynamics is" $MA_VERSION
+		echo "DOWNLOAD_PATH: $DOWNLOAD_PATH"
+		echo "FILENAME: $FILENAME"
+		rm -f tmpout.json
 	fi
 
 	# check if user downloaded latest EUM server binary
