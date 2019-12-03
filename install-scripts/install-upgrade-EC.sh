@@ -2,23 +2,33 @@
 
 # Use manual version or latest available from AppDynamics
 cd $APPD_INSTALL_DIR
-if [ ! "$EC_VERSION" = "latest" ]; then
-	echo "Manual version override:" $EC_VERSION
-	#Check for valid version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$EC_VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
-	echo "Filename expected: $FILENAME"
+if [ ! -z $EC_FILENAME ]; then
+	echo "Manual Override - Attempting to use $EC_FILENAME for enterprise console installation..."
+	if [ -f $EC_FILENAME ]; then
+		FILENAME=$EC_FILENAME
+	else
+		echo "Cannot find file: $EC_FILENAME"
+	fi
 else
-	#Check the latest version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
-	EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
-	echo "Latest version on appdynamics is" $EC_VERSION
+	if [ ! "$EC_VERSION" = "latest" ]; then
+		echo "Manual version override:" $EC_VERSION
+		#Check for valid version on appdynamics
+		curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$EC_VERSION&apm=&os=linux&platform_admin_os=linux&events=&eum="
+		EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+		DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+		FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
+		echo "Filename expected: $FILENAME"
+	else
+		#Check the latest version on appdynamics
+		curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=&apm=&os=linux&platform_admin_os=linux&events=&eum="
+		EC_VERSION=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+		DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+		FILENAME=$(grep -oP '(?:filename\"\:\")\K(platform-setup-x64-linux-\d+\.\d+\.\d+\.\d+\.sh)(?=\"\,)' tmpout.json)
+		echo "Latest version on appdynamics is" $EC_VERSION
+	fi
+	rm -f tmpout.json
 fi
-rm -f tmpout.json
+
 
 # check if enterprise console is installed
 if [ -f $APPD_INSTALL_DIR/appdynamics/enterprise-console/platform-admin/bin/platform-admin.sh ]; then
@@ -50,15 +60,21 @@ else
 		if [ -z $CONTROLLER_HOST ]; then
 			CONTROLLER_HOST=$HOSTNAME
 		fi
+		if [ -z $CONTROLLER_USE_HTTPS ]; then
+			CONTROLLER_USE_HTTPS=false
+		fi
 		appdserver="serverHostName=${CONTROLLER_HOST}"
 		MYSQL_DATA_DIR="platformAdmin.dataDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/mysql/data"
 		SYS_INSTALL_DIR="sys.installationDir=${APPD_INSTALL_DIR}/appdynamics/enterprise-console/"
+		CONTROLLER_USE_SSL="platformAdmin.useHttps\$Boolean=$CONTROLLER_USE_HTTPS"
 		echo "setting '$appdserver' in '$VARFILE'"
 		sed -i s/serverHostName=.*/$appdserver/ $VARFILE
 		echo "setting '$MYSQL_DATA_DIR' in '$VARFILE'"
 		sed -i s#platformAdmin\.dataDir=.*#$MYSQL_DATA_DIR# $VARFILE
 		echo "setting '$SYS_INSTALL_DIR' in '$VARFILE'"
 		sed -i s#sys\.installationDir=.*#$SYS_INSTALL_DIR# $VARFILE
+		echo "setting '$CONTROLLER_USE_SSL' in '$VARFILE'"
+		sed -i s#platform-admin\.useHttps.*#$CONTROLLER_USE_SSL# $VARFILE
 		chmod +x ./$FILENAME
 		echo "Installing Enterprise Console"
 		./$FILENAME -q -varfile $VARFILE

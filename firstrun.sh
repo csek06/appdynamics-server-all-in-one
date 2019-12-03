@@ -8,6 +8,7 @@ if [ -d "/your-platform-install" ]; then
 else 
 	if [ -d "$PWD/install-scripts" ]; then
 		# this must be a standalone install
+		STANDALONE=true
 		APPD_SCRIPTS_DIR=$PWD
 		FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.env
 	fi
@@ -36,18 +37,20 @@ if [ ! "$COMPOSED" = "true" ]; then
 	if [ "$RHEL_OR_CENTOS" = "true" ]; then
 		echo "updating and installing packages"
 		sudo yum update -y
-		sudo yum install curl libaio ncurses numactl tar tzdata unzip -y
+		sudo yum install curl epel-release libaio ncurses numactl tar tzdata unzip -y
+		sudo yum install python-pip -y
 		echo "updating firewall ports"
-		sudo firewall-cmd --zone=public --add-port=9191/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=8090/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=8181/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=7001/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=7002/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=9080/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=9081/tcp --permanent
-		sudo firewall-cmd --zone=public --add-port=9300-9400/tcp --permanent
 		sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
 		sudo firewall-cmd --zone=public --add-port=443/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=7001-7002/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=8090/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=8181/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9080-9081/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9090-9091/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9191/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=9300-9400/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=10101-10102/tcp --permanent
+		sudo firewall-cmd --zone=public --add-port=10001-10002/tcp --permanent
 		sudo firewall-cmd --reload
 		echo "completed firewall ports update"
 		echo "Changing your-platform.env to no longer update packages and FW"
@@ -55,7 +58,7 @@ if [ ! "$COMPOSED" = "true" ]; then
 	fi
 	if [ "$UBUNTU" = "true" ]; then
 		sudo apt-get update
-		sudo apt-get install -y curl iproute2 libaio1 numactl tzdata unzip
+		sudo apt-get install -y curl libaio1 libncurses5 numactl iproute2 iputils-ping python2.7 python-pip tzdata unzip wget zulu-12
 		echo "Changing your-platform.env to no longer update packages"
 		sed -i s/UBUNTU=.*/UBUNTU=false/ $FORM_FILE
 	fi
@@ -89,6 +92,10 @@ fi
 if [[ $SCENARIO = *EUM* ]]; then
 	echo "Script Will Install/Start EUM Server";
 	EUM=true
+fi
+if [[ $SCENARIO = *SYN* ]]; then
+	echo "Script Will Install/Start Synthetic Server";
+	SYN=true
 fi
 if [[ $SCENARIO = *AA* ]]; then
 	echo "Script Will Install/Start Analytics Agent";
@@ -249,6 +256,16 @@ if [ "$EUM" = "true" ]; then
 	fi
 fi
 
+if [ "$SYN" = "true" ]; then
+	SYN_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-SYN.sh
+	if [ -f "$SYN_INSTALL_UPGRADE_FILE" ]; then
+		chmod +x $SYN_INSTALL_UPGRADE_FILE
+		. $SYN_INSTALL_UPGRADE_FILE
+	else
+		echo "Synthetic Server install file not found here - $SYN_INSTALL_UPGRADE_FILE"
+	fi
+fi
+
 if [ "$MA" = "true" ]; then
 	MA_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-MA.sh
 	AA_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-AA.sh
@@ -306,6 +323,14 @@ if [ "$EUM" = "true" ]; then
 		. $EUM_START_FILE
 	else
 		echo "EUM Server startup file not found here - $EUM_START_FILE"
+	fi
+fi
+
+if [ "$SYN" = "true" ]; then
+	SYN_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-SYN.sh
+	if [ -f "$SYN_START_FILE" ]; then
+		chmod +x $SYN_START_FILE
+		. $SYN_START_FILE
 	fi
 fi
 

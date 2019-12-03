@@ -10,6 +10,7 @@ NOTE - This should only be used for Demo / Small environments and is not intende
 * Controller
 * Events Server
 * EUM Server
+* Synthetic Server
 * Custom GEO Server
 * Machine Agent
 * Analytics Agent (When chosen, will also run Machine Agent as its bundled)
@@ -45,6 +46,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * CONT = Controller
 * ES = Events Service
 * EUM = End User Monitoring Server
+* SYN = Synthetic Server
 * GEO = Custom Geo Server for Browser RUM
 * MA = Machine Agent
 * AA = Analytics Agent
@@ -55,21 +57,22 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 * Controller: 8090, 8181
 * Events Service: 9080, 9081
 * End User Monitoring: 7001, 7002
+* Synthetic Server: 10001, 10002, 10101, 10102, 12101, 12102, 16101, 16102 (optional 16101 and 16102 are for AppD externally hosted agents)
 * Custom Geo Server: 8080 (Configurable, internal container port needs to be 8080 however)
 * Machine Agent: No inbound communication (no need to expose)
 * Database Agent: No inbound communication (no need to expose)
 * Analytics Agent: 9090, 9091
 
 ## Pre-install Notes
-1. You can download the latest software at download.appdynamics.com and place the binaries of the enterprise console (optional components) in the 'APPD_INSTALL_DIR' (host directory for docker) or in the same directory as the 'firstrun.sh' script file. Otherwise, the script will download it for you if you have given your AppDynamics Community credentials in the 'your-platform.env' file which will be placed in '/path/to/opt/appdynamics' or the directory of 'firstrun.sh'.
-2. You can place your 'license.lic' file in '/path/to/opt/appdynamics' or directory of 'firstrun.sh' before install and it will activate on initial build or upon startup of container. This is handy for updating your license file periodically.
+1. You can download the latest software at download.appdynamics.com and place the binaries of the enterprise console (optional components) in the 'APPD_INSTALL_DIR' (host directory for docker) or in the same directory as the 'firstrun.sh' script file. Otherwise, the script will download it for you if you have given your AppDynamics Community credentials in the 'your-platform.env' file which will be placed in '/opt/appdynamics'.
+2. You can place your 'license.lic' file in '/opt/appdynamics' or directory of 'firstrun.sh' before install and it will activate on initial build or upon startup of container. This is handy for updating your license file periodically.
 3. DOCKER USERS - If you are running on anything other than Unraid OS you can open a console to your container via 
    ```
    docker exec -i -t appdynamics-server-all-in-one /bin/bash
    ```
    * Unraid users - simply click the container in your web ui and select ">_ console"
-4. AppDynamics Software will be installed in </path/to/opt/appdynamics>/appdynamics directory (DOCKER) or /opt/appdynamics for Standalone (to change this please see below section 'Your Platform Configuration'. This allows you to view/modify contents easily from your host. You can also delete and recreate the container while data persists.
-5. If your installation goes sour, backup your license file, delete the folder </path/to/opt/appdynamics>/appdynamics and restart the container.
+4. AppDynamics Software will be installed in </opt/appdynamics>/appdynamics directory (DOCKER) or /opt/appdynamics for Standalone (to change this please see below section 'Your Platform Configuration'. This allows you to view/modify contents easily from your host. You can also delete and recreate the container while data persists.
+5. If your installation goes sour, backup your license file, delete the folder </opt/appdynamics>/appdynamics and restart the container.
 6. DOCKER USERS - You can monitor the the logs of your container by issuing the following command
 	```
 	docker logs -f container-name
@@ -78,7 +81,7 @@ SCENARIO variable is treated as a string, adding any text containing the substri
 
 ## Standalone Script Method
 1. Download the entire source code and place it in a directory of your choice
-2. Execute the firstrun.sh script this will create a template your-platform.env file in the same directory as firstrun.sh
+2. Execute the firstrun.sh script this will create a template your-platform.env file in the install directory (default /opt/appdynamics)
 3. Modify your-platform.env file to suit your needs.
 4. Execute the firstrun.sh script to install and start all of your components
 	
@@ -99,7 +102,7 @@ On other platforms, you can run this docker with the following command:
 ```
 docker run -d --name="appdynamics-server-all-in-one" --net="host" -v /host/install/dir:/opt/appdynamics:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
-* Replace the "/path/to/opt/appdynamics" with your choice of host location
+* Replace the "/opt/appdynamics" with your choice of host location
 * If the -v /etc/localtime:/etc/localtime:ro mapping causes issues, you can try -e TZ="<timezone>" with the timezone in the format of "America/New_York" instead
 
 ## Sample Docker Run Commands
@@ -117,6 +120,11 @@ docker run -d --name="appdynamics-server-EC-Cont-ES" --net="host" -p 9191:9191 -
 ### Install End User Monitoring Server
 ```
 docker run -d --name="appdynamics-server-EUM" --net="host" -p 7001:7001 -p 7002:7002 -v /host/install/dir:/opt/appdynamics:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
+```
+
+### Install Synthetic Server
+```
+docker run -d --name="appdynamics-server-SYN" --net="host" -p 10001-10002:10001-10002 -p 10101-10102:10101-10102 -p 12101-12102:12101-12102 -p 16101-16102:16101-16102 -v /host/install/dir:/opt/appdynamics:rw -v /etc/localtime:/etc/localtime:ro csek06/appdynamics-server-all-in-one
 ```
 
 ### Install Custom Geo Server for Browser RUM
@@ -160,6 +168,7 @@ Once installed, open the WebUI at http://CONTROLLERHOST:9191/ and validate that 
 2. Navigate to http://CONTROLLERHOST:8090/controller/#/location=LICENSE_MANAGEMENT_PEAK_USAGE&timeRange=last_1_hour.BEFORE_NOW.-1.-1.60 to validate your license has been applied.
 
 # Changelog:
+* 2019-12-03 - Implemented Synthetic Server, Avoid online lookup via FILENAME variable feature, minor code fixes
 * 2019-11-21 - Created docker-compose file, Standardized on Install Directory, minor code fixes
 * 2019-10-17 - Standardized on using FORM, Modularized script to install components outside of Docker, minor code fixes
 * 2019-08-05 - Implemented FORM feature: see 'FORM' section above
