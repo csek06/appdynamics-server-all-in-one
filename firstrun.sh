@@ -8,6 +8,7 @@ if [ -d "/your-platform-install" ]; then
 else 
 	if [ -d "$PWD/install-scripts" ]; then
 		# this must be a standalone install
+		STANDALONE=true
 		APPD_SCRIPTS_DIR=$PWD
 		FORM_FILE=$APPD_SCRIPTS_DIR/your-platform.env
 	fi
