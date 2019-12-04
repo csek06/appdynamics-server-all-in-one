@@ -1,18 +1,16 @@
 #!/bin/bash
 
-# DA doesn't ship with a JRE checking if one is local
-if [ -z $JAVA_HOME ]; then
-	# check for other appd jre shipped components
-	if [ -f "$APPD_INSTALL_DIR/appdynamics/machine-agent/jre/bin/java" ]; then
-		export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent/jre
-	elif [ -f "$APPD_INSTALL_DIR/appdynamics/EUM/jre/bin/java" ]; then
-		export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/EUM/jre
-	elif [ -d "$APPD_INSTALL_DIR/appdynamics/jre" ]; then
-		LATEST_JRE=$(ls -t $APPD_INSTALL_DIR/appdynamics/jre | head -1)
-		export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/jre/$LATEST_JRE
-	else
-		echo "JAVA_HOME not set - please ensure Java is installed"
-	fi
+# DA doesn't ship with a JRE checking if one is local and preferring appd shipped
+# check for other appd jre shipped components
+if [ -f "$APPD_INSTALL_DIR/appdynamics/machine-agent/jre/bin/java" ]; then
+	export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/machine-agent/jre
+elif [ -f "$APPD_INSTALL_DIR/appdynamics/EUM/jre/bin/java" ]; then
+	export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/EUM/jre
+elif [ -d "$APPD_INSTALL_DIR/appdynamics/jre" ]; then
+	LATEST_JRE=$(ls -t $APPD_INSTALL_DIR/appdynamics/jre | head -1)
+	export JAVA_HOME=$APPD_INSTALL_DIR/appdynamics/jre/$LATEST_JRE
+else
+	echo "JAVA_HOME not set - please ensure Java is installed"
 fi
 
 if [ ! -z $JAVA_HOME ]; then
