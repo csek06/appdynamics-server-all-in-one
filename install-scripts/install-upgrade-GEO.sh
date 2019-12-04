@@ -16,23 +16,32 @@ else
 	echo "Tomcat already installed"
 fi 
 
-# Use manual version or latest available from AppDynamics
-if [ ! -z $VERSION ]; then
-	echo "Manual version override:" $VERSION
-	#Check for valid version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$VERSION&eum=geoserver"
-	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"GeoServer-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:filename\"\:\")\K(GeoServer-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-	echo "Filename expected: $FILENAME"
+if [ ! -z $GEO_FILENAME ]; then
+	echo "Manual Override - Attempting to use $GEO_FILENAME for custom geo server installation..."
+	if [ -f $GEO_FILENAME ]; then
+		FILENAME=$GEO_FILENAME
+	else
+		echo "Cannot find file: $GEO_FILENAME"
+	fi
 else
-	#Check the latest version on appdynamics
-	curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?eum=geoserver"
-	VERSION=$(grep -oP '(?:filename\"\:\"GeoServer-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
-	DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"GeoServer-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
-	FILENAME=$(grep -oP '(?:filename\"\:\")\K(GeoServer-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
-	echo "Latest version on appdynamics is" $VERSION
+	# Use manual version or latest available from AppDynamics
+	if [ ! -z $VERSION ]; then
+		echo "Manual version override:" $VERSION
+		#Check for valid version on appdynamics
+		curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?version=$VERSION&eum=geoserver"
+		DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"GeoServer-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+		FILENAME=$(grep -oP '(?:filename\"\:\")\K(GeoServer-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
+		echo "Filename expected: $FILENAME"
+	else
+		#Check the latest version on appdynamics
+		curl -s -L -o tmpout.json "https://download.appdynamics.com/download/downloadfile/?eum=geoserver"
+		VERSION=$(grep -oP '(?:filename\"\:\"GeoServer-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=version))(?:version\"\:\")\K(.*?)(?=\"\,)' tmpout.json)
+		DOWNLOAD_PATH=$(grep -oP '(?:filename\"\:\"GeoServer-\d+\.\d+\.\d+\.\d+\.zip[\s\S]+?(?=http))\K(.*?)(?=\"\,)' tmpout.json)
+		FILENAME=$(grep -oP '(?:filename\"\:\")\K(GeoServer-\d+\.\d+\.\d+\.\d+\.zip)(?=\"\,)' tmpout.json)
+		echo "Latest version on appdynamics is" $VERSION
+	fi
+	rm -f tmpout.json
 fi
-rm -f tmpout.json
 
 # Check if Geo Server is already installed
 GEO_DIR=$APPD_INSTALL_DIR/tomcat/webapps
