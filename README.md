@@ -171,7 +171,7 @@ Additional Optional Variables - configured within your-platform.env
   * REQUIRED paths if true
 
    ```bash
-   -v /var/run/docker.sock:/var/run/docker.sock:ro -v /:/:ro
+   -v /var/run/docker.sock:/var/run/docker.sock -v /proc:/hostroot/proc:ro -v /etc:/hostroot/etc:ro -v /sys:/hostroot/sys:ro
    ```
 
 ### Install Analytics Agent
