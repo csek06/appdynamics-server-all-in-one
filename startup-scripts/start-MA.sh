@@ -20,6 +20,20 @@ if [ -z $CONTROLLER_KEY ]; then
 		JSESSIONID_H=$(grep -oP '(JSESSIONID\s)\K(.*)?(?=$)' cookie.appd)
 		CONTROLLER_KEY=$(curl -s http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/restui/user/account -H "X-CSRF-TOKEN: $X_CSRF_TOKEN" -H "Cookie: JSESSIONID=$JSESSIONID_H" | grep -oP '(?:accessKey\"\s\:\s\")\K(.*?)(?=\"\,)')
 		rm cookie.appd
+		
+		# Monitor all containers if SIM Docker Enabled?
+		if [ "$MONITOR_APM_CONTAINERS_ONLY" = "false"]; then
+			curl -s -c cookie.appd --user root@system:appd -X GET http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/auth?action=login
+			if [ -f "cookie.appd" ]; then
+				X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
+				X_CSRF_TOKEN_HEADER="`if [ -n "$X_CSRF_TOKEN" ]; then echo "X-CSRF-TOKEN:$X_CSRF_TOKEN"; else echo ''; fi`"
+				containerOnlyValue="name=sim.docker.monitorAPMContainersOnly&value=false"
+				echo "Setting $containerOnlyValue in Controller"
+				curl -s -b cookie.appd -c cookie.appd2 --output /dev/null -H "$X_CSRF_TOKEN_HEADER" -X POST "http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?$containerOnlyValue"
+			else
+				echo "Couldn't connect MA to controller $CONTROLLER_HOST:$CONTROLLER_PORT to set $containerOnlyValue"
+			fi
+		fi
 	else
 		echo "Couldn't connect MA to controller $CONTROLLER_HOST:$CONTROLLER_PORT to obtain controller key -- NOT starting MA"
 		exit 1
