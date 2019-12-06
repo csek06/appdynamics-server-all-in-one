@@ -121,6 +121,8 @@ services:
       - eccontes
     volumes:
       - /opt/appdynamics:/opt/appdynamics
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /:/:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /proc:/hostroot/proc:ro
+      - /sys:/hostroot/sys:ro
+      - /etc:/hostroot/etc:ro
     restart: on-failure
