@@ -115,8 +115,12 @@ services:
       - EVENTS_SERVICE_HOST=eccontes
       - MA_AGENT_NAME=$HOSTNAME
       - DOCKER_HOST=$HOSTNAME
+      - MA_ENABLE_SIM=true
+      - MA_ENABLE_SIM_DOCKER=true
     links:
       - eccontes
     volumes:
       - /opt/appdynamics:/opt/appdynamics
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /:/:ro
     restart: on-failure

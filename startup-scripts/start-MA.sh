@@ -52,7 +52,7 @@ if [ ! -z $CONTROLLER_KEY ]; then
 	MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.sim.enabled=${MA_ENABLE_SIM}"
 	MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.enabled=${MA_ENABLE_SIM_DOCKER}"
 	MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.docker.container.containerIdAsHostId.enabled=${MA_ENABLE_CONTAINERIDASHOSTID}"
-	MA_PROPERTIES="$MA_PROPERTIES -Ddbagent.name=${MA_AGENT_NAME}"
+	MA_PROPERTIES="$MA_PROPERTIES -Dappdynamics.agent.uniqueHostId=${MA_AGENT_NAME}"
 
 	MA_FILE=$APPD_INSTALL_DIR/appdynamics/machine-agent/bin/machine-agent
 	MA_PID_FILE=$MACHINE_AGENT_HOME/machine-agent.id
