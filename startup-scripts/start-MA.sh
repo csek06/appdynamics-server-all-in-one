@@ -33,6 +33,7 @@ if [ -z $CONTROLLER_KEY ]; then
 			else
 				echo "Couldn't connect MA to controller $CONTROLLER_HOST:$CONTROLLER_PORT to set $containerOnlyValue"
 			fi
+			rm cookie.appd
 		fi
 	else
 		echo "Couldn't connect MA to controller $CONTROLLER_HOST:$CONTROLLER_PORT to obtain controller key -- NOT starting MA"

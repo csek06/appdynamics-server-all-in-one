@@ -101,7 +101,7 @@ else
 						controller_host='controller_host = "http://'"$CONTROLLER_HOST"'"'			
 					fi
 					db_host='db_host = "'"$EUM_HOST"'"'
-					db_port='db_port = "3388"'
+					db_port='db_port = "3389"'
 					db_root_password='db_root_pwd = "appd"'
 					db_username='db_username = "synth_user"'
 					db_password='db_user_pwd = "appd"'

@@ -256,6 +256,16 @@ if [ "$EUM" = "true" ]; then
 	fi
 fi
 
+if [ "$EUM" = "true" ]; then
+	EUM_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-EUM.sh
+	if [ -f "$EUM_START_FILE" ]; then
+		chmod +x $EUM_START_FILE
+		. $EUM_START_FILE
+	else
+		echo "EUM Server startup file not found here - $EUM_START_FILE"
+	fi
+fi
+
 if [ "$SYN" = "true" ]; then
 	SYN_INSTALL_UPGRADE_FILE=$APPD_SCRIPTS_DIR/install-scripts/install-upgrade-SYN.sh
 	if [ -f "$SYN_INSTALL_UPGRADE_FILE" ]; then
@@ -313,18 +323,6 @@ chown -R nobody:users $APPD_INSTALL_DIR
 
 # Start the AppDynamics Services
 echo "Starting AppDynamics Services"
-
-
-
-if [ "$EUM" = "true" ]; then
-	EUM_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-EUM.sh
-	if [ -f "$EUM_START_FILE" ]; then
-		chmod +x $EUM_START_FILE
-		. $EUM_START_FILE
-	else
-		echo "EUM Server startup file not found here - $EUM_START_FILE"
-	fi
-fi
 
 if [ "$SYN" = "true" ]; then
 	SYN_START_FILE=$APPD_SCRIPTS_DIR/startup-scripts/start-SYN.sh

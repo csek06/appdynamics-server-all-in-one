@@ -1,6 +1,6 @@
 FROM phusion/baseimage:0.11
 
-MAINTAINER csek06
+LABEL maintainer="csek06"
 
 VOLUME ["/opt/appdynamics"]
 
