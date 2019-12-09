@@ -45,13 +45,22 @@ else
 			echo "$CONTROLLER_HOST is different than $EUM_HOST -- changing to 'split' install mode"
 			EUM_SIZE=split
 		fi
-		
+		echo "Getting EUM Key from Controller"
 		ES_EUM_KEY=$(curl -s --user admin@customer1:appd http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/rest/configuration?name=appdynamics.es.eum.key | grep -oP '(value\>)\K(.*?)(?=\<\/value)')
-		
+		echo "Retrieved key: $ES_EUM_KEY"
 		if [ -z $ES_EUM_KEY ]; then
 			echo "Couldn't connect to controller $CONTROLLER_HOST:$CONTROLLER_PORT and obtain EUM Key - not installing EUM"
 			exit 1
 		else
+			if [ -z $JAVA_HOME ]; then
+				echo "No JAVA_HOME found, setting one..."
+				cd $APPD_INSTALL_DIR/appdynamics/jre/1*/
+				if [ -f "bin/java" ]; then
+					export JAVA_HOME=$PWD
+					echo "JAVA_HOME set to $JAVA_HOME"
+				fi
+			fi
+			cd $APPD_INSTALL_DIR
 			echo "Setting EUM properties"
 			echo "setting '$ES_EUM_KEY' in '$VARFILE'"
 			sed -i s/eventsService.APIKey=.*/eventsService.APIKey=$ES_EUM_KEY/ $VARFILE
@@ -97,5 +106,6 @@ else
 		fi
 	else
 		echo "Couldn't find $VARFILE"
+		exit 1
 	fi
  fi
