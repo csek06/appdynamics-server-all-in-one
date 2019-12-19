@@ -37,7 +37,7 @@ if [ ! "$COMPOSED" = "true" ]; then
 	if [ "$RHEL_OR_CENTOS" = "true" ]; then
 		echo "updating and installing packages"
 		sudo yum update -y
-		sudo yum install curl epel-release libaio ncurses numactl tar tzdata unzip -y
+		sudo yum install curl epel-release java-1.8.0-openjdk-devel libaio ncurses numactl tar tzdata unzip -y
 		sudo yum install python-pip -y
 		echo "updating firewall ports"
 		sudo firewall-cmd --zone=public --add-port=80/tcp --permanent
