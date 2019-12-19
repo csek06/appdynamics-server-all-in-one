@@ -22,7 +22,7 @@ if [ -z $CONTROLLER_KEY ]; then
 		rm cookie.appd
 		
 		# Monitor all containers if SIM Docker Enabled?
-		if [ "$MONITOR_APM_CONTAINERS_ONLY" = "false"]; then
+		if [ "$MONITOR_APM_CONTAINERS_ONLY" = "false" ]; then
 			curl -s -c cookie.appd --user root@system:appd -X GET http://$CONTROLLER_HOST:$CONTROLLER_PORT/controller/auth?action=login
 			if [ -f "cookie.appd" ]; then
 				X_CSRF_TOKEN="$(grep X-CSRF-TOKEN cookie.appd | grep -oP '(X-CSRF-TOKEN\s)\K(.*)?(?=$)')"
