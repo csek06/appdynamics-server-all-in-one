@@ -12,9 +12,14 @@ if [ -f "$PA_FILE" ]; then
 	./platform-admin.sh login --user-name admin --password appd
 	# newer consoles do not use '--with-db' command
 	echo "Enterprise Console version = $EC_INSTALLED_VERSION" 
+	EC_ROOTVERSION=$(grep -oP '^(\d+)' <<< $EC_INSTALLED_VERSION)
+	echo "Enterprise Console root version = $EC_ROOTVERSION"
 	EC_SUBVERSION=$(grep -oP '(\d+.\d+.)\K(\d+)(?=.\d+)' <<< $EC_INSTALLED_VERSION)
 	echo "Enterprise Console Subversion = $EC_SUBVERSION"
-	if [ $EC_SUBVERSION -gt 15 ]; then
+	if [ $EC_ROOTVERSION -ge 20 ]; then
+		echo "Will issue standard start command"
+		./platform-admin.sh start-controller-appserver
+	elif [ $EC_SUBVERSION -gt 15 ]; then
 		echo "Will issue standard start command"
 		./platform-admin.sh start-controller-appserver
 	else 
