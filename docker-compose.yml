@@ -20,6 +20,11 @@ services:
       - DOCKER_HOST=$HOSTNAME
     volumes:
       - /opt/appdynamics:/opt/appdynamics
+    ulimits:
+      nproc: 8192
+      nofile:
+        soft: 65535
+        hard: 65535
   
   eum:
     image: csek06/appdynamics-server-all-in-one
